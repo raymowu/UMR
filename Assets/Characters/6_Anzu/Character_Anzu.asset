@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25b72aced3fe9aa46b27c8cd12b7f7a6, type: 3}
+  m_Name: Character_Anzu
+  m_EditorClassIdentifier: 
+  id: 6
+  displayName: Anzu
+  icon: {fileID: 21300000, guid: 51481dcf7010285489859ac07157d796, type: 3}
+  introPrefab: {fileID: 3461669734237327884, guid: 832402d273de682439223dae11ee64e5, type: 3}
