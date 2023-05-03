@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25b72aced3fe9aa46b27c8cd12b7f7a6, type: 3}
-  m_Name: Character_Hutao
+  m_Name: Character_HuTao
   m_EditorClassIdentifier: 
   id: 4
   displayName: Hu Tao
