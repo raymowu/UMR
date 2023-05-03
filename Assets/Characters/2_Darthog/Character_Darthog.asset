@@ -16,3 +16,4 @@ MonoBehaviour:
   displayName: Darthog
   icon: {fileID: 21300000, guid: 3e24a705da385a14c90ade2647507833, type: 3}
   introPrefab: {fileID: 6383244725190704072, guid: caa2ab64404826a4ba359c23e65aedd5, type: 3}
+  gameplayPrefab: {fileID: 2015557629996678862, guid: 7a96520d1cb24204b9ab9b733951518c, type: 3}

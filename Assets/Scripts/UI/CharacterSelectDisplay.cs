@@ -159,6 +159,19 @@ public class CharacterSelectDisplay : NetworkBehaviour
                     );
 
         }
+
+        // Start game when all players are locked in
+        foreach(var player in players)
+        {
+            if (!player.IsLockedIn) { return;  }
+        }
+
+        foreach(var player in players)
+        {
+            ServerManager.Instance.SetCharacter(player.ClientId, player.CharacterId);
+        }
+
+        ServerManager.Instance.StartGame();
     }
 
     private void HandlePlayersStateChanged(NetworkListEvent<CharacterSelectState> changeEvent)
