@@ -6,19 +6,38 @@ using UnityEngine.UI;
 public class CharacterSelectButton : MonoBehaviour
 {
     [SerializeField] private Image iconImage;
+    [SerializeField] private GameObject disabledOverlay;
+    [SerializeField] private Button button;
 
     private CharacterSelectDisplay characterSelect;
-    private Character character;
+    public Character Character { get; private set; }
+    public bool IsDisabled { get; private set; }
+
         public void SetCharacter(CharacterSelectDisplay characterSelect, Character character)
     {
         iconImage.sprite = character.Icon;
 
         this.characterSelect = characterSelect;
-        this.character = character;
+        Character = character;
     }
 
     public void SelectCharacter()
     {
-        characterSelect.Select(character);
+        characterSelect.Select(Character);
+    }
+
+    public void SetDisabled()
+    {
+        IsDisabled = true;
+        disabledOverlay.SetActive(true);
+        button.interactable = false;
+    }
+
+    // For if someone disconnects while locked in, undisable the previously disabled button
+    public void SetUnDisabled()
+    {
+        IsDisabled = false;
+        disabledOverlay.SetActive(false);
+        button.interactable = true;
     }
 }

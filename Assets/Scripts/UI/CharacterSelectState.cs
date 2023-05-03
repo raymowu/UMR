@@ -8,12 +8,14 @@ public struct CharacterSelectState : INetworkSerializable, IEquatable<CharacterS
 {
     public ulong ClientId;
     public int CharacterId;
+    public bool IsLockedIn;
 
     // Constructor
-    public CharacterSelectState(ulong clientId, int characterId = -1)
+    public CharacterSelectState(ulong clientId, int characterId = -1, bool isLockedIn = false)
     {
         ClientId = clientId;
         CharacterId = characterId;
+        IsLockedIn = isLockedIn;
     }
 
     // Serialize the network variables
@@ -21,13 +23,14 @@ public struct CharacterSelectState : INetworkSerializable, IEquatable<CharacterS
     {
         serializer.SerializeValue(ref ClientId);
         serializer.SerializeValue(ref CharacterId);
-
+        serializer.SerializeValue(ref IsLockedIn);
     }
 
     // Checks if values have changed and need to sync
     public bool Equals(CharacterSelectState other)
     {
         return ClientId == other.ClientId && 
-            CharacterId == other.CharacterId;
+            CharacterId == other.CharacterId &&
+            IsLockedIn == other.IsLockedIn;
     }
 }
