@@ -168,10 +168,10 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
         foreach(var player in players)
         {
-            ServerManager.Instance.SetCharacter(player.ClientId, player.CharacterId);
+            HostManager.Instance.SetCharacter(player.ClientId, player.CharacterId);
         }
 
-        ServerManager.Instance.StartGame();
+        HostManager.Instance.StartGame();
     }
 
     private void HandlePlayersStateChanged(NetworkListEvent<CharacterSelectState> changeEvent)

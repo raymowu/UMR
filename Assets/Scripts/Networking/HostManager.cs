@@ -4,14 +4,14 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ServerManager : MonoBehaviour
+public class HostManager : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private string characterSelectSceneName = "CharacterSelect";
 
     [SerializeField] private string gameplaySceneName = "Gameplay";
 
-    public static ServerManager Instance { get; private set; }
+    public static HostManager Instance { get; private set; }
 
     private bool gameHasStarted;
     public Dictionary<ulong, ClientData> ClientData { get; private set; }
@@ -51,7 +51,7 @@ public class ServerManager : MonoBehaviour
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
-        if (ClientData.Count >= 5 || gameHasStarted)
+        if (ClientData.Count >= 6 || gameHasStarted)
         {
             response.Approved = false;
             return;

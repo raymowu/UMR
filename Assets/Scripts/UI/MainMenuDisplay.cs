@@ -8,17 +8,11 @@ public class MainMenuDisplay : MonoBehaviour
 
     public void StartHost()
     {
-        ServerManager.Instance.StartHost();
-    }
-
-    public void StartServer()
-    {
-        ServerManager.Instance.StartServer();
-
+        HostManager.Instance.StartHost();
     }
 
     public void StartClient()
     {
-        NetworkManager.Singleton.StartClient();
+        ClientManager.Instance.StartClient();
     }
 }
