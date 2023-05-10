@@ -222,7 +222,7 @@ public class CharacterSelectDisplay : NetworkBehaviour
         }
 
         // Undisable a players locked in character after they disconnect
-        // RAYMOND NOTES: a little unsure abt this bc it runs on the assumption that players network list automatically removes disconnected player)
+
         foreach (var button in characterButtons)
         {
             if (button.IsDisabled && !IsCharacterTaken(button.Character.Id, true))
