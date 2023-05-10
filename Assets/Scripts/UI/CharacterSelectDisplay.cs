@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class CharacterSelectDisplay : NetworkBehaviour
 {
+    [Header("References")]
     [SerializeField] private CharacterDatabase characterDatabase;
     [SerializeField] private Transform charactersHolder;
     [SerializeField] private CharacterSelectButton selectButtonPrefab;
@@ -14,11 +15,11 @@ public class CharacterSelectDisplay : NetworkBehaviour
     [SerializeField] private GameObject characterInfoPanel;
     [SerializeField] private TMP_Text characterNameText;
     [SerializeField] private Transform introSpawnPoint;
+    [SerializeField] private TMP_Text joinCodeText;
     [SerializeField] private Button lockInButton;
 
     private GameObject introInstance;
-    private List<CharacterSelectButton> characterbuttons = new List<CharacterSelectButton>();
-
+    private List<CharacterSelectButton> characterButtons = new List<CharacterSelectButton>();
     private NetworkList<CharacterSelectState> players;
 
     private void Awake()
@@ -35,7 +36,7 @@ public class CharacterSelectDisplay : NetworkBehaviour
             {
                 var selectbuttonInstance = Instantiate(selectButtonPrefab, charactersHolder);
                 selectbuttonInstance.SetCharacter(this, character);
-                characterbuttons.Add(selectbuttonInstance);
+                characterButtons.Add(selectbuttonInstance);
             }
 
             players.OnListChanged += HandlePlayersStateChanged;
@@ -51,6 +52,11 @@ public class CharacterSelectDisplay : NetworkBehaviour
             {
                 HandleClientConnected(client.ClientId);
             }
+        }
+
+        if (IsHost)
+        {
+            joinCodeText.text = HostManager.Instance.JoinCode;
         }
     }
 
@@ -77,18 +83,17 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
     private void HandleClientDisconnected(ulong clientId)
     {
-        //TODO: Undisable their locked in character
-
         // Remove that client from players list
-        for (int i = 0; i < players.Count; i++)
+        // NOTE: (do i even need to do this? bc theres an deallocation error when this for loop is here, but
+        // if I remove it the error goes away, so i assume maybe user disconnect automatically removes him
+        // from the players network list... for now ill leave it ig)
+        for (int i = 0; i < players.Count ; i++)
         {
-            if (players[i].ClientId == clientId)
-            {
+            if (players[i].ClientId != clientId) { continue;  }
                 players.RemoveAt(i);
                 break;
-            }
-        }
-
+            
+        } 
     }
 
     public void Select(Character character)
@@ -176,6 +181,7 @@ public class CharacterSelectDisplay : NetworkBehaviour
 
     private void HandlePlayersStateChanged(NetworkListEvent<CharacterSelectState> changeEvent)
     {
+        // Updates players Display
         for (int i = 0; i < playerCards.Length; i++)
         {
             // Check if there are enough players (only go through existing players)
@@ -189,7 +195,8 @@ public class CharacterSelectDisplay : NetworkBehaviour
             }
         }
 
-        foreach(var button in characterbuttons)
+        // Updates locked in character buttons
+        foreach(var button in characterButtons)
         {
             if (button.IsDisabled) { continue; }
 
@@ -199,7 +206,19 @@ public class CharacterSelectDisplay : NetworkBehaviour
             }
         }
 
-        foreach(var player in players)
+        // Undisable a players locked in character after they disconnect
+        // RAYMOND NOTES: a little unsure abt this bc it runs on the assumption that players network list automatically removes disconnected player)
+        foreach (var button in characterButtons)
+        {
+            if (button.IsDisabled && !IsCharacterTaken(button.Character.Id, true))
+            {
+                button.SetUnDisabled();
+                break;
+            }
+        }
+
+        // Disable choosing another character if player is locked in
+        foreach (var player in players)
         {
             if (player.ClientId != NetworkManager.Singleton.LocalClientId) { continue; }
 
