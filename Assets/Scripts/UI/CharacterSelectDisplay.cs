@@ -79,21 +79,36 @@ public class CharacterSelectDisplay : NetworkBehaviour
     private void HandleClientConnected(ulong clientId)
     {
         players.Add(new CharacterSelectState(clientId));
+
+        // For Debugging
+        foreach(var player in HostManager.Instance.ClientData)
+        {
+            Debug.Log($"player {player.Value.clientId} exists");
+        }
     }
 
     private void HandleClientDisconnected(ulong clientId)
     {
         // Remove that client from players list
-        // NOTE: (do i even need to do this? bc theres an deallocation error when this for loop is here, but
-        // if I remove it the error goes away, so i assume maybe user disconnect automatically removes him
-        // from the players network list... for now ill leave it ig)
-        for (int i = 0; i < players.Count ; i++)
+        // RAYMOND NOTE: theres a deallocation error when calling .Count so I just put an if
+        // statement that checks if the game has started
+
+        if (!HostManager.Instance.gameHasStarted)
         {
-            if (players[i].ClientId != clientId) { continue;  }
-                players.RemoveAt(i);
-                break;
-            
-        } 
+            for (int i = 0; i < players.Count; i++)
+                {
+                    if (players[i].ClientId != clientId) { continue;  }
+                        players.RemoveAt(i);
+                        break;
+
+                }  
+        }
+
+        // For Debugging
+        foreach (var player in HostManager.Instance.ClientData)
+        {
+            Debug.Log($"player {player.Value.clientId} exists");
+        }
     }
 
     public void Select(Character character)

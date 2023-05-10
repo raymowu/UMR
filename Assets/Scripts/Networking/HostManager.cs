@@ -17,7 +17,7 @@ public class HostManager : MonoBehaviour
 
     public static HostManager Instance { get; private set; }
 
-    private bool gameHasStarted;
+    public bool gameHasStarted;
     public Dictionary<ulong, ClientData> ClientData { get; private set; }
 
     public string JoinCode { get; private set; }
