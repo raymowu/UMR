@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: CharacterDatabase
   m_EditorClassIdentifier: 
   characters:
-  - {fileID: 11400000, guid: 5804acc1efe30424aaa08e401ec5543b, type: 2}
   - {fileID: 11400000, guid: 774a0440f9992d147a28c97800cb14d3, type: 2}
+  - {fileID: 11400000, guid: 5804acc1efe30424aaa08e401ec5543b, type: 2}
   - {fileID: 11400000, guid: 023d187fe25f873468eca719dc8384cb, type: 2}
   - {fileID: 11400000, guid: fd9885429e136e14b84c722c0baee4d7, type: 2}
   - {fileID: 11400000, guid: 9522db3a0a900354b97571419a027d03, type: 2}
-  - {fileID: 11400000, guid: 7ff021fcd1e09a74faa7e8da5e563ff9, type: 2}
+  - {fileID: 11400000, guid: c214ed6047e83724e84a6cd902445ece, type: 2}
+  - {fileID: 11400000, guid: b4b0d7be16846a44a9fb295fbaf5be0f, type: 2}
+  - {fileID: 11400000, guid: a244a88150db05c4abf58cd09c88d8cf, type: 2}

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25b72aced3fe9aa46b27c8cd12b7f7a6, type: 3}
+  m_Name: Character_Alex
+  m_EditorClassIdentifier: 
+  id: 8
+  displayName: Alex
+  icon: {fileID: 21300000, guid: 19134801e577ad34e98e3af06aefda7f, type: 3}
+  introPrefab: {fileID: 2964861246490879495, guid: 1660a02d3556588408b82a14c5802dd1, type: 3}
+  gameplayPrefab: {fileID: -1191558664157390452, guid: 858ea7ec55b30cc49a646225d02abc52, type: 3}
