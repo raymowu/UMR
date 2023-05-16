@@ -5,6 +5,14 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - Ability1Grayed
+  - Ability2Grayed
+  - Ability3Grayed
+  - Ability4Grayed
+  - Ability1Text
+  - Ability2Text
+  - Ability3Text
+  - Ability4Text
   layers:
   - Default
   - TransparentFX

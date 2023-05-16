@@ -12,10 +12,13 @@ public class Character : ScriptableObject
     [SerializeField] private GameObject introPrefab;
     [SerializeField] private NetworkObject gameplayPrefab;
 
+
     // Get private stuff publicly
     public int Id => id;
     public string DisplayName => displayName;
     public Sprite Icon => icon;
     public GameObject IntroPrefab => introPrefab;
     public NetworkObject GameplayPrefab => gameplayPrefab;
+
+
 }

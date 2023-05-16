@@ -1,15 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
-using Cinemachine;
+using Unity.Netcode;
 
-public class VirtualCameraManager : MonoBehaviour
+public class AbilitiesCanvas : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<CinemachineVirtualCamera>().Follow = NetworkManager.Singleton.LocalClient.PlayerObject.transform;
 
     }
 

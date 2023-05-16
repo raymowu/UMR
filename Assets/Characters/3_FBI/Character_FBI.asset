@@ -16,4 +16,4 @@ MonoBehaviour:
   displayName: FBI
   icon: {fileID: 21300000, guid: 545a6ddbeef3e2649b3371afbbe44efc, type: 3}
   introPrefab: {fileID: 338338183308062481, guid: 3dee5d0b14330634e8af0cbbae167d21, type: 3}
-  gameplayPrefab: {fileID: -1482690605993274367, guid: 77d5bd7ffb7ecfc4cb3e596c9938df2a, type: 3}
+  gameplayPrefab: {fileID: 4735789238667738310, guid: 77d5bd7ffb7ecfc4cb3e596c9938df2a, type: 3}
