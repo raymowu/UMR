@@ -16,4 +16,4 @@ MonoBehaviour:
   displayName: Chatgpt
   icon: {fileID: 21300000, guid: 1e70eb2c7ad0a604ba8ca089bdbcca50, type: 3}
   introPrefab: {fileID: 5493668984577979870, guid: 386df9d8692ff684cb3e4943af55d126, type: 3}
-  gameplayPrefab: {fileID: -7743728673035039467, guid: 44a38579a30b05344bb64d488cb1aac4, type: 3}
+  gameplayPrefab: {fileID: 7110160242187800037, guid: 44a38579a30b05344bb64d488cb1aac4, type: 3}

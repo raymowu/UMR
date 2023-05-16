@@ -16,4 +16,12 @@ MonoBehaviour:
   displayName: Darthog
   icon: {fileID: 21300000, guid: 3e24a705da385a14c90ade2647507833, type: 3}
   introPrefab: {fileID: 6383244725190704072, guid: caa2ab64404826a4ba359c23e65aedd5, type: 3}
-  gameplayPrefab: {fileID: 2015557629996678862, guid: 7a96520d1cb24204b9ab9b733951518c, type: 3}
+  gameplayPrefab: {fileID: 8402474403132938113, guid: 7a96520d1cb24204b9ab9b733951518c, type: 3}
+  ability1Icon: {fileID: 21300000, guid: bc819676af0a037448371750e689938b, type: 3}
+  ability1Cooldown: 3
+  ability2Icon: {fileID: 21300000, guid: 9628fe2a6603ef44db5262ff79e4a054, type: 3}
+  ability2Cooldown: 5
+  ability3Icon: {fileID: 21300000, guid: 4604c27140b6fff43b2d748c98edc00f, type: 3}
+  ability3Cooldown: 7
+  ability4Icon: {fileID: 21300000, guid: d844f87531a627043a195978fa123cd4, type: 3}
+  ability4Cooldown: 60
