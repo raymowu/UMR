@@ -10,7 +10,7 @@ using TMPro;
 public class ChatgptAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
-    [SerializeField] private PlayerMovement playerMovement;
+    private PlayerMovement playerMovement;
 
     [Header("Ability 1")]
     public Image abilityImage1;
@@ -67,6 +67,8 @@ public class ChatgptAbilities : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerMovement = GetComponent<PlayerMovement>();
+
         // Shows UI
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(1).gameObject.SetActive(true);
@@ -200,10 +202,10 @@ public class ChatgptAbilities : NetworkBehaviour
         {
             if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+                playerMovement.StopMovement();
+                playerMovement.Rotate(hit);
+                CastAbility1ServerRpc(Quaternion.LookRotation(hit.point - transform.position));
             }
-            playerMovement.StopMovement();
-            playerMovement.Rotate(hit);
 
             isAbility1Cooldown = true;
             currentAbility1Cooldown = ability1Cooldown;
@@ -211,15 +213,15 @@ public class ChatgptAbilities : NetworkBehaviour
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
-            CastAbility1ServerRpc();
         }
     }
 
     // summon projectile here
     [ServerRpc]
-    private void CastAbility1ServerRpc()
+    private void CastAbility1ServerRpc(Quaternion rot)
     {
-        GameObject go = Instantiate(ability1Projectile, shootTransform.position, shootTransform.rotation);
+        GameObject go = Instantiate(ability1Projectile, shootTransform.position, rot);
+        go.GetComponent<MoveChatgptCyberball>().parent = gameObject;
         go.GetComponent<NetworkObject>().Spawn();
     }
 

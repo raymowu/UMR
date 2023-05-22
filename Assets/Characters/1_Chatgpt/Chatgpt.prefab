@@ -318,7 +318,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootTransform: {fileID: 523256378716002170}
-  playerMovement: {fileID: 6103385845385010664}
   abilityImage1: {fileID: 8845234376853739200}
   abilityText1: {fileID: 8845234377697617725}
   ability1Key: 113
@@ -2519,7 +2518,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7252129551244790590}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0.7}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

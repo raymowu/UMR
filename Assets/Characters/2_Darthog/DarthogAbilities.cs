@@ -9,12 +9,16 @@ using TMPro;
 
 public class DarthogAbilities : NetworkBehaviour
 {
+    [SerializeField] private Transform shootTransform;
+    private PlayerMovement playerMovement;
 
     [Header("Ability 1")]
     public Image abilityImage1;
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
+
+    [SerializeField] private GameObject ability1Projectile;
 
     public Canvas ability1Canvas;
     public Image ability1Indicator;
@@ -33,6 +37,8 @@ public class DarthogAbilities : NetworkBehaviour
     public TMP_Text abilityText3;
     public KeyCode ability3Key = KeyCode.E;
     public float ability3Cooldown;
+
+    [SerializeField] private GameObject ability3Projectile;
 
     public Canvas ability3Canvas;
     public Image ability3Indicator;
@@ -63,6 +69,7 @@ public class DarthogAbilities : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerMovement = GetComponent<PlayerMovement>();
         // Shows UI
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(1).gameObject.SetActive(true);
@@ -175,7 +182,6 @@ public class DarthogAbilities : NetworkBehaviour
         }
     }
 
-
     private void Ability1Input()
     {
         if (Input.GetKeyDown(ability1Key) && !isAbility1Cooldown)
@@ -193,14 +199,29 @@ public class DarthogAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
         }
 
-            if (ability1Indicator.enabled && Input.GetMouseButtonDown(0))
+        if (ability1Indicator.enabled && Input.GetMouseButtonDown(0))
+        {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
-                isAbility1Cooldown = true;
-                currentAbility1Cooldown = ability1Cooldown;
-
-                ability1Canvas.enabled = false;
-                ability1Indicator.enabled = false;
+                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
             }
+            playerMovement.StopMovement();
+            playerMovement.Rotate(hit);
+
+            isAbility1Cooldown = true;
+            currentAbility1Cooldown = ability1Cooldown;
+
+            ability1Canvas.enabled = false;
+            ability1Indicator.enabled = false;
+        }
+    }
+
+    // summon projectile here
+    [ServerRpc]
+    private void CastAbility1ServerRpc()
+    {
+        GameObject go = Instantiate(ability1Projectile, shootTransform.position, shootTransform.rotation);
+        go.GetComponent<NetworkObject>().Spawn();
     }
 
     private void Ability2Input()
@@ -220,14 +241,14 @@ public class DarthogAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
 
         }
-            if (ability2Canvas.enabled && Input.GetMouseButtonDown(0))
-            {
-                isAbility2Cooldown = true;
-                currentAbility2Cooldown = ability2Cooldown;
+        if (ability2Canvas.enabled && Input.GetMouseButtonDown(0))
+        {
+            isAbility2Cooldown = true;
+            currentAbility2Cooldown = ability2Cooldown;
 
-                ability2Canvas.enabled = false;
-                ability2Indicator.enabled = false;
-            }
+            ability2Canvas.enabled = false;
+            ability2Indicator.enabled = false;
+        }
     }
 
     private void Ability3Input()
@@ -249,12 +270,28 @@ public class DarthogAbilities : NetworkBehaviour
         }
         if (ability3Canvas.enabled && Input.GetMouseButtonDown(0))
         {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                playerMovement.StopMovement();
+                playerMovement.Rotate(hit);
+                CastAbility3ServerRpc(Quaternion.LookRotation(hit.point - transform.position));
+            }
+
             isAbility3Cooldown = true;
             currentAbility3Cooldown = ability3Cooldown;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
+
         }
+    }
+
+    [ServerRpc]
+    private void CastAbility3ServerRpc(Quaternion rot)
+    {
+        GameObject go = Instantiate(ability3Projectile, shootTransform.position, rot);
+        go.GetComponent<MoveRockHurl>().parent = gameObject;
+        go.GetComponent<NetworkObject>().Spawn();
     }
 
     private void Ability4Input()
@@ -274,6 +311,7 @@ public class DarthogAbilities : NetworkBehaviour
             ability3Indicator.enabled = false;
 
         }
+
         if (ability4Canvas.enabled && Input.GetMouseButtonDown(0))
         {
             isAbility4Cooldown = true;

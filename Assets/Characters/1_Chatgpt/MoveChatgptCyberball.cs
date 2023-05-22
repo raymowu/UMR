@@ -7,6 +7,7 @@ public class MoveChatgptCyberball : NetworkBehaviour
 {
     [SerializeField] private float shootForce;
     private Rigidbody rb;
+    public GameObject parent;
 
     // Start is called before the first frame update
     void Start()
@@ -23,10 +24,16 @@ public class MoveChatgptCyberball : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //if (!IsOwner) { return;  }
+        if (!IsOwner) { return;  }
         // Make sure player it collides with isnt itself
-        if (other.gameObject.transform == NetworkManager.Singleton.LocalClient.PlayerObject.transform) { return;  }
-        Debug.Log("reached");
+        /*
+        Debug.Log(GetComponent<Collider>());
+        Debug.Log(other.gameObject);
+        Debug.Log(parent);
+        Debug.Log(other.gameObject == parent);
+        */
+        if (other.gameObject == parent) { return; }
+        //Debug.Log("reached");
         DestroyAbility1ServerRpc();
     }
 

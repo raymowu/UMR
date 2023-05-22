@@ -113,9 +113,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c120765f9eb581341b6f5e29d178f89d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parent: {fileID: 0}
   shootForce: 10
-  mousePos: {x: 0, y: 0, z: 0}
+  parent: {fileID: 0}
 --- !u!114 &4176049677479102682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,5 +159,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8d52c254fd5c6740b2554da3e603758, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parent: {fileID: 0}
   delayBeforeDestroy: 0.5
