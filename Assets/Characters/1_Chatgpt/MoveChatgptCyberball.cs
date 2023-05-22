@@ -26,14 +26,14 @@ public class MoveChatgptCyberball : NetworkBehaviour
     {
         if (!IsOwner) { return;  }
         // Make sure player it collides with isnt itself
-        /*
+        
         Debug.Log(GetComponent<Collider>());
         Debug.Log(other.gameObject);
         Debug.Log(parent);
         Debug.Log(other.gameObject == parent);
-        */
+        
         if (other.gameObject == parent) { return; }
-        //Debug.Log("reached");
+        Debug.Log("reached");
         DestroyAbility1ServerRpc();
     }
 

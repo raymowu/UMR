@@ -270,7 +270,7 @@ public class DarthogAbilities : NetworkBehaviour
         }
         if (ability3Canvas.enabled && Input.GetMouseButtonDown(0))
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
             {
                 playerMovement.StopMovement();
                 playerMovement.Rotate(hit);

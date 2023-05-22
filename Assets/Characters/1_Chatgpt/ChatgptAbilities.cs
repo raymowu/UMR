@@ -181,6 +181,7 @@ public class ChatgptAbilities : NetworkBehaviour
         }
     }
 
+    // Typical ability cast structure
     private void Ability1Input()
     {
         if (Input.GetKeyDown(ability1Key) && !isAbility1Cooldown)
@@ -200,7 +201,10 @@ public class ChatgptAbilities : NetworkBehaviour
 
         if (ability1Indicator.enabled && Input.GetMouseButtonDown(0))
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            // Raymond note: There was a bug with the raycast hit hitting the player prefab and using that y value, 
+            // which sends the projectile into the air cuz the click was on top of a guy. There r prob 2 ways to solve this,
+            // either set the layer mask to only get the ground layer (i did it here) OR dont use the hit's y value
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
             {
                 playerMovement.StopMovement();
                 playerMovement.Rotate(hit);
