@@ -10,6 +10,7 @@ using TMPro;
 public class ChatgptAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
+    [SerializeField] private PlayerMovement playerMovement;
 
     [Header("Ability 1")]
     public Image abilityImage1;
@@ -195,16 +196,23 @@ public class ChatgptAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
         }
 
-            if (ability1Indicator.enabled && Input.GetMouseButtonDown(0))
+        if (ability1Indicator.enabled && Input.GetMouseButtonDown(0))
+        {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
-                isAbility1Cooldown = true;
-                currentAbility1Cooldown = ability1Cooldown;
-
-                ability1Canvas.enabled = false;
-                ability1Indicator.enabled = false;
-
-                CastAbility1ServerRpc();
+                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
             }
+            playerMovement.StopMovement();
+            playerMovement.Rotate(hit);
+
+            isAbility1Cooldown = true;
+            currentAbility1Cooldown = ability1Cooldown;
+
+            ability1Canvas.enabled = false;
+            ability1Indicator.enabled = false;
+
+            CastAbility1ServerRpc();
+        }
     }
 
     // summon projectile here
@@ -232,14 +240,14 @@ public class ChatgptAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
 
         }
-            if (ability2Canvas.enabled && Input.GetMouseButtonDown(0))
-            {
-                isAbility2Cooldown = true;
-                currentAbility2Cooldown = ability2Cooldown;
+        if (ability2Canvas.enabled && Input.GetMouseButtonDown(0))
+        {
+            isAbility2Cooldown = true;
+            currentAbility2Cooldown = ability2Cooldown;
 
-                ability2Canvas.enabled = false;
-                ability2Indicator.enabled = false;
-            }
+            ability2Canvas.enabled = false;
+            ability2Indicator.enabled = false;
+        }
     }
 
     private void Ability3Input()
@@ -286,6 +294,7 @@ public class ChatgptAbilities : NetworkBehaviour
             ability3Indicator.enabled = false;
 
         }
+
         if (ability4Canvas.enabled && Input.GetMouseButtonDown(0))
         {
             isAbility4Cooldown = true;

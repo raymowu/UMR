@@ -318,6 +318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootTransform: {fileID: 523256378716002170}
+  playerMovement: {fileID: 6103385845385010664}
   abilityImage1: {fileID: 8845234376853739200}
   abilityText1: {fileID: 8845234377697617725}
   ability1Key: 113

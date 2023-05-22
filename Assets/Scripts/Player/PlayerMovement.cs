@@ -47,14 +47,24 @@ public class PlayerMovement : NetworkBehaviour
                     agent.SetDestination(hit.point);
                     agent.stoppingDistance = 0;
 
-                    //ROTATION
-                    Quaternion rotationToLookAt = Quaternion.LookRotation(hit.point - transform.position);
-                    float rotationY = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationToLookAt.eulerAngles.y,
-                        ref rotateVelocity, rotateSpeedMovement * (Time.deltaTime * 5));
-
-                    transform.eulerAngles = new Vector3(0, rotationY, 0);
+                    Rotate(hit);
                 }
             }
         }
+    }
+
+    public void StopMovement()
+    {
+        agent.SetDestination(agent.transform.position);
+        agent.stoppingDistance = 0;
+    }
+
+    public void Rotate(RaycastHit hit)
+    {
+        Quaternion rotationToLookAt = Quaternion.LookRotation(hit.point - transform.position);
+        float rotationY = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationToLookAt.eulerAngles.y,
+            ref rotateVelocity, rotateSpeedMovement * (Time.deltaTime * 5));
+
+        transform.eulerAngles = new Vector3(0, rotationY, 0);
     }
 }
