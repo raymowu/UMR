@@ -156,7 +156,7 @@ public class DarthogAbilities : NetworkBehaviour
     {
         if (ability3Indicator.enabled)
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
             {
                 position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
             }
@@ -206,7 +206,7 @@ public class DarthogAbilities : NetworkBehaviour
                 position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
             }
             playerMovement.StopMovement();
-            playerMovement.Rotate(hit);
+            playerMovement.Rotate(hit.point);
 
             isAbility1Cooldown = true;
             currentAbility1Cooldown = ability1Cooldown;
@@ -268,13 +268,13 @@ public class DarthogAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
 
         }
-        if (ability3Canvas.enabled && Input.GetMouseButtonDown(0))
+        if (ability3Canvas.enabled && Input.GetKeyUp(ability3Key))
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
                 playerMovement.StopMovement();
-                playerMovement.Rotate(hit);
-                CastAbility3ServerRpc(Quaternion.LookRotation(hit.point - transform.position));
+                playerMovement.Rotate(hit.point);
+                CastAbility3ServerRpc(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
             }
 
             isAbility3Cooldown = true;

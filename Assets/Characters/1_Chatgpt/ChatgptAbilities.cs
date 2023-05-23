@@ -125,7 +125,7 @@ public class ChatgptAbilities : NetworkBehaviour
     {
         if (ability1Indicator.enabled)
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
             {
                 position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
             }
@@ -199,16 +199,16 @@ public class ChatgptAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
         }
 
-        if (ability1Indicator.enabled && Input.GetMouseButtonDown(0))
+        if (ability1Indicator.enabled && Input.GetKeyUp(ability1Key))
         {
             // Raymond note: There was a bug with the raycast hit hitting the player prefab and using that y value, 
             // which sends the projectile into the air cuz the click was on top of a guy. There r prob 2 ways to solve this,
-            // either set the layer mask to only get the ground layer (i did it here) OR dont use the hit's y value
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
+            // either set the layer mask to only get the ground layer OR dont use the hit's y value
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
                 playerMovement.StopMovement();
-                playerMovement.Rotate(hit);
-                CastAbility1ServerRpc(Quaternion.LookRotation(hit.point - transform.position));
+                playerMovement.Rotate(hit.point);
+                CastAbility1ServerRpc(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
             }
 
             isAbility1Cooldown = true;

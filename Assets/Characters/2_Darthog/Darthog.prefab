@@ -217,6 +217,9 @@ GameObject:
   - component: {fileID: 543911787700702412}
   - component: {fileID: 8402474403132938113}
   - component: {fileID: 8395600342201688695}
+  - component: {fileID: -8998133480631184972}
+  - component: {fileID: -6616539316656842438}
+  - component: {fileID: 8305314493508050995}
   m_Layer: 6
   m_Name: Darthog
   m_TagString: Player
@@ -360,6 +363,8 @@ MonoBehaviour:
   agent: {fileID: 3861257881246148678}
   rotateSpeedMovement: 0.05
   anim: {fileID: 2011479533138714761}
+  targetEnemy: {fileID: 0}
+  stoppingDistance: 1.5
 --- !u!114 &8402474403132938113
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -415,6 +420,51 @@ MonoBehaviour:
   ability4Cooldown: 60
   ability4Canvas: {fileID: 3959655952771166830}
   ability4Indicator: {fileID: 3637576000308339879}
+--- !u!114 &-8998133480631184972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113076548410431791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 0, b: 0, a: 1}
+  outlineWidth: 3.5
+  precomputeOutline: 1
+  bakeKeys: []
+  bakeValues: []
+--- !u!114 &-6616539316656842438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113076548410431791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95d7ce19bbf6d884eb876e66f0a388a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8305314493508050995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113076548410431791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f49cea880225aa1478677b8b9511bbfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectableLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &199322515159606025
 GameObject:
   m_ObjectHideFlags: 0

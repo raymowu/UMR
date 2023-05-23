@@ -13,9 +13,15 @@ public class PlayerMovement : NetworkBehaviour
     public Animator anim;
     float motionSmoothTime = 0.1f;
 
+    [Header("Enemy Targeting")]
+    public GameObject targetEnemy;
+    public float stoppingDistance;
+    private HighlightManager hmScript;
+
     void Start()
     {
         agent = gameObject.GetComponent<NavMeshAgent>();
+        hmScript = GetComponent<HighlightManager>();
     }
 
     // Update is called once per frame
@@ -43,25 +49,54 @@ public class PlayerMovement : NetworkBehaviour
             {
                 if (hit.collider.tag == "Ground")
                 {
-                    // MOVEMENT
-                    agent.SetDestination(hit.point);
-                    agent.stoppingDistance = 0;
-
-                    Rotate(hit);
+                    MoveToPosition(hit.point);
                 }
+                // TODO: OR compare tag "Enemy" for monsters
+                else if (hit.collider.CompareTag("Player")) { //&& hit.collider.gameObject != gameObject
+                    MoveTowardsEnemy(hit.collider.gameObject);
+                }
+            }
+        }
+        if (targetEnemy != null)
+        {
+            if (Vector3.Distance(transform.position, targetEnemy.transform.position) > stoppingDistance)
+            {
+                agent.SetDestination(targetEnemy.transform.position);
             }
         }
     }
 
+    public void MoveToPosition(Vector3 position)
+    {
+        agent.SetDestination(position);
+        agent.stoppingDistance = 0;
+        Rotate(position);
+        if (targetEnemy != null)
+        {
+            hmScript.DeselectHighlight();
+            targetEnemy = null;
+        }
+    }
+
+    public void MoveTowardsEnemy(GameObject enemy)
+    {
+        targetEnemy = enemy;
+        agent.SetDestination(targetEnemy.transform.position);
+        agent.stoppingDistance = stoppingDistance;
+
+        Rotate(targetEnemy.transform.position);
+
+        hmScript.SelectedHighlight(); 
+    }
     public void StopMovement()
     {
         agent.SetDestination(agent.transform.position);
         agent.stoppingDistance = 0;
     }
 
-    public void Rotate(RaycastHit hit)
+    public void Rotate(Vector3 lookAtPosition)
     {
-        Quaternion rotationToLookAt = Quaternion.LookRotation(hit.point - transform.position);
+        Quaternion rotationToLookAt = Quaternion.LookRotation(lookAtPosition - transform.position);
         float rotationY = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationToLookAt.eulerAngles.y,
             ref rotateVelocity, rotateSpeedMovement * (Time.deltaTime * 5));
 
