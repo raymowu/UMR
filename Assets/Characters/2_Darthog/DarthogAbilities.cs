@@ -290,6 +290,7 @@ public class DarthogAbilities : NetworkBehaviour
     private void CastAbility3ServerRpc(Quaternion rot)
     {
         GameObject go = Instantiate(ability3Projectile, shootTransform.position, rot);
+        Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
         go.GetComponent<MoveRockHurl>().parent = gameObject;
         go.GetComponent<NetworkObject>().Spawn();
     }

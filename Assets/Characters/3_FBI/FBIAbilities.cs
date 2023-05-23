@@ -10,6 +10,7 @@ using TMPro;
 public class FBIAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
+    private PlayerMovement playerMovement;
 
     [Header("Ability 1")]
     public Image abilityImage1;
@@ -66,6 +67,8 @@ public class FBIAbilities : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerMovement = GetComponent<PlayerMovement>();
+
         // Shows UI
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(1).gameObject.SetActive(true);
@@ -122,7 +125,7 @@ public class FBIAbilities : NetworkBehaviour
     {
         if (ability1Indicator.enabled)
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
             {
                 position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
             }
@@ -195,23 +198,34 @@ public class FBIAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
         }
 
-            if (ability1Indicator.enabled && Input.GetMouseButtonDown(0))
+        if (ability1Indicator.enabled && Input.GetKeyUp(ability1Key))
+        {
+            // Raymond note: There was a bug with the raycast hit hitting the player prefab and using that y value, 
+            // which sends the projectile into the air cuz the click was on top of a guy. There r prob 2 ways to solve this,
+            // either set the layer mask to only get the ground layer OR dont use the hit's y value
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
-                isAbility1Cooldown = true;
-                currentAbility1Cooldown = ability1Cooldown;
-
-                ability1Canvas.enabled = false;
-                ability1Indicator.enabled = false;
-
-                CastAbility1ServerRpc();
+                playerMovement.StopMovement();
+                playerMovement.Rotate(hit.point);
+                CastAbility1ServerRpc(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
             }
+
+            isAbility1Cooldown = true;
+            currentAbility1Cooldown = ability1Cooldown;
+
+            ability1Canvas.enabled = false;
+            ability1Indicator.enabled = false;
+
+        }
     }
 
     // summon projectile here
     [ServerRpc]
-    private void CastAbility1ServerRpc()
+    private void CastAbility1ServerRpc(Quaternion rot)
     {
-        GameObject go = Instantiate(ability1Projectile, shootTransform.position, shootTransform.rotation);
+        GameObject go = Instantiate(ability1Projectile, shootTransform.position, rot);
+        Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
+        go.GetComponent<MoveBullet>().parent = gameObject;
         go.GetComponent<NetworkObject>().Spawn();
     }
 
@@ -232,14 +246,14 @@ public class FBIAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
 
         }
-            if (ability2Canvas.enabled && Input.GetMouseButtonDown(0))
-            {
-                isAbility2Cooldown = true;
-                currentAbility2Cooldown = ability2Cooldown;
+        if (ability2Canvas.enabled && Input.GetMouseButtonDown(0))
+        {
+            isAbility2Cooldown = true;
+            currentAbility2Cooldown = ability2Cooldown;
 
-                ability2Canvas.enabled = false;
-                ability2Indicator.enabled = false;
-            }
+            ability2Canvas.enabled = false;
+            ability2Indicator.enabled = false;
+        }
     }
 
     private void Ability3Input()
@@ -286,6 +300,7 @@ public class FBIAbilities : NetworkBehaviour
             ability3Indicator.enabled = false;
 
         }
+
         if (ability4Canvas.enabled && Input.GetMouseButtonDown(0))
         {
             isAbility4Cooldown = true;

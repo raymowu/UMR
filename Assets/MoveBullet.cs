@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public class MoveChatgptCyberball : NetworkBehaviour
+public class MoveBullet : NetworkBehaviour
 {
     [SerializeField] private float shootForce;
     private Rigidbody rb;
@@ -24,13 +24,14 @@ public class MoveChatgptCyberball : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!IsOwner) { return;  }
+        if (!IsOwner) { return; }
         DestroyAbility1ServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void DestroyAbility1ServerRpc()
     {
+        Debug.Log("reached");
         GetComponent<NetworkObject>().Despawn();
         Destroy(gameObject);
     }

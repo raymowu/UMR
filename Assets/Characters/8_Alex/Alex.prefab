@@ -79,7 +79,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9022515695677591869}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.4
   m_Height: 2
@@ -178,3 +178,5 @@ MonoBehaviour:
   agent: {fileID: -7156314124253932094}
   rotateSpeedMovement: 0.05
   anim: {fileID: 1712073075428311013}
+  targetEnemy: {fileID: 0}
+  stoppingDistance: 0

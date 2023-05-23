@@ -25,9 +25,6 @@ public class MoveRockHurl : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!IsOwner) { return;  }
-        // Make sure player it collides with isnt itself
-        if (other.gameObject == parent) { return; }
-        //Debug.Log("reached");
         DestroyAbility1ServerRpc();
     }
 

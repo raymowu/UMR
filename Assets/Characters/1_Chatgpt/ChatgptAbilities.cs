@@ -225,6 +225,7 @@ public class ChatgptAbilities : NetworkBehaviour
     private void CastAbility1ServerRpc(Quaternion rot)
     {
         GameObject go = Instantiate(ability1Projectile, shootTransform.position, rot);
+        Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
         go.GetComponent<MoveChatgptCyberball>().parent = gameObject;
         go.GetComponent<NetworkObject>().Spawn();
     }
