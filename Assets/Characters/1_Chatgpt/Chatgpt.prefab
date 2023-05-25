@@ -148,8 +148,8 @@ GameObject:
   - component: {fileID: 3708689401363335848}
   - component: {fileID: -8212972115948211620}
   - component: {fileID: 2158439335104029373}
-  - component: {fileID: 4580459673335874065}
   - component: {fileID: -290609632938466166}
+  - component: {fileID: 3634626663687302648}
   m_Layer: 6
   m_Name: Chatgpt
   m_TagString: Player
@@ -394,21 +394,6 @@ MonoBehaviour:
   selectableLayer:
     serializedVersion: 2
     m_Bits: 64
---- !u!114 &4580459673335874065
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 466922402700619703}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2006e7b0fb90e4468953e5269bc7bbf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 800
-  damage: 60
-  attackSpeed: 5
 --- !u!114 &-290609632938466166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,6 +408,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetEnemy: {fileID: 0}
   performMeleeAttack: 1
+--- !u!114 &3634626663687302648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466922402700619703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4513d6f70008f4c40829561a545d312e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefabs: []
+  characterDatabase: {fileID: 11400000, guid: 114185c5cf980654c859ec66245b708f, type: 2}
+  Health: 0
+  AttackSpeed: 0
+  MovementSpeed: 0
+  Damage: 0
 --- !u!1 &502753839874286371
 GameObject:
   m_ObjectHideFlags: 0

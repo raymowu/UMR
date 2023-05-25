@@ -220,8 +220,8 @@ GameObject:
   - component: {fileID: -8998133480631184972}
   - component: {fileID: -6616539316656842438}
   - component: {fileID: 8305314493508050995}
-  - component: {fileID: -8088974155567778040}
   - component: {fileID: -5792207381430989670}
+  - component: {fileID: 613081523070485616}
   m_Layer: 6
   m_Name: Darthog
   m_TagString: Player
@@ -467,21 +467,6 @@ MonoBehaviour:
   selectableLayer:
     serializedVersion: 2
     m_Bits: 64
---- !u!114 &-8088974155567778040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 113076548410431791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2006e7b0fb90e4468953e5269bc7bbf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 1000
-  damage: 65
-  attackSpeed: 7
 --- !u!114 &-5792207381430989670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -496,6 +481,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetEnemy: {fileID: 0}
   performMeleeAttack: 1
+--- !u!114 &613081523070485616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113076548410431791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4513d6f70008f4c40829561a545d312e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefabs: []
+  characterDatabase: {fileID: 11400000, guid: 114185c5cf980654c859ec66245b708f, type: 2}
+  Health: 0
+  AttackSpeed: 0
+  MovementSpeed: 0
+  Damage: 0
 --- !u!1 &199322515159606025
 GameObject:
   m_ObjectHideFlags: 0

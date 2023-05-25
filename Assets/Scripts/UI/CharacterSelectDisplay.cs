@@ -79,12 +79,6 @@ public class CharacterSelectDisplay : NetworkBehaviour
     private void HandleClientConnected(ulong clientId)
     {
         players.Add(new CharacterSelectState(clientId));
-
-        // For Debugging
-        foreach(var player in HostManager.Instance.ClientData)
-        {
-            Debug.Log($"player {player.Value.clientId} exists");
-        }
     }
 
     private void HandleClientDisconnected(ulong clientId)
@@ -102,12 +96,6 @@ public class CharacterSelectDisplay : NetworkBehaviour
                         break;
 
                 }  
-        }
-
-        // For Debugging
-        foreach (var player in HostManager.Instance.ClientData)
-        {
-            Debug.Log($"player {player.Value.clientId} exists");
         }
     }
 

@@ -17,3 +17,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: db361a629b07b2f44acf778573b41668, type: 3}
   introPrefab: {fileID: 7771007628252793572, guid: 3abf814d1fb514a448b4c0167b832045, type: 3}
   gameplayPrefab: {fileID: 5490042078571241520, guid: a688281d5a71bb0468dab626f9dbc959, type: 3}
+  health: 1000
+  attackSpeed: 4
+  movementSpeed: 4
+  damage: 70

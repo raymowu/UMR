@@ -11,6 +11,10 @@ public class Character : ScriptableObject
     [SerializeField] private Sprite icon;
     [SerializeField] private GameObject introPrefab;
     [SerializeField] private NetworkObject gameplayPrefab;
+    [SerializeField] private float health;
+    [SerializeField] private float attackSpeed;
+    [SerializeField] private float movementSpeed;
+    [SerializeField] private float damage;
 
 
     // Get private stuff publicly
@@ -19,6 +23,9 @@ public class Character : ScriptableObject
     public Sprite Icon => icon;
     public GameObject IntroPrefab => introPrefab;
     public NetworkObject GameplayPrefab => gameplayPrefab;
-
+    public float Health => health;
+    public float AttackSpeed => attackSpeed;
+    public float MovementSpeed => movementSpeed;
+    public float Damage => damage;
 
 }

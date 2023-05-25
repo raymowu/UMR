@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-[RequireComponent(typeof(PlayerMovement)), RequireComponent(typeof(Stats))]
+[RequireComponent(typeof(PlayerMovement)), RequireComponent(typeof(PlayerPrefab))]
 public class MeleeCombat : NetworkBehaviour
 {
     private PlayerMovement moveScript;
-    private Stats stats;
+    private PlayerPrefab stats;
     private Animator anim;
 
     [Header("Target")]
@@ -22,7 +22,7 @@ public class MeleeCombat : NetworkBehaviour
     void Start()
     {
         moveScript = GetComponent<PlayerMovement>();
-        stats = GetComponent<Stats>();
+        stats = GetComponent<PlayerPrefab>();
         anim = GetComponent<Animator>();
     }
 
@@ -31,7 +31,7 @@ public class MeleeCombat : NetworkBehaviour
     {
         if (!IsOwner) { return;  }
         // Calculates atk speed and interval between auto attacks
-        attackInterval = stats.attackSpeed / ((500 + stats.attackSpeed) * 0.01f);
+        attackInterval = stats.AttackSpeed / ((500 + stats.AttackSpeed) * 0.01f);
 
         targetEnemy = moveScript.targetEnemy;
 
@@ -71,7 +71,7 @@ public class MeleeCombat : NetworkBehaviour
         if (!IsOwner) { return; }
         if (targetEnemy != null)
         {
-            stats.TakeDamage(targetEnemy, stats.damage);
+            GameManager.Instance.TakeDamage(targetEnemy, stats.Damage);
         }
 
         // Set the next attack time

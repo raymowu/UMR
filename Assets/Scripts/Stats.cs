@@ -15,7 +15,7 @@ public class Stats : MonoBehaviour
         if (target.GetComponent<Stats>().health <= 0)
         {
             // Handle death
-            
+
         }
     }
 }
