@@ -191,10 +191,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.4
+  m_Radius: 0.6
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0.8, z: 0}
+  m_Center: {x: 0, y: 0.79999995, z: -0.1}
 --- !u!95 &4480914682358558329
 Animator:
   serializedVersion: 5
@@ -420,8 +420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4513d6f70008f4c40829561a545d312e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefabs: []
-  characterDatabase: {fileID: 11400000, guid: 114185c5cf980654c859ec66245b708f, type: 2}
+  MaxHealth: 0
   Health: 0
   AttackSpeed: 0
   MovementSpeed: 0

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.AI;
 
 public class GameManager : NetworkBehaviour
 {
@@ -39,6 +40,7 @@ public class GameManager : NetworkBehaviour
                 // Initialize players network list
                 players.Add(new PlayerStats(client.ClientId, HostManager.Instance.ClientData[client.ClientId].characterId,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).Health,
+                    characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).MaxHealth,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).AttackSpeed,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).MovementSpeed,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).Damage));
@@ -50,6 +52,7 @@ public class GameManager : NetworkBehaviour
             for (int i = 0; i < players.Count; i++)
             {
                 playerPrefabs[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
+                playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].MovementSpeed;
             }
             players.OnListChanged += HandlePlayersStatsChanged;
 
@@ -93,6 +96,7 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             playerPrefabs[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
+            playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].MovementSpeed;
         }
     }
     public void TakeDamage(GameObject target, float damage)
@@ -109,6 +113,7 @@ public class GameManager : NetworkBehaviour
             players[i] = new PlayerStats(
                 players[i].ClientId,
                 players[i].CharacterId,
+                players[i].MaxHealth,
                 players[i].Health - damage,
                 players[i].AttackSpeed,
                 players[i].MovementSpeed,
@@ -119,6 +124,51 @@ public class GameManager : NetworkBehaviour
                 // Handle death
                 Debug.Log("died");
             }
+        }
+    }
+
+    public void IncreaseDamage(GameObject target, float damage)
+    {
+        IncreaseDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void IncreaseDamageServerRpc(ulong clientId, float damage)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth,
+                players[i].Health,
+                players[i].AttackSpeed,
+                players[i].MovementSpeed,
+                players[i].Damage + damage
+                );
+        }
+    }
+    public void DecreaseDamage(GameObject target, float damage)
+    {
+        DecreaseDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DecreaseDamageServerRpc(ulong clientId, float damage)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth,
+                players[i].Health,
+                players[i].AttackSpeed,
+                players[i].MovementSpeed,
+                players[i].Damage - damage
+                );
         }
     }
 }

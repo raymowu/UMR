@@ -11,6 +11,7 @@ public class Character : ScriptableObject
     [SerializeField] private Sprite icon;
     [SerializeField] private GameObject introPrefab;
     [SerializeField] private NetworkObject gameplayPrefab;
+    [SerializeField] private float maxHealth;
     [SerializeField] private float health;
     [SerializeField] private float attackSpeed;
     [SerializeField] private float movementSpeed;
@@ -23,6 +24,7 @@ public class Character : ScriptableObject
     public Sprite Icon => icon;
     public GameObject IntroPrefab => introPrefab;
     public NetworkObject GameplayPrefab => gameplayPrefab;
+    public float MaxHealth => maxHealth;
     public float Health => health;
     public float AttackSpeed => attackSpeed;
     public float MovementSpeed => movementSpeed;

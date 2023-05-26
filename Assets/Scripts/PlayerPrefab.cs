@@ -7,6 +7,7 @@ using Unity.Netcode;
 
 public class PlayerPrefab : NetworkBehaviour
 {
+    public float MaxHealth;
     public float Health;
     public float AttackSpeed;
     public float MovementSpeed;
@@ -20,6 +21,7 @@ public class PlayerPrefab : NetworkBehaviour
             //characterIconImage.sprite = character.Icon;
             //characterIconImage.enabled = true;
             //characterNameText.text = character.DisplayName;
+            MaxHealth = player.MaxHealth;
             Health = player.Health;
             AttackSpeed = player.AttackSpeed;
             MovementSpeed = player.MovementSpeed;

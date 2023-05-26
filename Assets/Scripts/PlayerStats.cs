@@ -8,6 +8,7 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
 {
     public ulong ClientId;
     public int CharacterId;
+    public float MaxHealth;
     public float Health;
     public float AttackSpeed;
     public float MovementSpeed;
@@ -15,10 +16,11 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
 
 
     // Constructor
-    public PlayerStats(ulong clientId, int characterId = -1, float health = 0, float attackSpeed = 0, float movementSpeed = 0, float damage = 0)
+    public PlayerStats(ulong clientId, int characterId = -1, float maxHealth = 0, float health = 0, float attackSpeed = 0, float movementSpeed = 0, float damage = 0)
     {
         ClientId = clientId;
         CharacterId = characterId;
+        MaxHealth = maxHealth;
         Health = health;
         AttackSpeed = attackSpeed;
         MovementSpeed = movementSpeed;
@@ -30,6 +32,7 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
     {
         serializer.SerializeValue(ref ClientId);
         serializer.SerializeValue(ref CharacterId);
+        serializer.SerializeValue(ref MaxHealth);
         serializer.SerializeValue(ref Health);
         serializer.SerializeValue(ref AttackSpeed);
         serializer.SerializeValue(ref MovementSpeed);
@@ -41,6 +44,7 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
     {
         return ClientId == other.ClientId &&
             CharacterId == other.CharacterId &&
+            MaxHealth == other.MaxHealth &&
             Health == other.Health &&
             AttackSpeed == other.AttackSpeed &&
             MovementSpeed == other.MovementSpeed &&
