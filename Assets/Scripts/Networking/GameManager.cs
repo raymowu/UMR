@@ -13,7 +13,7 @@ public class GameManager : NetworkBehaviour
     //[SerializeField] private TMP_Text characterNameText;
     [Header("References")]
     // sync player prefabs
-    [SerializeField] private GameObject[] playerPrefabs;
+    [SerializeField] public GameObject[] playerPrefabs;
     [SerializeField] private CharacterDatabase characterDatabase;
 
     public static GameManager Instance { get; private set; }

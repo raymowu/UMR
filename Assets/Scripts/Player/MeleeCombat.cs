@@ -56,7 +56,6 @@ public class MeleeCombat : NetworkBehaviour
         // Wait based on atk speed / interval value
         yield return new WaitForSeconds(attackInterval);
 
-        // Checking if the enemy is still alive
         if (targetEnemy == null) 
         {
             // Stop animation bool and let it go back to being able to atk

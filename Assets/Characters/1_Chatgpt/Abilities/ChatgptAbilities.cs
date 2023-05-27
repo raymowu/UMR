@@ -11,6 +11,8 @@ public class ChatgptAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
     private PlayerMovement playerMovement;
+    private Animator anim;
+    private PlayerPrefab stats;
 
     [Header("Ability 1")]
     public Image abilityImage1;
@@ -68,6 +70,8 @@ public class ChatgptAbilities : NetworkBehaviour
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
+        anim = GetComponent<Animator>();
+        stats = GetComponent<PlayerPrefab>();
 
         // Shows UI
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
@@ -217,6 +221,7 @@ public class ChatgptAbilities : NetworkBehaviour
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
+            anim.SetTrigger("CastCyberball");
         }
     }
 

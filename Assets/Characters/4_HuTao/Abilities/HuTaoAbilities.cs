@@ -10,6 +10,9 @@ using TMPro;
 public class HuTaoAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
+    private PlayerMovement playerMovement;
+    private Animator anim;
+    private PlayerPrefab stats;
 
     [Header("Ability 1")]
     public Image abilityImage1;
@@ -17,18 +20,20 @@ public class HuTaoAbilities : NetworkBehaviour
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
 
-    public float delayBeforeDurationEnds = 9f;
-    public const float ABILITY1ACTIVATIONCOST = 0.3f;
-    public const float ABILITY1ATTACKINCREASE = .063f;
+    public float ability1Duration = 9f;
+    private const float ABILITY1ACTIVATIONCOST = 0.3f;
+    private const float ABILITY1ATTACKINCREASE = .063f;
 
     [Header("Ability 2")]
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
-    public float ability2Cooldown;
 
-    public Canvas ability2Canvas;
-    public Image ability2Indicator;
+    public bool ability2Active = false;
+    private float nextTickTime = 0f;
+    private const float ABILITY2ACTIVATIONCOST = 0.03f;
+    private const float ABILITY2TICKINTERVAL = 0.5f;
+    private const float ABILITY2RANGE = 3.5f;
 
     [Header("Ability 3")]
     public Image abilityImage3;
@@ -49,12 +54,10 @@ public class HuTaoAbilities : NetworkBehaviour
     public Image ability4Indicator;
 
     private bool isAbility1Cooldown = false;
-    private bool isAbility2Cooldown = false;
     private bool isAbility3Cooldown = false;
     private bool isAbility4Cooldown = false;
 
     private float currentAbility1Cooldown;
-    private float currentAbility2Cooldown;
     private float currentAbility3Cooldown;
     private float currentAbility4Cooldown;
 
@@ -65,13 +68,16 @@ public class HuTaoAbilities : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerMovement = GetComponent<PlayerMovement>();
+        anim = GetComponent<Animator>();
+        stats = GetComponent<PlayerPrefab>();
+
         // Shows UI
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(1).gameObject.SetActive(true);
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(2).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(3).gameObject.SetActive(true);
+        //NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(3).gameObject.SetActive(true);
         //NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(4).gameObject.SetActive(true);
-
 
         abilityImage1.fillAmount = 0;
         abilityImage2.fillAmount = 0;
@@ -83,11 +89,9 @@ public class HuTaoAbilities : NetworkBehaviour
         abilityText3.text = "";
         abilityText4.text = "";
 
-        ability2Indicator.enabled = false;
         ability3Indicator.enabled = false;
         ability4Indicator.enabled = false;
 
-        ability2Canvas.enabled = false;
         ability3Canvas.enabled = false;
         ability4Canvas.enabled = false;
     }
@@ -105,28 +109,11 @@ public class HuTaoAbilities : NetworkBehaviour
         Ability4Input();
 
         AbilityCooldown(ref currentAbility1Cooldown, ability1Cooldown, ref isAbility1Cooldown, abilityImage1, abilityText1);
-        AbilityCooldown(ref currentAbility2Cooldown, ability2Cooldown, ref isAbility2Cooldown, abilityImage2, abilityText2);
         AbilityCooldown(ref currentAbility3Cooldown, ability3Cooldown, ref isAbility3Cooldown, abilityImage3, abilityText3);
         AbilityCooldown(ref currentAbility4Cooldown, ability4Cooldown, ref isAbility4Cooldown, abilityImage4, abilityText4);
 
-        Ability2Canvas();
         Ability3Canvas();
         Ability4Canvas();
-    }
-
-    private void Ability2Canvas()
-    {
-        if (ability2Indicator.enabled)
-        {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            }
-            Quaternion ab2Canvas = Quaternion.LookRotation(position - transform.position);
-            ab2Canvas.eulerAngles = new Vector3(0, ab2Canvas.eulerAngles.y, ab2Canvas.eulerAngles.z);
-
-            ability2Canvas.transform.rotation = Quaternion.Lerp(ab2Canvas, ability2Canvas.transform.rotation, 0);
-        }
     }
 
     private void Ability3Canvas()
@@ -163,8 +150,7 @@ public class HuTaoAbilities : NetworkBehaviour
     {
         if (Input.GetKeyDown(ability1Key) && !isAbility1Cooldown)
         {
-            ability2Canvas.enabled = false;
-            ability2Indicator.enabled = false;
+            playerMovement.StopMovement();
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
@@ -184,45 +170,61 @@ public class HuTaoAbilities : NetworkBehaviour
     private void CastAbility1ServerRpc()
     {
         // ability cost: 30% of CURRENT HP
-        GameManager.Instance.TakeDamage(gameObject, GetComponent<PlayerPrefab>().Health * ABILITY1ACTIVATIONCOST);
+        GameManager.Instance.TakeDamage(gameObject, stats.Health * ABILITY1ACTIVATIONCOST);
         // atk increase (% max hp)
-        GameManager.Instance.IncreaseDamage(gameObject, GetComponent<PlayerPrefab>().MaxHealth * ABILITY1ATTACKINCREASE);
+        GameManager.Instance.IncreaseDamage(gameObject, stats.MaxHealth * ABILITY1ATTACKINCREASE);
         StartCoroutine(DestroyGuideToAfterlife());
     }
     IEnumerator DestroyGuideToAfterlife()
     {
-        yield return new WaitForSeconds(delayBeforeDurationEnds);
+        yield return new WaitForSeconds(ability1Duration);
         DestroyGuideToAfterlifeServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void DestroyGuideToAfterlifeServerRpc()
     {
-        GameManager.Instance.DecreaseDamage(gameObject, GetComponent<PlayerPrefab>().MaxHealth * ABILITY1ATTACKINCREASE);
+        GameManager.Instance.DecreaseDamage(gameObject, stats.MaxHealth * ABILITY1ATTACKINCREASE);
 
     }
     private void Ability2Input()
     {
-        if (Input.GetKeyDown(ability2Key) && !isAbility2Cooldown)
+        if (ability2Active && Time.time > nextTickTime)
         {
-            ability2Canvas.enabled = true;
-            ability2Indicator.enabled = true;
+            StartCoroutine(Ability2Interval());
+        }
 
+        if (Input.GetKeyDown(ability2Key))
+        {
+            if (ability2Active) { abilityImage2.fillAmount = 0; }
+            else { abilityImage2.fillAmount = 1;  }
+
+            ability2Active = !ability2Active;
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
-
         }
-            if (ability2Canvas.enabled && Input.GetMouseButtonDown(0))
-            {
-                isAbility2Cooldown = true;
-                currentAbility2Cooldown = ability2Cooldown;
+    }
+    private IEnumerator Ability2Interval()
+    {
+        nextTickTime = Time.time + ABILITY2TICKINTERVAL;
 
-                ability2Canvas.enabled = false;
-                ability2Indicator.enabled = false;
+        // Trigger animation for auto attacking
+        //anim.SetBool("isAttacking", true);
+
+        // Wait based on atk speed / interval value
+        // HANDLE DAMAGING
+        GameManager.Instance.TakeDamage(gameObject, ABILITY2ACTIVATIONCOST * stats.MaxHealth);
+        foreach (GameObject player in GameManager.Instance.playerPrefabs)
+        {
+            if (Vector3.Distance(transform.position, player.transform.position) <= ABILITY2RANGE)
+            {
+                GameManager.Instance.TakeDamage(player, stats.Damage);
             }
+        }
+        yield return new WaitForSeconds(ABILITY2TICKINTERVAL);
     }
 
     private void Ability3Input()
@@ -231,9 +233,6 @@ public class HuTaoAbilities : NetworkBehaviour
         {
             ability3Canvas.enabled = true;
             ability3Indicator.enabled = true;
-
-            ability2Canvas.enabled = false;
-            ability2Indicator.enabled = false;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
@@ -255,9 +254,6 @@ public class HuTaoAbilities : NetworkBehaviour
         {
             ability4Canvas.enabled = true;
             ability4Indicator.enabled = true;
-
-            ability2Canvas.enabled = false;
-            ability2Indicator.enabled = false;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
