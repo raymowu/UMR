@@ -480,7 +480,7 @@ GameObject:
   - component: {fileID: 9016785077396848855}
   - component: {fileID: 8453386038458880991}
   m_Layer: 6
-  m_Name: Ability 3 Indicator Canvas
+  m_Name: Ability 1 Indicator Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -495,7 +495,7 @@ RectTransform:
   m_GameObject: {fileID: 241148182275475566}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 2, y: 2, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8713749398899787840}
@@ -917,7 +917,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8c432949637bc83428a69d5b92049202, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f32b86dabf1e3224a932c84703463976, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3582,6 +3582,7 @@ GameObject:
   - component: {fileID: 6346773480803839026}
   - component: {fileID: 4420306216881514160}
   - component: {fileID: 2584748966930606005}
+  - component: {fileID: -7454699434983964901}
   m_Layer: 6
   m_Name: HuTao
   m_TagString: Player
@@ -3627,7 +3628,7 @@ CapsuleCollider:
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0.79999995, z: -0.1}
+  m_Center: {x: 0, y: 1, z: -0.1}
 --- !u!95 &4840004828728140588
 Animator:
   serializedVersion: 5
@@ -3760,19 +3761,20 @@ MonoBehaviour:
   abilityImage1: {fileID: 6817323178335946817}
   abilityText1: {fileID: 6817323179163122108}
   ability1Key: 113
-  ability1Cooldown: 16
-  ability1Duration: 9
+  ability1Cooldown: 5
+  ability1Canvas: {fileID: 6394533525845233821}
+  ability1Indicator: {fileID: 5291704584620771373}
+  ABILITY1DASHSPEED: 20
+  ABILITY1DASHTIME: 0.15
   abilityImage2: {fileID: 6817323178364950201}
   abilityText2: {fileID: 6817323179120654659}
   ability2Key: 119
-  ability2Cooldown: 9999
   ability2Active: 0
   abilityImage3: {fileID: 6817323179756176226}
   abilityText3: {fileID: 6817323179495858490}
   ability3Key: 101
-  ability3Cooldown: 5
-  ability3Canvas: {fileID: 6394533525845233821}
-  ability3Indicator: {fileID: 5291704584620771373}
+  ability3Cooldown: 16
+  ability3Duration: 9
   abilityImage4: {fileID: 6817323179975772104}
   abilityText4: {fileID: 6817323178787430158}
   ability4Key: 114
@@ -3855,6 +3857,24 @@ MonoBehaviour:
   selectableLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!143 &-7454699434983964901
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5927861743439057879}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &5950011605750894066
 GameObject:
   m_ObjectHideFlags: 0

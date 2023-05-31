@@ -20,9 +20,11 @@ public class HuTaoAbilities : NetworkBehaviour
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
 
-    public float ability1Duration = 9f;
-    private const float ABILITY1ACTIVATIONCOST = 0.3f;
-    private const float ABILITY1ATTACKINCREASE = .063f;
+    public Canvas ability1Canvas;
+    public Image ability1Indicator;
+
+    public float ABILITY1DASHSPEED;
+    public float ABILITY1DASHTIME;
 
     [Header("Ability 2")]
     public Image abilityImage2;
@@ -41,8 +43,9 @@ public class HuTaoAbilities : NetworkBehaviour
     public KeyCode ability3Key = KeyCode.E;
     public float ability3Cooldown;
 
-    public Canvas ability3Canvas;
-    public Image ability3Indicator;
+    public float ability3Duration = 9f;
+    private const float ABILITY3ACTIVATIONCOST = 0.3f;
+    private const float ABILITY3ATTACKINCREASE = .063f;
 
     [Header("Ability 4")]
     public Image abilityImage4;
@@ -89,10 +92,10 @@ public class HuTaoAbilities : NetworkBehaviour
         abilityText3.text = "";
         abilityText4.text = "";
 
-        ability3Indicator.enabled = false;
+        ability1Indicator.enabled = false;
         ability4Indicator.enabled = false;
 
-        ability3Canvas.enabled = false;
+        ability1Canvas.enabled = false;
         ability4Canvas.enabled = false;
     }
 
@@ -112,22 +115,22 @@ public class HuTaoAbilities : NetworkBehaviour
         AbilityCooldown(ref currentAbility3Cooldown, ability3Cooldown, ref isAbility3Cooldown, abilityImage3, abilityText3);
         AbilityCooldown(ref currentAbility4Cooldown, ability4Cooldown, ref isAbility4Cooldown, abilityImage4, abilityText4);
 
-        Ability3Canvas();
+        Ability1Canvas();
         Ability4Canvas();
     }
 
-    private void Ability3Canvas()
+    private void Ability1Canvas()
     {
-        if (ability3Indicator.enabled)
+        if (ability1Indicator.enabled)
         {
             if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
                 position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
             }
-            Quaternion ab3Canvas = Quaternion.LookRotation(position - transform.position);
-            ab3Canvas.eulerAngles = new Vector3(0, ab3Canvas.eulerAngles.y, ab3Canvas.eulerAngles.z);
+            Quaternion ab1Canvas = Quaternion.LookRotation(position - transform.position);
+            ab1Canvas.eulerAngles = new Vector3(0, ab1Canvas.eulerAngles.y, ab1Canvas.eulerAngles.z);
 
-            ability3Canvas.transform.rotation = Quaternion.Lerp(ab3Canvas, ability3Canvas.transform.rotation, 0);
+            ability1Canvas.transform.rotation = Quaternion.Lerp(ab1Canvas, ability1Canvas.transform.rotation, 0);
         }
     }
 
@@ -150,43 +153,37 @@ public class HuTaoAbilities : NetworkBehaviour
     {
         if (Input.GetKeyDown(ability1Key) && !isAbility1Cooldown)
         {
-            playerMovement.StopMovement();
-
-            ability3Canvas.enabled = false;
-            ability3Indicator.enabled = false;
+            ability1Canvas.enabled = true;
+            ability1Indicator.enabled = true;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
 
+        }
+        if (ability1Canvas.enabled && Input.GetKeyUp(ability1Key)) 
+        {
             isAbility1Cooldown = true;
             currentAbility1Cooldown = ability1Cooldown;
 
-            CastAbility1ServerRpc();
+            ability1Canvas.enabled = false;
+            ability1Indicator.enabled = false;
+
+            playerMovement.Rotate(hit.point);
+            StartCoroutine(Dash());
         }
     }
 
-    // summon projectile here
-    [ServerRpc]
-    private void CastAbility1ServerRpc()
+    IEnumerator Dash()
     {
-        // ability cost: 30% of CURRENT HP
-        GameManager.Instance.TakeDamage(gameObject, stats.Health * ABILITY1ACTIVATIONCOST);
-        // atk increase (% max hp)
-        GameManager.Instance.IncreaseDamage(gameObject, stats.MaxHealth * ABILITY1ATTACKINCREASE);
-        StartCoroutine(DestroyGuideToAfterlife());
-    }
-    IEnumerator DestroyGuideToAfterlife()
-    {
-        yield return new WaitForSeconds(ability1Duration);
-        DestroyGuideToAfterlifeServerRpc();
+        float startTime = Time.time;
+        while(Time.time < startTime + ABILITY1DASHTIME)
+        {
+            GetComponent<CharacterController>().Move(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position) * Vector3.forward * ABILITY1DASHSPEED * Time.deltaTime);
+            playerMovement.StopMovement();
+            yield return null;
+        }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void DestroyGuideToAfterlifeServerRpc()
-    {
-        GameManager.Instance.DecreaseDamage(gameObject, stats.MaxHealth * ABILITY1ATTACKINCREASE);
-
-    }
     private void Ability2Input()
     {
         if (ability2Active && Time.time > nextTickTime)
@@ -199,12 +196,12 @@ public class HuTaoAbilities : NetworkBehaviour
             if (ability2Active) { abilityImage2.fillAmount = 0; }
             else { abilityImage2.fillAmount = 1;  }
 
-            ability2Active = !ability2Active;
-            ability3Canvas.enabled = false;
-            ability3Indicator.enabled = false;
+            ability1Canvas.enabled = false;
+            ability1Indicator.enabled = false;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
+            ability2Active = !ability2Active;
         }
     }
     private IEnumerator Ability2Interval()
@@ -231,23 +228,44 @@ public class HuTaoAbilities : NetworkBehaviour
     {
         if (Input.GetKeyDown(ability3Key) && !isAbility3Cooldown)
         {
-            ability3Canvas.enabled = true;
-            ability3Indicator.enabled = true;
+            playerMovement.StopMovement();
+
+            ability1Canvas.enabled = false;
+            ability1Indicator.enabled = false;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
 
-        }
-        if (ability3Canvas.enabled && Input.GetMouseButtonDown(0))
-        {
             isAbility3Cooldown = true;
             currentAbility3Cooldown = ability3Cooldown;
 
-            ability3Canvas.enabled = false;
-            ability3Indicator.enabled = false;
+            CastAbility3ServerRpc();
         }
     }
 
+    // summon projectile here
+    [ServerRpc]
+    private void CastAbility3ServerRpc()
+    {
+        // ability cost: 30% of CURRENT HP
+        GameManager.Instance.TakeDamage(gameObject, stats.Health * ABILITY3ACTIVATIONCOST);
+        // atk increase (% max hp)
+        GameManager.Instance.IncreaseDamage(gameObject, stats.MaxHealth * ABILITY3ATTACKINCREASE);
+        StartCoroutine(DestroyGuideToAfterlife());
+    }
+    IEnumerator DestroyGuideToAfterlife()
+    {
+        yield return new WaitForSeconds(ability3Duration);
+        DestroyGuideToAfterlifeServerRpc();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyGuideToAfterlifeServerRpc()
+    {
+        GameManager.Instance.DecreaseDamage(gameObject, stats.MaxHealth * ABILITY3ATTACKINCREASE);
+
+
+    }
     private void Ability4Input()
     {
         if (Input.GetKeyDown(ability4Key) && !isAbility4Cooldown)
@@ -255,8 +273,8 @@ public class HuTaoAbilities : NetworkBehaviour
             ability4Canvas.enabled = true;
             ability4Indicator.enabled = true;
 
-            ability3Canvas.enabled = false;
-            ability3Indicator.enabled = false;
+            ability1Canvas.enabled = false;
+            ability1Indicator.enabled = false;
 
         }
         if (ability4Canvas.enabled && Input.GetMouseButtonDown(0))
