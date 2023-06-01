@@ -158,7 +158,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6415428752152480109}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &632494264314172145
 SkinnedMeshRenderer:
@@ -1847,7 +1847,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6415428752152480109}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &2193540690604381527
 SkinnedMeshRenderer:
@@ -2505,7 +2505,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6415428752152480109}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &1700986637523646849
 SkinnedMeshRenderer:
@@ -2748,7 +2748,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6415428752152480109}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3986801319751551790
 GameObject:
@@ -3584,7 +3584,7 @@ GameObject:
   - component: {fileID: 2584748966930606005}
   - component: {fileID: -7454699434983964901}
   m_Layer: 6
-  m_Name: HuTao
+  m_Name: Hu Tao
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3605,6 +3605,7 @@ Transform:
   - {fileID: 6817323178444916205}
   - {fileID: 9180125657327477798}
   - {fileID: 7097976259171458640}
+  - {fileID: 7533039279938109732}
   - {fileID: 7881823111659244225}
   - {fileID: 386427614385320803}
   - {fileID: 7446614886584591548}
@@ -3769,6 +3770,7 @@ MonoBehaviour:
   abilityImage2: {fileID: 6817323178364950201}
   abilityText2: {fileID: 6817323179120654659}
   ability2Key: 119
+  ability2Particles: {fileID: 2305729183847069771, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
   ability2Active: 0
   abilityImage3: {fileID: 6817323179756176226}
   abilityText3: {fileID: 6817323179495858490}
@@ -4001,7 +4003,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6415428752152480109}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &5198042839198200788
 SkinnedMeshRenderer:
@@ -4931,7 +4933,7 @@ Transform:
   m_Children:
   - {fileID: 645167670347888601}
   m_Father: {fileID: 6415428752152480109}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7942550023666510544
 GameObject:
@@ -5374,7 +5376,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6415428752152480109}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &130606830386542519
 SkinnedMeshRenderer:
@@ -5856,6 +5858,76 @@ Transform:
   m_Father: {fileID: 8946824409599921265}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &378545582002721784
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 6415428752152480109}
+    m_Modifications:
+    - target: {fileID: 207437685613528730, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 951099334
+      objectReference: {fileID: 0}
+    - target: {fileID: 2305729183847069771, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_Name
+      value: Spirit of the Afterlife Particles
+      objectReference: {fileID: 0}
+    - target: {fileID: 2305729183847069771, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+--- !u!4 &7533039279938109732 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7911248273859826396, guid: 9fe1d7d0735709443b522a589c3107c0, type: 3}
+  m_PrefabInstance: {fileID: 378545582002721784}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4395836099081507444
 PrefabInstance:
   m_ObjectHideFlags: 0

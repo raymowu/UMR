@@ -7,7 +7,6 @@ public class MoveChatgptCyberball : NetworkBehaviour
 {
     [SerializeField] private float shootForce;
     private Rigidbody rb;
-    public GameObject parent;
 
     // Start is called before the first frame update
     void Start()

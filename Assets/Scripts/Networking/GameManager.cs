@@ -91,7 +91,6 @@ public class GameManager : NetworkBehaviour
     }
     private void HandlePlayersStatsChanged(NetworkListEvent<PlayerStats> changeEvent)
     {
-        Debug.Log("changeevent reached");
         // Updates players Display
         for (int i = 0; i < players.Count; i++)
         {

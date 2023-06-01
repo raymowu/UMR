@@ -231,7 +231,6 @@ public class ChatgptAbilities : NetworkBehaviour
     {
         GameObject go = Instantiate(ability1Projectile, shootTransform.position, rot);
         Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
-        go.GetComponent<MoveChatgptCyberball>().parent = gameObject;
         go.GetComponent<NetworkObject>().Spawn();
     }
 

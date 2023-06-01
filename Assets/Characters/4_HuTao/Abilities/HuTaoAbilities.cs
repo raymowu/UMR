@@ -31,9 +31,11 @@ public class HuTaoAbilities : NetworkBehaviour
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
 
+    [SerializeField] private GameObject ability2Particles;
+
     public bool ability2Active = false;
     private float nextTickTime = 0f;
-    private const float ABILITY2ACTIVATIONCOST = 0.03f;
+    private const float ABILITY2ACTIVATIONCOST = 0.02f;
     private const float ABILITY2TICKINTERVAL = 0.5f;
     private const float ABILITY2RANGE = 3.5f;
 
@@ -79,7 +81,7 @@ public class HuTaoAbilities : NetworkBehaviour
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(1).gameObject.SetActive(true);
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(2).gameObject.SetActive(true);
-        //NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(3).gameObject.SetActive(true);
+        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(3).gameObject.SetActive(false);
         //NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(4).gameObject.SetActive(true);
 
         abilityImage1.fillAmount = 0;
@@ -193,8 +195,7 @@ public class HuTaoAbilities : NetworkBehaviour
 
         if (Input.GetKeyDown(ability2Key))
         {
-            if (ability2Active) { abilityImage2.fillAmount = 0; }
-            else { abilityImage2.fillAmount = 1;  }
+            abilityImage2.fillAmount = ability2Active ? 0 : 1;
 
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
@@ -202,6 +203,9 @@ public class HuTaoAbilities : NetworkBehaviour
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
             ability2Active = !ability2Active;
+
+            SummonAbility2ParticlesServerRpc(ability2Active);
+ 
         }
     }
     private IEnumerator Ability2Interval()
@@ -222,6 +226,18 @@ public class HuTaoAbilities : NetworkBehaviour
             }
         }
         yield return new WaitForSeconds(ABILITY2TICKINTERVAL);
+    }
+
+    [ServerRpc]
+    private void SummonAbility2ParticlesServerRpc(bool active)
+    {
+        SummonAbility2ParticlesClientRpc(active);
+    }
+
+    [ClientRpc]
+    private void SummonAbility2ParticlesClientRpc(bool active)
+    {
+        transform.GetChild(3).gameObject.SetActive(active);
     }
 
     private void Ability3Input()
