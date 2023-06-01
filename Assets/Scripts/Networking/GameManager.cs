@@ -126,6 +126,44 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    public void HealDamage(GameObject target, float damage)
+    {
+        HealDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void HealDamageServerRpc(ulong clientId, float damage)
+    {
+        
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            if (players[i].Health + damage >= players[i].MaxHealth)
+            {
+                players[i] = new PlayerStats(
+                    players[i].ClientId,
+                    players[i].CharacterId,
+                    players[i].MaxHealth,
+                    players[i].MaxHealth,
+                    players[i].AttackSpeed,
+                    players[i].MovementSpeed,
+                    players[i].Damage
+                    );
+            }
+            else
+            {
+                players[i] = new PlayerStats(
+                    players[i].ClientId,
+                    players[i].CharacterId,
+                    players[i].MaxHealth,
+                    players[i].Health + damage,
+                    players[i].AttackSpeed,
+                    players[i].MovementSpeed,
+                    players[i].Damage
+                    );
+            }
+        }
+    }
     public void IncreaseDamage(GameObject target, float damage)
     {
         IncreaseDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);

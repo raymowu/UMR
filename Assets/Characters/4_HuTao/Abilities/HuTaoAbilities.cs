@@ -37,7 +37,7 @@ public class HuTaoAbilities : NetworkBehaviour
     private float nextTickTime = 0f;
     private const float ABILITY2ACTIVATIONCOST = 0.02f;
     private const float ABILITY2TICKINTERVAL = 0.5f;
-    private const float ABILITY2RANGE = 3.5f;
+    private const float ABILITY2RANGE = 1.5f;
 
     [Header("Ability 3")]
     public Image abilityImage3;
@@ -54,6 +54,14 @@ public class HuTaoAbilities : NetworkBehaviour
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
+
+    [SerializeField] private GameObject ability4Particles;
+
+    private const float ABILITY4RANGE = 4f;
+    private const float ABILITY4DAMAGE = 4.50f;
+    private const float ABILITY4LOWHPDAMAGE = 5.50f;
+    private const float ABILITY4HPREGEN = 0.09f;
+    private const float ABILITY4LOWHPREGEN = 0.012f;
 
     public Canvas ability4Canvas;
     public Image ability4Indicator;
@@ -293,16 +301,51 @@ public class HuTaoAbilities : NetworkBehaviour
             ability1Indicator.enabled = false;
 
         }
-        if (ability4Canvas.enabled && Input.GetMouseButtonDown(0))
+        if (ability4Canvas.enabled && Input.GetKeyUp(ability4Key))
         {
             isAbility4Cooldown = true;
             currentAbility4Cooldown = ability4Cooldown;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
+
+            playerMovement.StopMovement();
+
+            CastAbility4ServerRpc();
+
+            int numEnemiesHit = 0;
+            foreach (GameObject player in GameManager.Instance.playerPrefabs)
+            {
+                if (Vector3.Distance(transform.position, player.transform.position) <= ABILITY4RANGE)
+                {
+                    numEnemiesHit++;
+                    if (stats.Health / stats.MaxHealth <= 0.5)
+                    {
+                        GameManager.Instance.TakeDamage(player, stats.Damage * ABILITY4LOWHPDAMAGE);
+                    }
+                    else
+                    {
+                        GameManager.Instance.TakeDamage(player, stats.Damage * ABILITY4DAMAGE);
+                    }
+                }
+            }
+            if (stats.Health / stats.MaxHealth <= 0.5)
+            {
+                GameManager.Instance.HealDamage(gameObject, numEnemiesHit * ABILITY4LOWHPREGEN * stats.MaxHealth);
+            }
+            else
+            {
+                GameManager.Instance.HealDamage(gameObject, numEnemiesHit * ABILITY4HPREGEN * stats.MaxHealth);
+            }
         }
     }
 
+    [ServerRpc]
+    private void CastAbility4ServerRpc()
+    {
+        GameObject go = Instantiate(ability4Particles, shootTransform.position, Quaternion.Euler(90, 0, 0));
+        go.GetComponent<NetworkObject>().Spawn();
+    }
     private void AbilityCooldown(ref float currentCooldown, float maxCooldown, ref bool isCooldown, Image skillImage, TMP_Text skillText)
     {
         if (isCooldown)

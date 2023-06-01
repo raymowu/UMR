@@ -3,28 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public class AutoDestroyCyberball : NetworkBehaviour
+public class AutoDestroySpiritSootherParticles : NetworkBehaviour
 {
-    public float delayBeforeDestroy = 0.5f;
+    public float delayBeforeDestroy = 1f;
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(DestroyCyberball());
+        StartCoroutine(DestroySpiritSootherParticles());
     }
 
-    IEnumerator DestroyCyberball()
+    IEnumerator DestroySpiritSootherParticles()
     {
         yield return new WaitForSeconds(delayBeforeDestroy);
-        DestroyCyberballServerRpc();
+        DestroySpiritSootherParticlesServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void DestroyCyberballServerRpc()
+    public void DestroySpiritSootherParticlesServerRpc()
     {
         GetComponent<NetworkObject>().Despawn();
         Destroy(gameObject);
     }
-
-
-
 }
