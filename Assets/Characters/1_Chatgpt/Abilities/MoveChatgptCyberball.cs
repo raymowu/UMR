@@ -7,6 +7,7 @@ public class MoveChatgptCyberball : NetworkBehaviour
 {
     [SerializeField] private float shootForce;
     private Rigidbody rb;
+    private const float CYBERBALLSLOW = 0.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -24,8 +25,17 @@ public class MoveChatgptCyberball : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!IsOwner) { return;  }
+        GameManager.Instance.TakeDamage(other.gameObject, GetComponent<PlayerPrefab>().Damage);
+        GameManager.Instance.Slow(other.gameObject, CYBERBALLSLOW);
+/*        StartCoroutine(Unslow());*/
         DestroyAbility1ServerRpc();
     }
+
+/*    IEnumerator Unslow()
+    {
+        yield return new WaitForSeconds(delayBeforeDestroy);
+        DestroyCyberballServerRpc();
+    }*/
 
     [ServerRpc(RequireOwnership = false)]
     public void DestroyAbility1ServerRpc()

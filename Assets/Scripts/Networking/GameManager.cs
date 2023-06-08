@@ -208,4 +208,27 @@ public class GameManager : NetworkBehaviour
                 );
         }
     }
+
+    public void Slow(GameObject target, float slowAmount)
+    {
+        SlowServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, slowAmount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SlowServerRpc(ulong clientId, float slowAmount)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth,
+                players[i].Health,
+                players[i].AttackSpeed,
+                players[i].MovementSpeed * slowAmount,
+                players[i].Damage
+                );
+        }
+    }
 }

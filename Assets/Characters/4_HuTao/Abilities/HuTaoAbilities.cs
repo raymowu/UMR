@@ -313,6 +313,8 @@ public class HuTaoAbilities : NetworkBehaviour
 
             CastAbility4ServerRpc();
 
+            anim.SetTrigger("CastSpiritSoother");
+
             int numEnemiesHit = 0;
             foreach (GameObject player in GameManager.Instance.playerPrefabs)
             {
