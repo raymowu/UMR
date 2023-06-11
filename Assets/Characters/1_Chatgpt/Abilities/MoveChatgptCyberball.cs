@@ -6,8 +6,8 @@ using Unity.Netcode;
 public class MoveChatgptCyberball : NetworkBehaviour
 {
     [SerializeField] private float shootForce;
+    public ChatgptAbilities parent;
     private Rigidbody rb;
-    private const float CYBERBALLSLOW = 0.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -25,17 +25,12 @@ public class MoveChatgptCyberball : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!IsOwner) { return;  }
-        GameManager.Instance.TakeDamage(other.gameObject, GetComponent<PlayerPrefab>().Damage);
-        GameManager.Instance.Slow(other.gameObject, CYBERBALLSLOW);
-/*        StartCoroutine(Unslow());*/
+        //if (other.gameObject == null) { return; }
+        Debug.Log(other.gameObject);
+        GameManager.Instance.TakeDamage(other.gameObject, parent.GetComponent<PlayerPrefab>().Damage);
+        GameManager.Instance.Slow(other.gameObject, parent.CYBERBALLSLOW, parent.CYBERBALLSLOWDURATION);
         DestroyAbility1ServerRpc();
     }
-
-/*    IEnumerator Unslow()
-    {
-        yield return new WaitForSeconds(delayBeforeDestroy);
-        DestroyCyberballServerRpc();
-    }*/
 
     [ServerRpc(RequireOwnership = false)]
     public void DestroyAbility1ServerRpc()

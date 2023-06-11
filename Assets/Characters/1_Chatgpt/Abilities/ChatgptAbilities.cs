@@ -20,6 +20,10 @@ public class ChatgptAbilities : NetworkBehaviour
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
 
+    public float CYBERBALLDAMAGE = 10;
+    public float CYBERBALLSLOW = 0.5f;
+    public float CYBERBALLSLOWDURATION = 2.5f;
+
     [SerializeField] private GameObject ability1Projectile;
 
     public Canvas ability1Canvas;
@@ -74,12 +78,15 @@ public class ChatgptAbilities : NetworkBehaviour
         stats = GetComponent<PlayerPrefab>();
 
         // Shows UI
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(1).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(2).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(3).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(4).gameObject.SetActive(true);
+        if (IsOwner)
+        {
+            transform.GetChild(0).gameObject.SetActive(true);
+            transform.GetChild(1).gameObject.SetActive(true);
+            transform.GetChild(2).gameObject.SetActive(true);
+            transform.GetChild(3).gameObject.SetActive(true);
+            transform.GetChild(4).gameObject.SetActive(true);
 
+        }
 
         abilityImage1.fillAmount = 0;
         abilityImage2.fillAmount = 0;
@@ -203,7 +210,7 @@ public class ChatgptAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
         }
 
-        if (ability1Indicator.enabled && Input.GetKeyUp(ability1Key))
+        if (ability1Canvas.enabled && Input.GetKeyUp(ability1Key))
         {
             // Raymond note: There was a bug with the raycast hit hitting the player prefab and using that y value, 
             // which sends the projectile into the air cuz the click was on top of a guy. There r prob 2 ways to solve this,
@@ -231,6 +238,7 @@ public class ChatgptAbilities : NetworkBehaviour
     {
         GameObject go = Instantiate(ability1Projectile, shootTransform.position, rot);
         Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
+        go.GetComponent<MoveChatgptCyberball>().parent = this;
         go.GetComponent<NetworkObject>().Spawn();
     }
 

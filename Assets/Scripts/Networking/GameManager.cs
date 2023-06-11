@@ -77,6 +77,7 @@ public class GameManager : NetworkBehaviour
         // Remove that client from players list
         // RAYMOND NOTE: theres a deallocation error when calling .Count so I just put an if
         // statement that checks if the game has started
+        // todo: also remove from playerprefabs
 
         if (!HostManager.Instance.gameHasStarted)
         {
@@ -134,7 +135,6 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void HealDamageServerRpc(ulong clientId, float damage)
     {
-        
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
@@ -209,9 +209,10 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void Slow(GameObject target, float slowAmount)
+    public void Slow(GameObject target, float slowAmount, float slowDuration)
     {
         SlowServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, slowAmount);
+        StartCoroutine(Unslow(target, slowAmount, slowDuration));
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -227,6 +228,33 @@ public class GameManager : NetworkBehaviour
                 players[i].Health,
                 players[i].AttackSpeed,
                 players[i].MovementSpeed * slowAmount,
+                players[i].Damage
+                );
+        }
+    }
+    IEnumerator Unslow(GameObject target, float slowAmount, float slowDuration)
+    {
+        yield return new WaitForSeconds(slowDuration);
+        Speed(target, 1 / slowAmount);
+    }
+    public void Speed(GameObject target, float speedAmount)
+    {
+        SpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SpeedServerRpc(ulong clientId, float speedAmount)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth,
+                players[i].Health,
+                players[i].AttackSpeed,
+                players[i].MovementSpeed * speedAmount,
                 players[i].Damage
                 );
         }

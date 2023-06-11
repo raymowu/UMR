@@ -60,8 +60,8 @@ public class HuTaoAbilities : NetworkBehaviour
     private const float ABILITY4RANGE = 4f;
     private const float ABILITY4DAMAGE = 4.50f;
     private const float ABILITY4LOWHPDAMAGE = 5.50f;
-    private const float ABILITY4HPREGEN = 0.09f;
-    private const float ABILITY4LOWHPREGEN = 0.012f;
+    private const float ABILITY4HPREGEN = 0.1f;
+    private const float ABILITY4LOWHPREGEN = 0.2f;
 
     public Canvas ability4Canvas;
     public Image ability4Indicator;
@@ -86,11 +86,13 @@ public class HuTaoAbilities : NetworkBehaviour
         stats = GetComponent<PlayerPrefab>();
 
         // Shows UI
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(1).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(2).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(3).gameObject.SetActive(false);
-        //NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(4).gameObject.SetActive(true);
+        if (IsOwner)
+        {
+            transform.GetChild(0).gameObject.SetActive(true);
+            transform.GetChild(1).gameObject.SetActive(true);
+            transform.GetChild(2).gameObject.SetActive(true);
+            transform.GetChild(3).gameObject.SetActive(false);
+        }
 
         abilityImage1.fillAmount = 0;
         abilityImage2.fillAmount = 0;
@@ -320,8 +322,9 @@ public class HuTaoAbilities : NetworkBehaviour
             {
                 if (Vector3.Distance(transform.position, player.transform.position) <= ABILITY4RANGE)
                 {
+                    if (player == gameObject) { continue;  }
                     numEnemiesHit++;
-                    if (stats.Health / stats.MaxHealth <= 0.5)
+                    if (stats.Health / stats.MaxHealth <= 0.5f)
                     {
                         GameManager.Instance.TakeDamage(player, stats.Damage * ABILITY4LOWHPDAMAGE);
                     }

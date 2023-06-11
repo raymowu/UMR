@@ -96,7 +96,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9181678076344273277}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -114,7 +114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootForce: 10
-  parent: {fileID: 0}
+  CYBERBALLSLOWDURATION: 0.75
 --- !u!114 &4176049677479102682
 MonoBehaviour:
   m_ObjectHideFlags: 0

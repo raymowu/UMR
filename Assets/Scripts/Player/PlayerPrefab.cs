@@ -7,11 +7,26 @@ using Unity.Netcode;
 
 public class PlayerPrefab : NetworkBehaviour
 {
+    [SerializeField] private HealthUI healthUI;
+    [Header("Base Stats")]
     public float MaxHealth;
     public float Health;
     public float AttackSpeed;
     public float MovementSpeed;
     public float Damage;
+
+    void Start()
+    {
+        healthUI = GetComponent<HealthUI>();
+    }
+    //TESTING ONLY
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            GameManager.Instance.TakeDamage(gameObject, Damage);
+        }
+    }
 
     public void UpdatePlayerStats(PlayerStats player)
     {
@@ -26,10 +41,13 @@ public class PlayerPrefab : NetworkBehaviour
             AttackSpeed = player.AttackSpeed;
             MovementSpeed = player.MovementSpeed;
             Damage = player.Damage;
+
+            healthUI.Update2DSlider(player.MaxHealth, Health);
+            healthUI.Update3DSlider(player.MaxHealth, Health);
         }
         //else
         //{
-            //characterIconImage.enabled = false;
+        //characterIconImage.enabled = false;
         //}
     }
 }
