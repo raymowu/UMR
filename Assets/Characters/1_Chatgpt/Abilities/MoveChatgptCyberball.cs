@@ -25,8 +25,6 @@ public class MoveChatgptCyberball : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!IsOwner) { return;  }
-        //if (other.gameObject == null) { return; }
-        Debug.Log(other.gameObject);
         GameManager.Instance.TakeDamage(other.gameObject, parent.GetComponent<PlayerPrefab>().Damage);
         GameManager.Instance.Slow(other.gameObject, parent.CYBERBALLSLOW, parent.CYBERBALLSLOWDURATION);
         DestroyAbility1ServerRpc();

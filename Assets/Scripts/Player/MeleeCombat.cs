@@ -18,7 +18,6 @@ public class MeleeCombat : NetworkBehaviour
     private float attackInterval;
     private float nextAttackTime = 0;
 
-    // Start is called before the first frame update
     void Start()
     {
         moveScript = GetComponent<PlayerMovement>();
@@ -26,7 +25,6 @@ public class MeleeCombat : NetworkBehaviour
         anim = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!IsOwner) { return;  }
