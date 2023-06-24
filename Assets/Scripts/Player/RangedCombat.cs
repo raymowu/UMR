@@ -82,7 +82,8 @@ public class RangedCombat : NetworkBehaviour
 
     public void SummonAutoProjectile(GameObject parent, GameObject target)
     {
-        SummonAutoProjectileServerRpc(parent.GetComponent<NetworkObject>().OwnerClientId, target.GetComponent<NetworkObject>().OwnerClientId);
+        SummonAutoProjectileServerRpc(parent.GetComponent<NetworkObject>().OwnerClientId, 
+            target.GetComponent<NetworkObject>().OwnerClientId);
     }
 
     [ServerRpc]
@@ -97,11 +98,13 @@ public class RangedCombat : NetworkBehaviour
         {
             if (players[i].ClientId != parentId) { continue; }
             parent = playerPrefabs[i];
+            break;
         }
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != targetId) { continue; }
             target = playerPrefabs[i];
+            break;
         }
 
         GameObject go = Instantiate(projectilePrefab, shootTransform.position, Quaternion.identity);
