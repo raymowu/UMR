@@ -228,7 +228,7 @@ public class ChatgptAbilities : NetworkBehaviour
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
-            anim.SetTrigger("CastCyberball");
+            GetComponent<OwnerNetworkAnimator>().SetTrigger("CastCyberball");
         }
     }
 
