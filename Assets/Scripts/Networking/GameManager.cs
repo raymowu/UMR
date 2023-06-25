@@ -209,34 +209,19 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void Slow(GameObject target, float slowAmount, float slowDuration)
+    // Take in decimal of slow %, i.e. 50% slow = 0.5 or a speed %, 50% speed = 1.5
+    public void Speed(GameObject target, float speedAmount, float speedDuration)
     {
-        SlowServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, slowAmount);
-        StartCoroutine(Unslow(target, slowAmount, slowDuration));
+        SpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount);
+        StartCoroutine(Unspeed(target, speedAmount, speedDuration));
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void SlowServerRpc(ulong clientId, float slowAmount)
+    IEnumerator Unspeed(GameObject target, float speedAmount, float speedDuration)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed * slowAmount,
-                players[i].Damage
-                );
-        }
+        yield return new WaitForSeconds(speedDuration);
+        Speed(target, 1 / speedAmount);
     }
-    IEnumerator Unslow(GameObject target, float slowAmount, float slowDuration)
-    {
-        yield return new WaitForSeconds(slowDuration);
-        Speed(target, 1 / slowAmount);
-    }
+
     public void Speed(GameObject target, float speedAmount)
     {
         SpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount);
@@ -258,5 +243,10 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage
                 );
         }
+    }
+
+    public void Root(GameObject target, float rootDuration)
+    {
+        Speed(target, .01f, rootDuration);
     }
 }

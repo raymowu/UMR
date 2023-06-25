@@ -15,44 +15,37 @@ public class ChatgptAbilities : NetworkBehaviour
     private PlayerPrefab stats;
 
     [Header("Ability 1")]
+    [SerializeField] private GameObject ability1Projectile;
+    public float CYBERBALL_DAMAGE = 10;
     public Image abilityImage1;
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
-
-    public float CYBERBALLDAMAGE = 10;
-    public float CYBERBALLSLOW = 0.5f;
-    public float CYBERBALLSLOWDURATION = 2.5f;
-
-    [SerializeField] private GameObject ability1Projectile;
-
     public Canvas ability1Canvas;
     public Image ability1Indicator;
 
     [Header("Ability 2")]
+    [SerializeField] private GameObject ability2Projectile;
+    public float AT_CAPACITY_ROOT_DURATION = 2f;
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
     public float ability2Cooldown;
-
     public Canvas ability2Canvas;
     public Image ability2Indicator;
 
     [Header("Ability 3")]
+    public float NATURAL_LANGUAGE_PROCESSING_SPEED_DURATION = 2f;
     public Image abilityImage3;
     public TMP_Text abilityText3;
     public KeyCode ability3Key = KeyCode.E;
     public float ability3Cooldown;
-
-    public Canvas ability3Canvas;
-    public Image ability3Indicator;
 
     [Header("Ability 4")]
     public Image abilityImage4;
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
-
     public Canvas ability4Canvas;
     public Image ability4Indicator;
 
@@ -84,7 +77,6 @@ public class ChatgptAbilities : NetworkBehaviour
             transform.GetChild(1).gameObject.SetActive(true);
             transform.GetChild(2).gameObject.SetActive(true);
             transform.GetChild(3).gameObject.SetActive(true);
-            transform.GetChild(4).gameObject.SetActive(true);
 
         }
 
@@ -100,12 +92,10 @@ public class ChatgptAbilities : NetworkBehaviour
 
         ability1Indicator.enabled = false;
         ability2Indicator.enabled = false;
-        ability3Indicator.enabled = false;
         ability4Indicator.enabled = false;
 
         ability1Canvas.enabled = false;
         ability2Canvas.enabled = false;
-        ability3Canvas.enabled = false;
         ability4Canvas.enabled = false;
     }
 
@@ -128,7 +118,6 @@ public class ChatgptAbilities : NetworkBehaviour
 
         Ability1Canvas();
         Ability2Canvas();
-        Ability3Canvas();
         Ability4Canvas();
     }
 
@@ -162,21 +151,6 @@ public class ChatgptAbilities : NetworkBehaviour
         }
     }
 
-    private void Ability3Canvas()
-    {
-        if (ability3Indicator.enabled)
-        {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            }
-            Quaternion ab3Canvas = Quaternion.LookRotation(position - transform.position);
-            ab3Canvas.eulerAngles = new Vector3(0, ab3Canvas.eulerAngles.y, ab3Canvas.eulerAngles.z);
-
-            ability3Canvas.transform.rotation = Quaternion.Lerp(ab3Canvas, ability3Canvas.transform.rotation, 0);
-        }
-    }
-
     private void Ability4Canvas()
     {
         if (ability4Indicator.enabled)
@@ -203,9 +177,6 @@ public class ChatgptAbilities : NetworkBehaviour
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
 
-            ability3Canvas.enabled = false;
-            ability3Indicator.enabled = false;
-
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
         }
@@ -228,11 +199,12 @@ public class ChatgptAbilities : NetworkBehaviour
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
+            // SetTrigger does not work on network animator unless actual component is called for some reason
+            // anim.SetTrigger("CastCyberball")
             GetComponent<OwnerNetworkAnimator>().SetTrigger("CastCyberball");
         }
     }
 
-    // summon projectile here
     [ServerRpc]
     private void CastAbility1ServerRpc(Quaternion rot)
     {
@@ -252,15 +224,34 @@ public class ChatgptAbilities : NetworkBehaviour
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
-            ability3Canvas.enabled = false;
-            ability3Indicator.enabled = false;
-
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
 
         }
-        if (ability2Canvas.enabled && Input.GetMouseButtonDown(0))
+        if (ability2Canvas.enabled && Input.GetKeyUp(ability2Key))
         {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                playerMovement.StopMovement();
+                playerMovement.Rotate(hit.point);
+                CastAbility2ServerRpc(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
+                foreach (GameObject player in GameManager.Instance.playerPrefabs)
+                {
+                    if (player == gameObject) { continue; }
+                    Vector3 directionToTarget = transform.position - player.transform.position;
+                    float angle = Vector3.Angle(transform.forward, directionToTarget);
+                    float distance = directionToTarget.magnitude;
+                    Debug.Log(Mathf.Abs(angle));
+                    Debug.Log(directionToTarget);
+                    Debug.Log(distance);
+
+                    if (Mathf.Abs(angle) > 130 && distance < 4.5)
+                    {
+                        Debug.Log("target is in front of me");
+                        GameManager.Instance.Root(player, AT_CAPACITY_ROOT_DURATION);
+                    }
+                }
+            }
             isAbility2Cooldown = true;
             currentAbility2Cooldown = ability2Cooldown;
 
@@ -269,13 +260,17 @@ public class ChatgptAbilities : NetworkBehaviour
         }
     }
 
+    [ServerRpc]
+    private void CastAbility2ServerRpc(Quaternion rot)
+    {
+        GameObject go = Instantiate(ability2Projectile, shootTransform.position, rot);
+        go.GetComponent<NetworkObject>().Spawn();
+    }
+
     private void Ability3Input()
     {
         if (Input.GetKeyDown(ability3Key) && !isAbility3Cooldown)
         {
-            ability3Canvas.enabled = true;
-            ability3Indicator.enabled = true;
-
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
@@ -285,15 +280,17 @@ public class ChatgptAbilities : NetworkBehaviour
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
 
-        }
-        if (ability3Canvas.enabled && Input.GetMouseButtonDown(0))
-        {
             isAbility3Cooldown = true;
             currentAbility3Cooldown = ability3Cooldown;
 
-            ability3Canvas.enabled = false;
-            ability3Indicator.enabled = false;
+            CastAbility3ServerRpc();
         }
+    }
+
+    [ServerRpc]
+    private void CastAbility3ServerRpc()
+    {
+        GameManager.Instance.Speed(gameObject, Mathf.Log(stats.Damage, 10), NATURAL_LANGUAGE_PROCESSING_SPEED_DURATION);
     }
 
     private void Ability4Input()
@@ -308,10 +305,6 @@ public class ChatgptAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
-
-            ability3Canvas.enabled = false;
-            ability3Indicator.enabled = false;
-
         }
 
         if (ability4Canvas.enabled && Input.GetMouseButtonDown(0))

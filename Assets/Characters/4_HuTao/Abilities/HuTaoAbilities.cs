@@ -269,7 +269,6 @@ public class HuTaoAbilities : NetworkBehaviour
         }
     }
 
-    // summon projectile here
     [ServerRpc]
     private void CastAbility3ServerRpc()
     {
@@ -289,9 +288,8 @@ public class HuTaoAbilities : NetworkBehaviour
     public void DestroyGuideToAfterlifeServerRpc()
     {
         GameManager.Instance.DecreaseDamage(gameObject, stats.MaxHealth * ABILITY3ATTACKINCREASE);
-
-
     }
+
     private void Ability4Input()
     {
         if (Input.GetKeyDown(ability4Key) && !isAbility4Cooldown)

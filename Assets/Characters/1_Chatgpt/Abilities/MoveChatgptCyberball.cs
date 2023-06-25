@@ -26,12 +26,12 @@ public class MoveChatgptCyberball : NetworkBehaviour
     {
         if (!IsOwner) { return;  }
         GameManager.Instance.TakeDamage(other.gameObject, parent.GetComponent<PlayerPrefab>().Damage);
-        GameManager.Instance.Slow(other.gameObject, parent.CYBERBALLSLOW, parent.CYBERBALLSLOWDURATION);
-        DestroyAbility1ServerRpc();
+        GameManager.Instance.IncreaseDamage(parent.gameObject, 1);
+        DestroyCyberballHitServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void DestroyAbility1ServerRpc()
+    public void DestroyCyberballHitServerRpc()
     {
         GetComponent<NetworkObject>().Despawn();
         Destroy(gameObject);

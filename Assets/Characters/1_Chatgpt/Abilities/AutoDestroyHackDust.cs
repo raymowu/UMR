@@ -3,28 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public class AutoDestroyCyberball : NetworkBehaviour
+public class AutoDestroyHackDust : NetworkBehaviour
 {
     public float delayBeforeDestroy = 0.5f;
 
     void Start()
     {
-        StartCoroutine(DestroyCyberball());
+        StartCoroutine(DestroyHackDust());
     }
 
-    IEnumerator DestroyCyberball()
+    IEnumerator DestroyHackDust()
     {
         yield return new WaitForSeconds(delayBeforeDestroy);
-        DestroyCyberballMissServerRpc();
+        DestroyHackDustServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void DestroyCyberballMissServerRpc()
+    public void DestroyHackDustServerRpc()
     {
-        GameManager.Instance.DecreaseDamage(GetComponent<MoveChatgptCyberball>().parent.gameObject, 1);
         GetComponent<NetworkObject>().Despawn();
         Destroy(gameObject);
     }
-
-
 }

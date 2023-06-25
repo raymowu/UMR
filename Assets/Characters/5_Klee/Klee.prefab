@@ -4148,19 +4148,19 @@ GameObject:
   m_Component:
   - component: {fileID: 5450732220088595858}
   - component: {fileID: 8084064598018709623}
+  - component: {fileID: 3602775609909005481}
   - component: {fileID: -3452603430743243275}
+  - component: {fileID: 173747534525044330}
   - component: {fileID: -2012948698464818085}
   - component: {fileID: 3171894612908557886}
-  - component: {fileID: 3602775609909005481}
   - component: {fileID: 6642676009240022367}
   - component: {fileID: 7705895708921185712}
   - component: {fileID: 2313521425618620195}
-  - component: {fileID: 7449413929615840935}
   - component: {fileID: -5525166541350269327}
   - component: {fileID: 6594128218842223090}
   - component: {fileID: 8285667518670919410}
-  - component: {fileID: 173747534525044330}
   - component: {fileID: 3141767284951849549}
+  - component: {fileID: 7449413929615840935}
   m_Layer: 6
   m_Name: Klee
   m_TagString: Player
@@ -4205,7 +4205,29 @@ CapsuleCollider:
   m_Radius: 0.3
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!195 &3602775609909005481
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4679016535666749224}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.3
+  m_Speed: 3.5
+  m_Acceleration: 100
+  avoidancePriority: 50
+  m_AngularSpeed: 1200
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!95 &-3452603430743243275
 Animator:
   serializedVersion: 5
@@ -4227,6 +4249,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &173747534525044330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4679016535666749224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4513d6f70008f4c40829561a545d312e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthUI: {fileID: 7449413929615840935}
+  MaxHealth: 0
+  Health: 0
+  AttackSpeed: 0
+  MovementSpeed: 0
+  Damage: 0
 --- !u!114 &-2012948698464818085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4260,28 +4300,6 @@ MonoBehaviour:
   anim: {fileID: -3452603430743243275}
   targetEnemy: {fileID: 0}
   stoppingDistance: 5
---- !u!195 &3602775609909005481
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4679016535666749224}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.3
-  m_Speed: 3.5
-  m_Acceleration: 100
-  avoidancePriority: 50
-  m_AngularSpeed: 1200
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!114 &6642676009240022367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4363,20 +4381,6 @@ MonoBehaviour:
   ability4Cooldown: 60
   ability4Canvas: {fileID: 6963185587682613901}
   ability4Indicator: {fileID: 5994148116150650691}
---- !u!114 &7449413929615840935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4679016535666749224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17cfa7349e2cd1146b30419ffd7c087d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthSlider3D: {fileID: 3515996270711824061}
-  healthSlider2D: {fileID: 2703140465411852008}
 --- !u!114 &-5525166541350269327
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4422,24 +4426,6 @@ MonoBehaviour:
   selectableLayer:
     serializedVersion: 2
     m_Bits: 64
---- !u!114 &173747534525044330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4679016535666749224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4513d6f70008f4c40829561a545d312e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthUI: {fileID: 7449413929615840935}
-  MaxHealth: 0
-  Health: 0
-  AttackSpeed: 0
-  MovementSpeed: 0
-  Damage: 0
 --- !u!114 &3141767284951849549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4456,6 +4442,20 @@ MonoBehaviour:
   performRangedAttack: 1
   projectilePrefab: {fileID: 1903262673038850558, guid: fa7708b052accd3418b54c6c0610f760, type: 3}
   shootTransform: {fileID: 2796468905741615266}
+--- !u!114 &7449413929615840935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4679016535666749224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17cfa7349e2cd1146b30419ffd7c087d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthSlider3D: {fileID: 3515996270711824061}
+  healthSlider2D: {fileID: 2703140465411852008}
 --- !u!1 &4743723456776980951
 GameObject:
   m_ObjectHideFlags: 0
