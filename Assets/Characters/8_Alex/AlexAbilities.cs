@@ -7,12 +7,10 @@ using UnityEngine.UI;
 using Unity.Netcode;
 using TMPro;
 
-public class HuTaoAbilities : NetworkBehaviour
+public class AlexAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
     private PlayerMovement playerMovement;
-    private Animator anim;
-    private PlayerPrefab stats;
 
     [Header("Ability 1")]
     public Image abilityImage1;
@@ -23,19 +21,14 @@ public class HuTaoAbilities : NetworkBehaviour
     public Canvas ability1Canvas;
     public Image ability1Indicator;
 
-    public float ABILITY1DASHSPEED;
-    public float ABILITY1DASHTIME;
-
     [Header("Ability 2")]
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
+    public float ability2Cooldown;
 
-    public bool ability2Active = false;
-    private float nextTickTime = 0f;
-    private const float ABILITY2ACTIVATIONCOST = 0.02f;
-    private const float ABILITY2TICKINTERVAL = 0.5f;
-    private const float ABILITY2RANGE = 1.5f;
+    public Canvas ability2Canvas;
+    public Image ability2Indicator;
 
     [Header("Ability 3")]
     public Image abilityImage3;
@@ -43,9 +36,8 @@ public class HuTaoAbilities : NetworkBehaviour
     public KeyCode ability3Key = KeyCode.E;
     public float ability3Cooldown;
 
-    public float ability3Duration = 9f;
-    private const float ABILITY3ACTIVATIONCOST = 0.3f;
-    private const float ABILITY3ATTACKINCREASE = .063f;
+    public Canvas ability3Canvas;
+    public Image ability3Indicator;
 
     [Header("Ability 4")]
     public Image abilityImage4;
@@ -53,22 +45,16 @@ public class HuTaoAbilities : NetworkBehaviour
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
 
-    [SerializeField] private GameObject ability4Particles;
-
-    private const float ABILITY4RANGE = 4f;
-    private const float ABILITY4DAMAGE = 4.50f;
-    private const float ABILITY4LOWHPDAMAGE = 5.50f;
-    private const float ABILITY4HPREGEN = 0.1f;
-    private const float ABILITY4LOWHPREGEN = 0.2f;
-
     public Canvas ability4Canvas;
     public Image ability4Indicator;
 
     private bool isAbility1Cooldown = false;
+    private bool isAbility2Cooldown = false;
     private bool isAbility3Cooldown = false;
     private bool isAbility4Cooldown = false;
 
     private float currentAbility1Cooldown;
+    private float currentAbility2Cooldown;
     private float currentAbility3Cooldown;
     private float currentAbility4Cooldown;
 
@@ -80,16 +66,15 @@ public class HuTaoAbilities : NetworkBehaviour
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
-        anim = GetComponent<Animator>();
-        stats = GetComponent<PlayerPrefab>();
 
         // Shows UI
         if (IsOwner)
         {
-            transform.GetChild(0).gameObject.SetActive(true);
-            transform.GetChild(1).gameObject.SetActive(true);
-            transform.GetChild(2).gameObject.SetActive(true);
-
+            NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
+            NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(1).gameObject.SetActive(true);
+            NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(2).gameObject.SetActive(true);
+            NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(3).gameObject.SetActive(true);
+            NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(4).gameObject.SetActive(true);
         }
 
         abilityImage1.fillAmount = 0;
@@ -103,9 +88,13 @@ public class HuTaoAbilities : NetworkBehaviour
         abilityText4.text = "";
 
         ability1Indicator.enabled = false;
+        ability2Indicator.enabled = false;
+        ability3Indicator.enabled = false;
         ability4Indicator.enabled = false;
 
         ability1Canvas.enabled = false;
+        ability2Canvas.enabled = false;
+        ability3Canvas.enabled = false;
         ability4Canvas.enabled = false;
     }
 
@@ -122,10 +111,13 @@ public class HuTaoAbilities : NetworkBehaviour
         Ability4Input();
 
         AbilityCooldown(ref currentAbility1Cooldown, ability1Cooldown, ref isAbility1Cooldown, abilityImage1, abilityText1);
+        AbilityCooldown(ref currentAbility2Cooldown, ability2Cooldown, ref isAbility2Cooldown, abilityImage2, abilityText2);
         AbilityCooldown(ref currentAbility3Cooldown, ability3Cooldown, ref isAbility3Cooldown, abilityImage3, abilityText3);
         AbilityCooldown(ref currentAbility4Cooldown, ability4Cooldown, ref isAbility4Cooldown, abilityImage4, abilityText4);
 
         Ability1Canvas();
+        Ability2Canvas();
+        Ability3Canvas();
         Ability4Canvas();
     }
 
@@ -133,7 +125,7 @@ public class HuTaoAbilities : NetworkBehaviour
     {
         if (ability1Indicator.enabled)
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
             {
                 position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
             }
@@ -141,6 +133,36 @@ public class HuTaoAbilities : NetworkBehaviour
             ab1Canvas.eulerAngles = new Vector3(0, ab1Canvas.eulerAngles.y, ab1Canvas.eulerAngles.z);
 
             ability1Canvas.transform.rotation = Quaternion.Lerp(ab1Canvas, ability1Canvas.transform.rotation, 0);
+        }
+    }
+
+    private void Ability2Canvas()
+    {
+        if (ability2Indicator.enabled)
+        {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            }
+            Quaternion ab2Canvas = Quaternion.LookRotation(position - transform.position);
+            ab2Canvas.eulerAngles = new Vector3(0, ab2Canvas.eulerAngles.y, ab2Canvas.eulerAngles.z);
+
+            ability2Canvas.transform.rotation = Quaternion.Lerp(ab2Canvas, ability2Canvas.transform.rotation, 0);
+        }
+    }
+
+    private void Ability3Canvas()
+    {
+        if (ability3Indicator.enabled)
+        {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            }
+            Quaternion ab3Canvas = Quaternion.LookRotation(position - transform.position);
+            ab3Canvas.eulerAngles = new Vector3(0, ab3Canvas.eulerAngles.y, ab3Canvas.eulerAngles.z);
+
+            ability3Canvas.transform.rotation = Quaternion.Lerp(ab3Canvas, ability3Canvas.transform.rotation, 0);
         }
     }
 
@@ -166,122 +188,78 @@ public class HuTaoAbilities : NetworkBehaviour
             ability1Canvas.enabled = true;
             ability1Indicator.enabled = true;
 
+            ability2Canvas.enabled = false;
+            ability2Indicator.enabled = false;
+
+            ability3Canvas.enabled = false;
+            ability3Indicator.enabled = false;
+
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
-
         }
-        if (ability1Canvas.enabled && Input.GetKeyUp(ability1Key)) 
+
+        if (ability1Indicator.enabled && Input.GetKeyUp(ability1Key))
         {
             isAbility1Cooldown = true;
             currentAbility1Cooldown = ability1Cooldown;
 
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
-
-            playerMovement.Rotate(hit.point);
-            StartCoroutine(Dash());
-        }
-    }
-
-    IEnumerator Dash()
-    {
-        float startTime = Time.time;
-        while(Time.time < startTime + ABILITY1DASHTIME)
-        {
-            GetComponent<CharacterController>().Move(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position) * Vector3.forward * ABILITY1DASHSPEED * Time.deltaTime);
-            playerMovement.StopMovement();
-            yield return null;
         }
     }
 
     private void Ability2Input()
     {
-        if (ability2Active && Time.time > nextTickTime)
+        if (Input.GetKeyDown(ability2Key) && !isAbility2Cooldown)
         {
-            StartCoroutine(Ability2Interval());
-        }
-
-        if (Input.GetKeyDown(ability2Key))
-        {
-            abilityImage2.fillAmount = ability2Active ? 0 : 1;
+            ability2Canvas.enabled = true;
+            ability2Indicator.enabled = true;
 
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
+            ability3Canvas.enabled = false;
+            ability3Indicator.enabled = false;
+
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
-            ability2Active = !ability2Active;
 
-            SummonAbility2ParticlesServerRpc(ability2Active);
- 
         }
-    }
-    private IEnumerator Ability2Interval()
-    {
-        nextTickTime = Time.time + ABILITY2TICKINTERVAL;
-
-        // HANDLE DAMAGING
-        GameManager.Instance.TakeDamage(gameObject, ABILITY2ACTIVATIONCOST * stats.MaxHealth);
-        foreach (GameObject player in GameManager.Instance.playerPrefabs)
+        if (ability2Canvas.enabled && Input.GetKeyUp(ability2Key))
         {
-            if (Vector3.Distance(transform.position, player.transform.position) <= ABILITY2RANGE)
-            {
-                GameManager.Instance.TakeDamage(player, stats.Damage);
-            }
+            isAbility2Cooldown = true;
+            currentAbility2Cooldown = ability2Cooldown;
+
+            ability2Canvas.enabled = false;
+            ability2Indicator.enabled = false;
         }
-        yield return new WaitForSeconds(ABILITY2TICKINTERVAL);
-    }
-
-    [ServerRpc]
-    private void SummonAbility2ParticlesServerRpc(bool active)
-    {
-        SummonAbility2ParticlesClientRpc(active);
-    }
-
-    [ClientRpc]
-    private void SummonAbility2ParticlesClientRpc(bool active)
-    {
-        transform.GetChild(3).gameObject.SetActive(active);
     }
 
     private void Ability3Input()
     {
         if (Input.GetKeyDown(ability3Key) && !isAbility3Cooldown)
         {
-            playerMovement.StopMovement();
+            ability3Canvas.enabled = true;
+            ability3Indicator.enabled = true;
 
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
+            ability2Canvas.enabled = false;
+            ability2Indicator.enabled = false;
+
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
 
+        }
+        if (ability3Canvas.enabled && Input.GetKeyUp(ability3Key))
+        {
             isAbility3Cooldown = true;
             currentAbility3Cooldown = ability3Cooldown;
 
-            CastAbility3ServerRpc();
+            ability3Canvas.enabled = false;
+            ability3Indicator.enabled = false;
         }
-    }
-
-    [ServerRpc]
-    private void CastAbility3ServerRpc()
-    {
-        // ability cost: 30% of CURRENT HP
-        GameManager.Instance.TakeDamage(gameObject, stats.Health * ABILITY3ACTIVATIONCOST);
-        // atk increase (% max hp)
-        GameManager.Instance.IncreaseDamage(gameObject, stats.MaxHealth * ABILITY3ATTACKINCREASE);
-        StartCoroutine(DestroyGuideToAfterlife());
-    }
-    IEnumerator DestroyGuideToAfterlife()
-    {
-        yield return new WaitForSeconds(ability3Duration);
-        DestroyGuideToAfterlifeServerRpc();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void DestroyGuideToAfterlifeServerRpc()
-    {
-        GameManager.Instance.DecreaseDamage(gameObject, stats.MaxHealth * ABILITY3ATTACKINCREASE);
     }
 
     private void Ability4Input()
@@ -294,7 +272,14 @@ public class HuTaoAbilities : NetworkBehaviour
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
+            ability2Canvas.enabled = false;
+            ability2Indicator.enabled = false;
+
+            ability3Canvas.enabled = false;
+            ability3Indicator.enabled = false;
+
         }
+
         if (ability4Canvas.enabled && Input.GetKeyUp(ability4Key))
         {
             isAbility4Cooldown = true;
@@ -302,47 +287,9 @@ public class HuTaoAbilities : NetworkBehaviour
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
-
-            playerMovement.StopMovement();
-
-            CastAbility4ServerRpc();
-
-            anim.SetTrigger("CastSpiritSoother");
-
-            int numEnemiesHit = 0;
-            foreach (GameObject player in GameManager.Instance.playerPrefabs)
-            {
-                if (Vector3.Distance(transform.position, player.transform.position) <= ABILITY4RANGE)
-                {
-                    if (player == gameObject) { continue;  }
-                    numEnemiesHit++;
-                    if (stats.Health / stats.MaxHealth <= 0.5f)
-                    {
-                        GameManager.Instance.TakeDamage(player, stats.Damage * ABILITY4LOWHPDAMAGE);
-                    }
-                    else
-                    {
-                        GameManager.Instance.TakeDamage(player, stats.Damage * ABILITY4DAMAGE);
-                    }
-                }
-            }
-            if (stats.Health / stats.MaxHealth <= 0.5)
-            {
-                GameManager.Instance.HealDamage(gameObject, numEnemiesHit * ABILITY4LOWHPREGEN * stats.MaxHealth);
-            }
-            else
-            {
-                GameManager.Instance.HealDamage(gameObject, numEnemiesHit * ABILITY4HPREGEN * stats.MaxHealth);
-            }
         }
     }
 
-    [ServerRpc]
-    private void CastAbility4ServerRpc()
-    {
-        GameObject go = Instantiate(ability4Particles, shootTransform.position, Quaternion.Euler(90, 0, 0));
-        go.GetComponent<NetworkObject>().Spawn();
-    }
     private void AbilityCooldown(ref float currentCooldown, float maxCooldown, ref bool isCooldown, Image skillImage, TMP_Text skillText)
     {
         if (isCooldown)
