@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -4825428781233336214}
   - component: {fileID: -1147368139607227733}
   - component: {fileID: 688815295661561852}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: KleeAutoProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}

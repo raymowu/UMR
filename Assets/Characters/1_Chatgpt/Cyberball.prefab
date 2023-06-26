@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4176049677479102682}
   - component: {fileID: 515951771254479232}
   - component: {fileID: -7962656308293471743}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cyberball
   m_TagString: Untagged
   m_Icon: {fileID: 0}

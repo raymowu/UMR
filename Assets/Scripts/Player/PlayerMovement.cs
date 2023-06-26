@@ -47,13 +47,13 @@ public class PlayerMovement : NetworkBehaviour
             //TODO: change Mathf.Infinity to whatever fixed var it should be
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity))
             {
-                if (hit.collider.tag == "Ground")
+                // TODO: OR compare tag "Enemy" for monsters
+                if (hit.collider.CompareTag("Player")) { //&& hit.collider.gameObject != gameObject
+                    MoveTowardsEnemy(hit.collider.gameObject);
+                }
+                else
                 {
                     MoveToPosition(hit.point);
-                }
-                // TODO: OR compare tag "Enemy" for monsters
-                else if (hit.collider.CompareTag("Player")) { //&& hit.collider.gameObject != gameObject
-                    MoveTowardsEnemy(hit.collider.gameObject);
                 }
             }
         }

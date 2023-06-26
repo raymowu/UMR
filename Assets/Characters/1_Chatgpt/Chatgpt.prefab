@@ -352,10 +352,11 @@ MonoBehaviour:
   abilityText3: {fileID: 8845234376935718843}
   ability3Key: 101
   ability3Cooldown: 7
+  ability4Projectile: {fileID: 1539730877320686712, guid: d1afc66266d3f2148be8cedfa68b14b3, type: 3}
   abilityImage4: {fileID: 8845234377430309193}
   abilityText4: {fileID: 8845234376227275151}
   ability4Key: 114
-  ability4Cooldown: 60
+  ability4Cooldown: 4
   ability4Canvas: {fileID: 4840799964697296485}
   ability4Indicator: {fileID: 7934036956675626032}
 --- !u!114 &3708689401363335848

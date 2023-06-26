@@ -42,6 +42,7 @@ public class ChatgptAbilities : NetworkBehaviour
     public float ability3Cooldown;
 
     [Header("Ability 4")]
+    [SerializeField] private GameObject ability4Projectile;
     public Image abilityImage4;
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
@@ -305,16 +306,31 @@ public class ChatgptAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
-        }
 
-        if (ability4Canvas.enabled && Input.GetMouseButtonDown(0))
-        {
+            for (int i = 0; i < (int)stats.Damage / 20; i++)
+            {
+                CastAbility4ServerRpc();
+            }
+
             isAbility4Cooldown = true;
             currentAbility4Cooldown = ability4Cooldown;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
+
+            GetComponent<OwnerNetworkAnimator>().SetTrigger("CastCyberball");
         }
+    }
+
+    [ServerRpc]
+    private void CastAbility4ServerRpc()
+    {
+
+        GameObject go = Instantiate(ability4Projectile, new Vector3(shootTransform.position.x + UnityEngine.Random.Range(-5f, 5f), 
+            shootTransform.position.y, shootTransform.position.z + UnityEngine.Random.Range(-5f, 5f)), UnityEngine.Random.rotation);
+        Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
+        go.GetComponent<MoveNeuralNetworkNode>().parent = this;
+        go.GetComponent<NetworkObject>().Spawn();
     }
 
     private void AbilityCooldown(ref float currentCooldown, float maxCooldown, ref bool isCooldown, Image skillImage, TMP_Text skillText)
