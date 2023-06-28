@@ -28,6 +28,8 @@ public class MeleeCombat : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) { return;  }
+        if (stats.IsDisarmed) { return; }
+
         // Calculates atk speed and interval between auto attacks
         attackInterval = stats.AttackSpeed / ((500 + stats.AttackSpeed) * 0.01f);
 
@@ -66,6 +68,8 @@ public class MeleeCombat : NetworkBehaviour
     private void MeleeAttack()
     {
         if (!IsOwner) { return; }
+        if (stats.IsDisarmed) { return; }
+
         if (targetEnemy != null)
         {
             GameManager.Instance.DealDamage(targetEnemy, stats.Damage);

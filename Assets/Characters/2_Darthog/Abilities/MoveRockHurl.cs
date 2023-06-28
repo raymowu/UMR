@@ -27,6 +27,7 @@ public class MoveRockHurl : NetworkBehaviour
         if (!IsOwner) { return;  }
         Debug.Log("hello");
         GameManager.Instance.Silence(other.gameObject, parent.ROCK_HURL_STUN_DURATION);
+        GameManager.Instance.Disarm(other.gameObject, parent.ROCK_HURL_STUN_DURATION);
         DestroyAbility1ServerRpc();
     }
 
