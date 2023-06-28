@@ -15,46 +15,44 @@ public class KleeAbilities : NetworkBehaviour
     private PlayerPrefab stats;
 
     [Header("Ability 1")]
+    [SerializeField] private GameObject ability1Projectile;
+    public float CYBERBALLDAMAGE = 10;
+    public float CYBERBALLSLOW = 0.5f;
+    public float CYBERBALLSLOWDURATION = 2.5f;
     public Image abilityImage1;
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
-
-    public float CYBERBALLDAMAGE = 10;
-    public float CYBERBALLSLOW = 0.5f;
-    public float CYBERBALLSLOWDURATION = 2.5f;
-
-    [SerializeField] private GameObject ability1Projectile;
-
     public Canvas ability1Canvas;
     public Image ability1Indicator;
+    public GameObject ability1DisableOverlay;
 
     [Header("Ability 2")]
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
     public float ability2Cooldown;
-
     public Canvas ability2Canvas;
     public Image ability2Indicator;
+    public GameObject ability2DisableOverlay;
 
     [Header("Ability 3")]
     public Image abilityImage3;
     public TMP_Text abilityText3;
     public KeyCode ability3Key = KeyCode.E;
     public float ability3Cooldown;
-
     public Canvas ability3Canvas;
     public Image ability3Indicator;
+    public GameObject ability3DisableOverlay;
 
     [Header("Ability 4")]
     public Image abilityImage4;
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
-
     public Canvas ability4Canvas;
     public Image ability4Indicator;
+    public GameObject ability4DisableOverlay;
 
     private bool isAbility1Cooldown = false;
     private bool isAbility2Cooldown = false;
@@ -113,6 +111,19 @@ public class KleeAbilities : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) { return; }
+        if (stats.IsSilenced)
+        {
+            ability1DisableOverlay.SetActive(true);
+            ability2DisableOverlay.SetActive(true);
+            ability3DisableOverlay.SetActive(true);
+            ability4DisableOverlay.SetActive(true);
+            return;
+        }
+        ability1DisableOverlay.SetActive(false);
+        ability2DisableOverlay.SetActive(false);
+        ability3DisableOverlay.SetActive(false);
+        ability4DisableOverlay.SetActive(false);
+
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         // TODO: Cast ability functionality

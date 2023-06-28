@@ -7,7 +7,7 @@ public class MoveRockHurl : NetworkBehaviour
 {
     [SerializeField] private float shootForce;
     private Rigidbody rb;
-    public GameObject parent;
+    public DarthogAbilities parent;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +25,8 @@ public class MoveRockHurl : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!IsOwner) { return;  }
+        Debug.Log("hello");
+        GameManager.Instance.Silence(other.gameObject, parent.ROCK_HURL_STUN_DURATION);
         DestroyAbility1ServerRpc();
     }
 

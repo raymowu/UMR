@@ -68,7 +68,7 @@ public class MeleeCombat : NetworkBehaviour
         if (!IsOwner) { return; }
         if (targetEnemy != null)
         {
-            GameManager.Instance.TakeDamage(targetEnemy, stats.Damage);
+            GameManager.Instance.DealDamage(targetEnemy, stats.Damage);
         }
 
         // Set the next attack time

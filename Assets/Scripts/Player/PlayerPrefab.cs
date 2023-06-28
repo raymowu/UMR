@@ -14,6 +14,8 @@ public class PlayerPrefab : NetworkBehaviour
     public float AttackSpeed;
     public float MovementSpeed;
     public float Damage;
+    public bool IsSilenced;
+    public bool IsDisarmed;
 
     void Start()
     {
@@ -24,7 +26,7 @@ public class PlayerPrefab : NetworkBehaviour
     {
         if (Input.GetKeyDown(KeyCode.V))
         {
-            GameManager.Instance.TakeDamage(gameObject, Damage);
+            GameManager.Instance.DealDamage(gameObject, Damage);
         }
     }
 
@@ -41,6 +43,8 @@ public class PlayerPrefab : NetworkBehaviour
             AttackSpeed = player.AttackSpeed;
             MovementSpeed = player.MovementSpeed;
             Damage = player.Damage;
+            IsSilenced = player.IsSilenced;
+            IsDisarmed = player.IsDisarmed;
 
             healthUI.Update2DSlider(player.MaxHealth, Health);
             healthUI.Update3DSlider(player.MaxHealth, Health);

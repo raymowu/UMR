@@ -15,54 +15,51 @@ public class HuTaoAbilities : NetworkBehaviour
     private PlayerPrefab stats;
 
     [Header("Ability 1")]
+    public float ABILITY1DASHSPEED;
+    public float ABILITY1DASHTIME;
     public Image abilityImage1;
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
-
     public Canvas ability1Canvas;
     public Image ability1Indicator;
-
-    public float ABILITY1DASHSPEED;
-    public float ABILITY1DASHTIME;
+    public GameObject ability1DisableOverlay;
 
     [Header("Ability 2")]
+    public float ABILITY2ACTIVATIONCOST = 0.02f;
+    public float ABILITY2TICKINTERVAL = 0.5f;
+    public float ABILITY2RANGE = 1.5f;
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
-
     public bool ability2Active = false;
     private float nextTickTime = 0f;
-    private const float ABILITY2ACTIVATIONCOST = 0.02f;
-    private const float ABILITY2TICKINTERVAL = 0.5f;
-    private const float ABILITY2RANGE = 1.5f;
+    public GameObject ability2DisableOverlay;
 
     [Header("Ability 3")]
+    public float ABILITY3ACTIVATIONCOST = 0.3f;
+    public float ABILITY3ATTACKINCREASE = .063f;
     public Image abilityImage3;
     public TMP_Text abilityText3;
     public KeyCode ability3Key = KeyCode.E;
     public float ability3Cooldown;
-
     public float ability3Duration = 9f;
-    private const float ABILITY3ACTIVATIONCOST = 0.3f;
-    private const float ABILITY3ATTACKINCREASE = .063f;
+    public GameObject ability3DisableOverlay;
 
     [Header("Ability 4")]
+    [SerializeField] private GameObject ability4Particles;
+    public float ABILITY4RANGE = 4f;
+    public float ABILITY4DAMAGE = 4.50f;
+    public float ABILITY4LOWHPDAMAGE = 5.50f;
+    public float ABILITY4HPREGEN = 0.1f;
+    public float ABILITY4LOWHPREGEN = 0.2f;
     public Image abilityImage4;
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
-
-    [SerializeField] private GameObject ability4Particles;
-
-    private const float ABILITY4RANGE = 4f;
-    private const float ABILITY4DAMAGE = 4.50f;
-    private const float ABILITY4LOWHPDAMAGE = 5.50f;
-    private const float ABILITY4HPREGEN = 0.1f;
-    private const float ABILITY4LOWHPREGEN = 0.2f;
-
     public Canvas ability4Canvas;
     public Image ability4Indicator;
+    public GameObject ability4DisableOverlay;
 
     private bool isAbility1Cooldown = false;
     private bool isAbility3Cooldown = false;
@@ -89,7 +86,6 @@ public class HuTaoAbilities : NetworkBehaviour
             transform.GetChild(0).gameObject.SetActive(true);
             transform.GetChild(1).gameObject.SetActive(true);
             transform.GetChild(2).gameObject.SetActive(true);
-
         }
 
         abilityImage1.fillAmount = 0;
@@ -113,9 +109,21 @@ public class HuTaoAbilities : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) { return; }
+        if (stats.IsSilenced)
+        {
+            ability1DisableOverlay.SetActive(true);
+            ability2DisableOverlay.SetActive(true);
+            ability3DisableOverlay.SetActive(true);
+            ability4DisableOverlay.SetActive(true);
+            return;
+        }
+        ability1DisableOverlay.SetActive(false);
+        ability2DisableOverlay.SetActive(false);
+        ability3DisableOverlay.SetActive(false);
+        ability4DisableOverlay.SetActive(false);
+
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        // TODO: Cast ability functionality
         Ability1Input();
         Ability2Input();
         Ability3Input();
@@ -221,12 +229,12 @@ public class HuTaoAbilities : NetworkBehaviour
         nextTickTime = Time.time + ABILITY2TICKINTERVAL;
 
         // HANDLE DAMAGING
-        GameManager.Instance.TakeDamage(gameObject, ABILITY2ACTIVATIONCOST * stats.MaxHealth);
+        GameManager.Instance.DealDamage(gameObject, ABILITY2ACTIVATIONCOST * stats.MaxHealth);
         foreach (GameObject player in GameManager.Instance.playerPrefabs)
         {
             if (Vector3.Distance(transform.position, player.transform.position) <= ABILITY2RANGE)
             {
-                GameManager.Instance.TakeDamage(player, stats.Damage);
+                GameManager.Instance.DealDamage(player, stats.Damage);
             }
         }
         yield return new WaitForSeconds(ABILITY2TICKINTERVAL);
@@ -267,7 +275,7 @@ public class HuTaoAbilities : NetworkBehaviour
     private void CastAbility3ServerRpc()
     {
         // ability cost: 30% of CURRENT HP
-        GameManager.Instance.TakeDamage(gameObject, stats.Health * ABILITY3ACTIVATIONCOST);
+        GameManager.Instance.DealDamage(gameObject, stats.Health * ABILITY3ACTIVATIONCOST);
         // atk increase (% max hp)
         GameManager.Instance.IncreaseDamage(gameObject, stats.MaxHealth * ABILITY3ATTACKINCREASE);
         StartCoroutine(DestroyGuideToAfterlife());
@@ -318,11 +326,11 @@ public class HuTaoAbilities : NetworkBehaviour
                     numEnemiesHit++;
                     if (stats.Health / stats.MaxHealth <= 0.5f)
                     {
-                        GameManager.Instance.TakeDamage(player, stats.Damage * ABILITY4LOWHPDAMAGE);
+                        GameManager.Instance.DealDamage(player, stats.Damage * ABILITY4LOWHPDAMAGE);
                     }
                     else
                     {
-                        GameManager.Instance.TakeDamage(player, stats.Damage * ABILITY4DAMAGE);
+                        GameManager.Instance.DealDamage(player, stats.Damage * ABILITY4DAMAGE);
                     }
                 }
             }

@@ -11,44 +11,44 @@ public class FBIAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
     private PlayerMovement playerMovement;
+    private PlayerPrefab stats;
 
     [Header("Ability 1")]
+    [SerializeField] private GameObject ability1Projectile;
     public Image abilityImage1;
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
-
-    [SerializeField] private GameObject ability1Projectile;
-
     public Canvas ability1Canvas;
     public Image ability1Indicator;
+    public GameObject ability1DisableOverlay;
 
     [Header("Ability 2")]
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
     public float ability2Cooldown;
-
     public Canvas ability2Canvas;
     public Image ability2Indicator;
+    public GameObject ability2DisableOverlay;
 
     [Header("Ability 3")]
     public Image abilityImage3;
     public TMP_Text abilityText3;
     public KeyCode ability3Key = KeyCode.E;
     public float ability3Cooldown;
-
     public Canvas ability3Canvas;
     public Image ability3Indicator;
+    public GameObject ability3DisableOverlay;
 
     [Header("Ability 4")]
     public Image abilityImage4;
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
-
     public Canvas ability4Canvas;
     public Image ability4Indicator;
+    public GameObject ability4DisableOverlay;
 
     private bool isAbility1Cooldown = false;
     private bool isAbility2Cooldown = false;
@@ -68,6 +68,7 @@ public class FBIAbilities : NetworkBehaviour
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
+        stats = GetComponent<PlayerPrefab>();
 
         // Shows UI
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
@@ -75,7 +76,6 @@ public class FBIAbilities : NetworkBehaviour
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(2).gameObject.SetActive(true);
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(3).gameObject.SetActive(true);
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(4).gameObject.SetActive(true);
-
 
         abilityImage1.fillAmount = 0;
         abilityImage2.fillAmount = 0;
@@ -102,6 +102,19 @@ public class FBIAbilities : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) { return; }
+        if (stats.IsSilenced)
+        {
+            ability1DisableOverlay.SetActive(true);
+            ability2DisableOverlay.SetActive(true);
+            ability3DisableOverlay.SetActive(true);
+            ability4DisableOverlay.SetActive(true);
+            return;
+        }
+        ability1DisableOverlay.SetActive(false);
+        ability2DisableOverlay.SetActive(false);
+        ability3DisableOverlay.SetActive(false);
+        ability4DisableOverlay.SetActive(false);
+
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         // TODO: Cast ability functionality

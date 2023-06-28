@@ -13,10 +13,13 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
     public float AttackSpeed;
     public float MovementSpeed;
     public float Damage;
+    public bool IsSilenced;
+    public bool IsDisarmed;
 
 
     // Constructor
-    public PlayerStats(ulong clientId, int characterId = -1, float maxHealth = 0, float health = 0, float attackSpeed = 0, float movementSpeed = 0, float damage = 0)
+    public PlayerStats(ulong clientId, int characterId = -1, float maxHealth = 0, float health = 0, float attackSpeed = 0, 
+        float movementSpeed = 0, float damage = 0, bool isSilenced = false, bool isDisarmed = false)
     {
         ClientId = clientId;
         CharacterId = characterId;
@@ -25,6 +28,8 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
         AttackSpeed = attackSpeed;
         MovementSpeed = movementSpeed;
         Damage = damage;
+        IsSilenced = isSilenced;
+        IsDisarmed = isDisarmed;
     }
 
     // Serialize the network variables
@@ -37,6 +42,8 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
         serializer.SerializeValue(ref AttackSpeed);
         serializer.SerializeValue(ref MovementSpeed);
         serializer.SerializeValue(ref Damage);
+        serializer.SerializeValue(ref IsSilenced);
+        serializer.SerializeValue(ref IsDisarmed);
     }
 
     // Checks if values have changed and need to sync
@@ -48,6 +55,8 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
             Health == other.Health &&
             AttackSpeed == other.AttackSpeed &&
             MovementSpeed == other.MovementSpeed &&
-            Damage == other.Damage;
+            Damage == other.Damage &&
+            IsSilenced == other.IsSilenced &&
+            IsDisarmed == other.IsDisarmed;
     }
 }

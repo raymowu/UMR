@@ -11,6 +11,7 @@ public class DarthogAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
     private PlayerMovement playerMovement;
+    private PlayerPrefab stats;
 
     [Header("Ability 1")]
     public Image abilityImage1;
@@ -22,6 +23,7 @@ public class DarthogAbilities : NetworkBehaviour
 
     public Canvas ability1Canvas;
     public Image ability1Indicator;
+    public GameObject ability1DisableOverlay;
 
     [Header("Ability 2")]
     public Image abilityImage2;
@@ -31,8 +33,10 @@ public class DarthogAbilities : NetworkBehaviour
 
     public Canvas ability2Canvas;
     public Image ability2Indicator;
+    public GameObject ability2DisableOverlay;
 
     [Header("Ability 3")]
+    public float ROCK_HURL_STUN_DURATION = 1.5f;
     public Image abilityImage3;
     public TMP_Text abilityText3;
     public KeyCode ability3Key = KeyCode.E;
@@ -42,6 +46,7 @@ public class DarthogAbilities : NetworkBehaviour
 
     public Canvas ability3Canvas;
     public Image ability3Indicator;
+    public GameObject ability3DisableOverlay;
 
     [Header("Ability 4")]
     public Image abilityImage4;
@@ -51,6 +56,7 @@ public class DarthogAbilities : NetworkBehaviour
 
     public Canvas ability4Canvas;
     public Image ability4Indicator;
+    public GameObject ability4DisableOverlay;
 
     private bool isAbility1Cooldown = false;
     private bool isAbility2Cooldown = false;
@@ -70,6 +76,8 @@ public class DarthogAbilities : NetworkBehaviour
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
+        stats = GetComponent<PlayerPrefab>();
+
         // Shows UI
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
         NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(1).gameObject.SetActive(true);
@@ -103,7 +111,21 @@ public class DarthogAbilities : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) { return; }
+        if (stats.IsSilenced)
+        {
+            ability1DisableOverlay.SetActive(true);
+            ability2DisableOverlay.SetActive(true);
+            ability3DisableOverlay.SetActive(true);
+            ability4DisableOverlay.SetActive(true);
+            return;
+        }
+        ability1DisableOverlay.SetActive(false);
+        ability2DisableOverlay.SetActive(false);
+        ability3DisableOverlay.SetActive(false);
+        ability4DisableOverlay.SetActive(false);
+
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
 
         // TODO: Cast ability functionality
         Ability1Input();
@@ -291,7 +313,7 @@ public class DarthogAbilities : NetworkBehaviour
     {
         GameObject go = Instantiate(ability3Projectile, shootTransform.position, rot);
         Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
-        go.GetComponent<MoveRockHurl>().parent = gameObject;
+        go.GetComponent<MoveRockHurl>().parent = this;
         go.GetComponent<NetworkObject>().Spawn();
     }
 

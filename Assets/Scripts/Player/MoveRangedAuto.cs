@@ -29,7 +29,7 @@ public class MoveRangedAuto : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!IsOwner) { return; }
-        GameManager.Instance.TakeDamage(other.gameObject, parent.GetComponent<PlayerPrefab>().Damage);
+        GameManager.Instance.DealDamage(other.gameObject, parent.GetComponent<PlayerPrefab>().Damage);
         DestroyRangedAutoServerRpc();
     }
 
