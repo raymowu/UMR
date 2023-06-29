@@ -2204,12 +2204,14 @@ MonoBehaviour:
   ability1Cooldown: 3
   ability1Canvas: {fileID: 826796102000151727}
   ability1Indicator: {fileID: 3948424264820149018}
+  ABILITY2TICKINTERVAL: 0.5
+  ABILITY2HEALINGDURATION: 3
   abilityImage2: {fileID: 6964475377279232367}
   abilityText2: {fileID: 6964475377903404162}
   ability2Key: 119
   ability2Cooldown: 4
-  ability2Canvas: {fileID: 7641976410377207585}
-  ability2Indicator: {fileID: 2187687250961476177}
+  ability2Active: 0
+  nextTickTime: 0
   abilityImage3: {fileID: 6964475377998434685}
   abilityText3: {fileID: 6964475376698210498}
   ability3Key: 101

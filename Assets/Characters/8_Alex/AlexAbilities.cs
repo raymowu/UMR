@@ -22,13 +22,14 @@ public class AlexAbilities : NetworkBehaviour
     public Image ability1Indicator;
 
     [Header("Ability 2")]
+    public float ABILITY2TICKINTERVAL = 0.5f;
+    public float ABILITY2HEALINGDURATION = 3f; 
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
     public float ability2Cooldown;
-
-    public Canvas ability2Canvas;
-    public Image ability2Indicator;
+    public bool ability2Active = false;
+    public float nextTickTime = 0f; 
 
     [Header("Ability 3")]
     public Image abilityImage3;
@@ -88,12 +89,12 @@ public class AlexAbilities : NetworkBehaviour
         abilityText4.text = "";
 
         ability1Indicator.enabled = false;
-        ability2Indicator.enabled = false;
+        
         ability3Indicator.enabled = false;
         ability4Indicator.enabled = false;
 
         ability1Canvas.enabled = false;
-        ability2Canvas.enabled = false;
+        
         ability3Canvas.enabled = false;
         ability4Canvas.enabled = false;
     }
@@ -116,7 +117,7 @@ public class AlexAbilities : NetworkBehaviour
         AbilityCooldown(ref currentAbility4Cooldown, ability4Cooldown, ref isAbility4Cooldown, abilityImage4, abilityText4);
 
         Ability1Canvas();
-        Ability2Canvas();
+        
         Ability3Canvas();
         Ability4Canvas();
     }
@@ -136,20 +137,7 @@ public class AlexAbilities : NetworkBehaviour
         }
     }
 
-    private void Ability2Canvas()
-    {
-        if (ability2Indicator.enabled)
-        {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            }
-            Quaternion ab2Canvas = Quaternion.LookRotation(position - transform.position);
-            ab2Canvas.eulerAngles = new Vector3(0, ab2Canvas.eulerAngles.y, ab2Canvas.eulerAngles.z);
 
-            ability2Canvas.transform.rotation = Quaternion.Lerp(ab2Canvas, ability2Canvas.transform.rotation, 0);
-        }
-    }
 
     private void Ability3Canvas()
     {
@@ -188,9 +176,6 @@ public class AlexAbilities : NetworkBehaviour
             ability1Canvas.enabled = true;
             ability1Indicator.enabled = true;
 
-            ability2Canvas.enabled = false;
-            ability2Indicator.enabled = false;
-
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
 
@@ -210,10 +195,18 @@ public class AlexAbilities : NetworkBehaviour
 
     private void Ability2Input()
     {
+
+        if (ability2Active == true && Time.time > nextTickTime) {
+                // this updates every tick
+                StartCoroutine(Ability2Interval()); 
+            }
+
         if (Input.GetKeyDown(ability2Key) && !isAbility2Cooldown)
         {
-            ability2Canvas.enabled = true;
-            ability2Indicator.enabled = true;
+            ability2Active = true; 
+            // this updates every 3 sec (when ability is done)
+            StartCoroutine(Ability2ActiveInterval());         
+            playerMovement.StopMovement();
 
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
@@ -224,16 +217,29 @@ public class AlexAbilities : NetworkBehaviour
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
 
-        }
-        if (ability2Canvas.enabled && Input.GetKeyUp(ability2Key))
-        {
             isAbility2Cooldown = true;
             currentAbility2Cooldown = ability2Cooldown;
 
-            ability2Canvas.enabled = false;
-            ability2Indicator.enabled = false;
         }
+ 
     }
+
+    private IEnumerator Ability2Interval()
+    {
+        nextTickTime = Time.time + ABILITY2TICKINTERVAL;
+        if (ability2Active == true) {
+        // HANDLE HEALING      
+        GameManager.Instance.HealDamage(gameObject,50f);
+        GameManager.Instance.Root(gameObject,3f); // fix later to stun       
+        }
+        yield return new WaitForSeconds(ABILITY2TICKINTERVAL);
+    }
+
+    private IEnumerator Ability2ActiveInterval() {
+        yield return new WaitForSeconds(ABILITY2HEALINGDURATION);
+        ability2Active = false;
+    }
+
 
     private void Ability3Input()
     {
@@ -244,9 +250,6 @@ public class AlexAbilities : NetworkBehaviour
 
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
-
-            ability2Canvas.enabled = false;
-            ability2Indicator.enabled = false;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
@@ -270,10 +273,7 @@ public class AlexAbilities : NetworkBehaviour
             ability4Indicator.enabled = true;
 
             ability1Canvas.enabled = false;
-            ability1Indicator.enabled = false;
-
-            ability2Canvas.enabled = false;
-            ability2Indicator.enabled = false;
+            ability1Indicator.enabled = false; 
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
