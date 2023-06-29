@@ -205,8 +205,9 @@ public class AlexAbilities : NetworkBehaviour
         {
             ability2Active = true; 
             // this updates every 3 sec (when ability is done)
-            StartCoroutine(Ability2ActiveInterval());         
+            StartCoroutine(Ability2ActiveInterval());
             playerMovement.StopMovement();
+            GameManager.Instance.Root(gameObject, 3f); // fix later to stun  
 
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
@@ -227,11 +228,8 @@ public class AlexAbilities : NetworkBehaviour
     private IEnumerator Ability2Interval()
     {
         nextTickTime = Time.time + ABILITY2TICKINTERVAL;
-        if (ability2Active == true) {
         // HANDLE HEALING      
-        GameManager.Instance.HealDamage(gameObject,50f);
-        GameManager.Instance.Root(gameObject,3f); // fix later to stun       
-        }
+        GameManager.Instance.HealDamage(gameObject,50f);     
         yield return new WaitForSeconds(ABILITY2TICKINTERVAL);
     }
 
