@@ -15,8 +15,8 @@ public class HuTaoAbilities : NetworkBehaviour
     private PlayerPrefab stats;
 
     [Header("Ability 1")]
-    public float ABILITY1DASHSPEED;
-    public float ABILITY1DASHTIME;
+    public float ABILITY1DASHSPEED = 20f;
+    public float ABILITY1DASHTIME = 0.15f;
     public Image abilityImage1;
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;

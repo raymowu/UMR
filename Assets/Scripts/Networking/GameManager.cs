@@ -365,4 +365,57 @@ public class GameManager : NetworkBehaviour
                 );
         }
     }
+    public void Stun(GameObject target, float stunDuration)
+    {
+        DisarmServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+        StartCoroutine(Undisarm(target, stunDuration));
+        SilenceServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+        StartCoroutine(Unsilence(target, stunDuration));
+        Root(target, stunDuration);
+    }
+
+    public void Knockup(GameObject target, float knockupDuration)
+    {
+        Stun(target, knockupDuration);
+        KnockupServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, knockupDuration);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void KnockupServerRpc(ulong clientId, float knockupDuration)
+    {
+        KnockupClientRpc(clientId, knockupDuration);
+    }
+
+    [ClientRpc]
+    private void KnockupClientRpc(ulong clientId, float knockupDuration)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            StartCoroutine(UpForce(playerPrefabs[i], knockupDuration));
+            break;
+        }
+    }
+
+    IEnumerator UpForce(GameObject player, float knockupDuration)
+    {
+        float startTime = Time.time;
+        while (Time.time < startTime + knockupDuration / 2)
+        {
+            player.GetComponent<PlayerMovement>().StopMovement();
+            player.GetComponent<CharacterController>().Move(Vector3.up * 10 * Time.deltaTime);
+            yield return null;
+        }
+        StartCoroutine(Gravity(player, knockupDuration));
+    }
+    IEnumerator Gravity(GameObject player, float knockupDuration)
+    {
+        float startTime = Time.time;
+        while (Time.time < startTime + knockupDuration / 2)
+        {
+            player.GetComponent<PlayerMovement>().StopMovement();
+            player.GetComponent<CharacterController>().Move(Vector3.down * 10 * Time.deltaTime);
+            yield return null;
+        }
+    }
 }

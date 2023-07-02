@@ -22,8 +22,8 @@ public class AlexAbilities : NetworkBehaviour
     public Image ability1Indicator;
 
     [Header("Ability 2")]
-    public float ABILITY2TICKINTERVAL = 0.5f;
-    public float ABILITY2HEALINGDURATION = 3f; 
+    public float ATE_TOO_MUCH_TICK_INTERVAL = 0.5f;
+    public float ATE_TOO_MUCH_DURATION = 3f;
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
@@ -206,8 +206,8 @@ public class AlexAbilities : NetworkBehaviour
             ability2Active = true; 
             // this updates every 3 sec (when ability is done)
             StartCoroutine(Ability2ActiveInterval());
-            playerMovement.StopMovement();
-            GameManager.Instance.Root(gameObject, 3f); // fix later to stun  
+            playerMovement.StopMovement(); 
+            GameManager.Instance.Stun(gameObject, ATE_TOO_MUCH_DURATION); // fix later to stun  
 
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
@@ -220,21 +220,18 @@ public class AlexAbilities : NetworkBehaviour
 
             isAbility2Cooldown = true;
             currentAbility2Cooldown = ability2Cooldown;
-
         }
- 
     }
 
     private IEnumerator Ability2Interval()
     {
-        nextTickTime = Time.time + ABILITY2TICKINTERVAL;
-        // HANDLE HEALING      
+        nextTickTime = Time.time + ATE_TOO_MUCH_TICK_INTERVAL;   
         GameManager.Instance.HealDamage(gameObject,50f);     
-        yield return new WaitForSeconds(ABILITY2TICKINTERVAL);
+        yield return new WaitForSeconds(ATE_TOO_MUCH_TICK_INTERVAL);
     }
 
     private IEnumerator Ability2ActiveInterval() {
-        yield return new WaitForSeconds(ABILITY2HEALINGDURATION);
+        yield return new WaitForSeconds(ATE_TOO_MUCH_DURATION);
         ability2Active = false;
     }
 

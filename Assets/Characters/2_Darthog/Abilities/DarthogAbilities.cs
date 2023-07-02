@@ -10,10 +10,13 @@ using TMPro;
 public class DarthogAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
+    [SerializeField] private Canvas abilitiesCanvas;
     private PlayerMovement playerMovement;
     private PlayerPrefab stats;
 
     [Header("Ability 1")]
+    public float SMASH_RANGE = 3f;
+    public float SMASH_KNOCKUP_DURATION = 1f;
     public Image abilityImage1;
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
@@ -79,11 +82,14 @@ public class DarthogAbilities : NetworkBehaviour
         stats = GetComponent<PlayerPrefab>();
 
         // Shows UI
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(1).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(2).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(3).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(4).gameObject.SetActive(true);
+        if (IsOwner)
+        {
+            abilitiesCanvas.gameObject.SetActive(true);
+            ability1Canvas.gameObject.SetActive(true);
+            ability2Canvas.gameObject.SetActive(true);
+            ability3Canvas.gameObject.SetActive(true);
+            ability4Canvas.gameObject.SetActive(true);
+        }
 
 
         abilityImage1.fillAmount = 0;
@@ -221,22 +227,25 @@ public class DarthogAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
         }
 
-        if (ability1Indicator.enabled && Input.GetMouseButtonDown(0))
+        if (ability1Indicator.enabled && Input.GetKeyUp(ability1Key))
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            }
-            playerMovement.StopMovement();
-            playerMovement.Rotate(hit.point);
-
             isAbility1Cooldown = true;
             currentAbility1Cooldown = ability1Cooldown;
 
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
+
+            foreach (GameObject player in GameManager.Instance.playerPrefabs)
+            {
+                if (Vector3.Distance(transform.position, player.transform.position) <= SMASH_RANGE)
+                {
+                    if (player == gameObject) { continue; }
+                    GameManager.Instance.Knockup(player, SMASH_KNOCKUP_DURATION);
+                }
+            }
         }
     }
+
 
     // summon projectile here
     [ServerRpc]

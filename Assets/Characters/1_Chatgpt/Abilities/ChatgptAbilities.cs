@@ -10,6 +10,7 @@ using TMPro;
 public class ChatgptAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
+    [SerializeField] private Canvas abilitiesCanvas;
     private PlayerMovement playerMovement;
     private PlayerPrefab stats;
 
@@ -76,10 +77,10 @@ public class ChatgptAbilities : NetworkBehaviour
         // Shows UI
         if (IsOwner)
         {
-            transform.GetChild(0).gameObject.SetActive(true);
-            transform.GetChild(1).gameObject.SetActive(true);
-            transform.GetChild(2).gameObject.SetActive(true);
-            transform.GetChild(3).gameObject.SetActive(true);
+            abilitiesCanvas.gameObject.SetActive(true);
+            ability1Canvas.gameObject.SetActive(true);
+            ability2Canvas.gameObject.SetActive(true);
+            ability4Canvas.gameObject.SetActive(true);
         }
 
         abilityImage1.fillAmount = 0;

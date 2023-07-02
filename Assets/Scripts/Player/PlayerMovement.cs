@@ -28,6 +28,7 @@ public class PlayerMovement : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) { return; }
+        if ( GetComponent<PlayerPrefab>().MovementSpeed < 0.02) { return;  }    //TODO: change to check if is rooted
         Animation();
         Move();
     }

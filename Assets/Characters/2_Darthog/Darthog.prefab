@@ -223,6 +223,7 @@ GameObject:
   - component: {fileID: -5792207381430989670}
   - component: {fileID: 613081523070485616}
   - component: {fileID: 1585696373134319838}
+  - component: {fileID: 4273541289901249312}
   m_Layer: 6
   m_Name: Darthog
   m_TagString: Player
@@ -398,6 +399,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootTransform: {fileID: 6958608841004688631}
+  abilitiesCanvas: {fileID: 5652461819407259768}
+  SMASH_RANGE: 3
+  SMASH_STUN_DURATION: 2
   abilityImage1: {fileID: 5652461820010758810}
   abilityText1: {fileID: 5652461820235691578}
   ability1Key: 113
@@ -522,6 +526,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthSlider3D: {fileID: 2589589645754397759}
   healthSlider2D: {fileID: 2505890146244671117}
+--- !u!143 &4273541289901249312
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113076548410431791}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &199322515159606025
 GameObject:
   m_ObjectHideFlags: 0
@@ -3738,6 +3760,11 @@ MonoBehaviour:
 --- !u!224 &5652461819407259767 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8718143256456477861, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+  m_PrefabInstance: {fileID: 3930662854834021586}
+  m_PrefabAsset: {fileID: 0}
+--- !u!223 &5652461819407259768 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 8718143256456477866, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
   m_PrefabInstance: {fileID: 3930662854834021586}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &5652461819415572207 stripped

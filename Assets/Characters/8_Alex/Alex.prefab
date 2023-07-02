@@ -2080,6 +2080,7 @@ GameObject:
   - component: {fileID: -6247208688101357645}
   - component: {fileID: 8464928222646736722}
   - component: {fileID: 1921138791411204165}
+  - component: {fileID: 3544924126524376553}
   m_Layer: 0
   m_Name: Alex
   m_TagString: Player
@@ -2204,8 +2205,8 @@ MonoBehaviour:
   ability1Cooldown: 3
   ability1Canvas: {fileID: 826796102000151727}
   ability1Indicator: {fileID: 3948424264820149018}
-  ABILITY2TICKINTERVAL: 0.5
-  ABILITY2HEALINGDURATION: 3
+  ATE_TOO_MUCH_TICK_INTERVAL: 0.5
+  ATE_TOO_MUCH_DURATION: 3
   abilityImage2: {fileID: 6964475377279232367}
   abilityText2: {fileID: 6964475377903404162}
   ability2Key: 119
@@ -2376,6 +2377,24 @@ MonoBehaviour:
   precomputeOutline: 1
   bakeKeys: []
   bakeValues: []
+--- !u!143 &3544924126524376553
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3912350655286778133}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4031202956292028210
 GameObject:
   m_ObjectHideFlags: 0
