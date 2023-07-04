@@ -523,7 +523,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4222346281535461983, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
       propertyPath: m_CharacterLimit
-      value: 13
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4222346281535461983, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
       propertyPath: m_GlobalPointSize
