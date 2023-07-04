@@ -243,7 +243,6 @@ public class GameManager : NetworkBehaviour
             if (movementSpeedTracker[i].ClientId != clientId) { continue; }
             ans *= movementSpeedTracker[i].Amount;
         }
-        
         return ans;
     }
 
@@ -258,7 +257,7 @@ public class GameManager : NetworkBehaviour
     {
         foreach (MovementSpeedBuffDebuff m in movementSpeedTracker) {
             if (m.ClientId != clientId || 
-                m.Amount != speedAmount || m.Duration != speedDuration) { return; }
+                m.Amount != speedAmount || m.Duration != speedDuration) { continue; }
             movementSpeedTracker.Remove(m);
             break;
         }

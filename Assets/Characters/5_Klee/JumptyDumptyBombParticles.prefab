@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -6464162072498092065}
   - component: {fileID: 6862397446444473765}
   - component: {fileID: -5840553299084761885}
+  - component: {fileID: -6046175835794360895}
   m_Layer: 7
   m_Name: JumptyDumptyBombParticles
   m_TagString: Untagged
@@ -4918,3 +4919,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-6046175835794360895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1360394402054950279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03420bc903d9c7a408ae7b75c09cb16b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

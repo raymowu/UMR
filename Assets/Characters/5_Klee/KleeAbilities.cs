@@ -17,6 +17,7 @@ public class KleeAbilities : NetworkBehaviour
     [Header("Ability 1")]
     [SerializeField] private GameObject ability1Projectile;
     public float JUMPTY_DUMPTY_DAMAGE = 10f;
+    public float JUMPTY_DUMPTY_SLOW_AMOUNT = 0.8f;
     public float JUMPTY_DUMPTY_SLOW_DURATION = 5f;
     public Image abilityImage1;
     public TMP_Text abilityText1;

@@ -17,14 +17,6 @@ public class HandleBombParticleCollision : NetworkBehaviour
             return;
         }
         GameManager.Instance.DealDamage(other, parent.JUMPTY_DUMPTY_DAMAGE);
-        GameManager.Instance.Speed(other, 0.5f, parent.JUMPTY_DUMPTY_SLOW_DURATION);
-        // DestroyBombServerRpc();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void DestroyBombServerRpc()
-    {
-        GetComponent<NetworkObject>().Despawn();
-        Destroy(gameObject);
+        GameManager.Instance.Slow(other, parent.JUMPTY_DUMPTY_SLOW_AMOUNT, parent.JUMPTY_DUMPTY_SLOW_DURATION);
     }
 }
