@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Unity.Netcode;
 
-public class MoveJumptyDumpty : MonoBehaviour
+public class MoveJumptyDumpty : NetworkBehaviour
 {
 
     public KleeAbilities parent;
@@ -13,6 +14,7 @@ public class MoveJumptyDumpty : MonoBehaviour
     [SerializeField] private float gravity;
     private float TempYForce;
     [SerializeField] private int bounces;
+    [SerializeField] private GameObject bombParticles; 
     /**
      Overview of physics:
      - add initial upward force 
@@ -50,13 +52,36 @@ public class MoveJumptyDumpty : MonoBehaviour
             TempYForce = YForce;
             bounces -= 1;
         }
+        else if (rb.position.y < 0.71 && bounces == 0)
+        {
+            SpawnBombParticlesServerRpc(rb.position);
+        }
 
     }
-    
+
 
     // collider here
+    /*
+     This function is for when the third bounce happens and it spawns in some mini bombs that then cause the damage
+     */
+    [ServerRpc(RequireOwnership = false)]
+    private void SpawnBombParticlesServerRpc(Vector3 position)
+    {
+        Debug.Log("Bomb Position: " + position);
+        GameObject particles = Instantiate(bombParticles, new Vector3(position.x, 0.3f, position.z), Quaternion.Euler(90, 0, 0));
+        particles.GetComponent<HandleBombParticleCollision>().parent = parent;
+        particles.GetComponent<NetworkObject>().Spawn();
+        DestroyBombServerRpc();
+    }
+
 
     // destroy game obj here
+    [ServerRpc (RequireOwnership = false)]
+    private void DestroyBombServerRpc()
+    {
+        GetComponent<NetworkObject>().Despawn();
+        Destroy(gameObject);
+    }
 
 
 }

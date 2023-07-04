@@ -4357,9 +4357,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootTransform: {fileID: 2796468905741615266}
   ability1Projectile: {fileID: 3867712197477650447, guid: 6abc19d463322cd489167d57ea40c8c3, type: 3}
-  CYBERBALLDAMAGE: 10
-  CYBERBALLSLOW: 0.5
-  CYBERBALLSLOWDURATION: 2.5
+  JUMPTY_DUMPTY_DAMAGE: 10
+  JUMPTY_DUMPTY_SLOW: 10
   abilityImage1: {fileID: 4118015005628520782}
   abilityText1: {fileID: 4118015005450792430}
   ability1Key: 113

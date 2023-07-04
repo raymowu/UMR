@@ -16,9 +16,8 @@ public class KleeAbilities : NetworkBehaviour
 
     [Header("Ability 1")]
     [SerializeField] private GameObject ability1Projectile;
-    public float CYBERBALLDAMAGE = 10;
-    public float CYBERBALLSLOW = 0.5f;
-    public float CYBERBALLSLOWDURATION = 2.5f;
+    public float JUMPTY_DUMPTY_DAMAGE = 10f;
+    public float JUMPTY_DUMPTY_SLOW_DURATION = 5f;
     public Image abilityImage1;
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
