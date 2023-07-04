@@ -21,19 +21,16 @@ public class DarthogAbilities : NetworkBehaviour
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
-
-    [SerializeField] private GameObject ability1Projectile;
-
-    public Canvas ability1Canvas;
-    public Image ability1Indicator;
     public GameObject ability1DisableOverlay;
 
     [Header("Ability 2")]
+    public float POUNCE_DASH_SPEED = 20f;
+    public float POUNCE_DASH_TIME = 0.2f;
+    public float POUNCE_DASH_RANGE = 5f;
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
     public float ability2Cooldown;
-
     public Canvas ability2Canvas;
     public Image ability2Indicator;
     public GameObject ability2DisableOverlay;
@@ -85,7 +82,6 @@ public class DarthogAbilities : NetworkBehaviour
         if (IsOwner)
         {
             abilitiesCanvas.gameObject.SetActive(true);
-            ability1Canvas.gameObject.SetActive(true);
             ability2Canvas.gameObject.SetActive(true);
             ability3Canvas.gameObject.SetActive(true);
             ability4Canvas.gameObject.SetActive(true);
@@ -102,12 +98,10 @@ public class DarthogAbilities : NetworkBehaviour
         abilityText3.text = "";
         abilityText4.text = "";
 
-        ability1Indicator.enabled = false;
         ability2Indicator.enabled = false;
         ability3Indicator.enabled = false;
         ability4Indicator.enabled = false;
 
-        ability1Canvas.enabled = false;
         ability2Canvas.enabled = false;
         ability3Canvas.enabled = false;
         ability4Canvas.enabled = false;
@@ -144,25 +138,9 @@ public class DarthogAbilities : NetworkBehaviour
         AbilityCooldown(ref currentAbility3Cooldown, ability3Cooldown, ref isAbility3Cooldown, abilityImage3, abilityText3);
         AbilityCooldown(ref currentAbility4Cooldown, ability4Cooldown, ref isAbility4Cooldown, abilityImage4, abilityText4);
 
-        Ability1Canvas();
         Ability2Canvas();
         Ability3Canvas();
         Ability4Canvas();
-    }
-
-    private void Ability1Canvas()
-    {
-        if (ability1Indicator.enabled)
-        {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            }
-            Quaternion ab1Canvas = Quaternion.LookRotation(position - transform.position);
-            ab1Canvas.eulerAngles = new Vector3(0, ab1Canvas.eulerAngles.y, ab1Canvas.eulerAngles.z);
-
-            ability1Canvas.transform.rotation = Quaternion.Lerp(ab1Canvas, ability1Canvas.transform.rotation, 0);
-        }
     }
 
     private void Ability2Canvas()
@@ -214,26 +192,18 @@ public class DarthogAbilities : NetworkBehaviour
     {
         if (Input.GetKeyDown(ability1Key) && !isAbility1Cooldown)
         {
-            ability1Canvas.enabled = true;
-            ability1Indicator.enabled = true;
-
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+            abilityImage2.fillAmount = 0;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
-        }
 
-        if (ability1Indicator.enabled && Input.GetKeyUp(ability1Key))
-        {
             isAbility1Cooldown = true;
             currentAbility1Cooldown = ability1Cooldown;
-
-            ability1Canvas.enabled = false;
-            ability1Indicator.enabled = false;
 
             foreach (GameObject player in GameManager.Instance.playerPrefabs)
             {
@@ -246,24 +216,13 @@ public class DarthogAbilities : NetworkBehaviour
         }
     }
 
-
-    // summon projectile here
-    [ServerRpc]
-    private void CastAbility1ServerRpc()
-    {
-        GameObject go = Instantiate(ability1Projectile, shootTransform.position, shootTransform.rotation);
-        go.GetComponent<NetworkObject>().Spawn();
-    }
-
     private void Ability2Input()
     {
         if (Input.GetKeyDown(ability2Key) && !isAbility2Cooldown)
         {
             ability2Canvas.enabled = true;
             ability2Indicator.enabled = true;
-
-            ability1Canvas.enabled = false;
-            ability1Indicator.enabled = false;
+            abilityImage2.fillAmount = 1;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
@@ -272,13 +231,28 @@ public class DarthogAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
 
         }
-        if (ability2Canvas.enabled && Input.GetMouseButtonDown(0))
+        GameObject targetEnemy = GetComponent<PlayerMovement>().targetEnemy;
+        if (!isAbility2Cooldown && ability2Canvas.enabled && targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.transform.position) <= POUNCE_DASH_RANGE)
         {
             isAbility2Cooldown = true;
             currentAbility2Cooldown = ability2Cooldown;
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+
+            playerMovement.Rotate(hit.point);
+            StartCoroutine(Dash());
+        }
+    }
+
+    IEnumerator Dash()
+    {
+        float startTime = Time.time;
+        while (Time.time < startTime + POUNCE_DASH_TIME)
+        {
+            GetComponent<CharacterController>().Move(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position) * Vector3.forward * POUNCE_DASH_SPEED * Time.deltaTime);
+            playerMovement.StopMovement();
+            yield return null;
         }
     }
 
@@ -289,11 +263,9 @@ public class DarthogAbilities : NetworkBehaviour
             ability3Canvas.enabled = true;
             ability3Indicator.enabled = true;
 
-            ability1Canvas.enabled = false;
-            ability1Indicator.enabled = false;
-
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+            abilityImage2.fillAmount = 0;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
@@ -333,11 +305,9 @@ public class DarthogAbilities : NetworkBehaviour
             ability4Canvas.enabled = true;
             ability4Indicator.enabled = true;
 
-            ability1Canvas.enabled = false;
-            ability1Indicator.enabled = false;
-
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+            abilityImage2.fillAmount = 0;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;

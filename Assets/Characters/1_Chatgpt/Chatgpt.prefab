@@ -324,6 +324,12 @@ MonoBehaviour:
     TransitionDuration: 0.25
     TriggerNameHash: -317704921
     TransitionIndex: 2
+  - Layer: 0
+    OriginatingState: -1724663407
+    DestinationState: -1028202203
+    TransitionDuration: 0.25
+    TriggerNameHash: -1063111926
+    TransitionIndex: 3
   m_Animator: {fileID: 4480914682358558329}
 --- !u!114 &9043775937995672905
 MonoBehaviour:
@@ -1269,7 +1275,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4037153682606845069
 RectTransform:
   m_ObjectHideFlags: 0

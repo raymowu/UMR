@@ -395,9 +395,55 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4222346279716863796, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_text
+      value: 'Join
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346279780565966, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_text
+      value: Enter code...
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346279780565966, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346279780565966, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_fontSize
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346279780565966, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 4222346279920427843, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346280374751870, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_text
+      value: Umaru Rising
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346280374751870, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346280374751870, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_fontColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346280374751870, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346280374751870, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4278190080
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346280382809952, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4222346280423812644, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
       propertyPath: m_Name
@@ -446,6 +492,42 @@ PrefabInstance:
     - target: {fileID: 4222346280423812646, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346280683198861, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_text
+      value: Host Game
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346281505415613, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8836ae8ea2742e849aef94fe91b673f7, type: 3}
+    - target: {fileID: 4222346281505415613, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346281505415613, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346281505415613, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346281505415614, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346281535461983, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346281535461983, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_CharacterLimit
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 4222346281535461983, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
+      propertyPath: m_GlobalPointSize
+      value: 30
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 651d630ddf1e93748a6c6f978faf5130, type: 3}
