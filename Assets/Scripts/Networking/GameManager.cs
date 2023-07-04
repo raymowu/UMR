@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.AI;
+using System;
 
 public class GameManager : NetworkBehaviour
 {
@@ -21,9 +22,12 @@ public class GameManager : NetworkBehaviour
     // Player stats sync
     public NetworkList<PlayerStats> players;
 
+    private NetworkList<MovementSpeedBuffDebuff> movementSpeedTracker;
+
     private void Awake()
     {
         players = new NetworkList<PlayerStats>();
+        movementSpeedTracker = new NetworkList<MovementSpeedBuffDebuff>();
         Instance = this;
     }
 
@@ -43,6 +47,7 @@ public class GameManager : NetworkBehaviour
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).MaxHealth,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).AttackSpeed,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).MovementSpeed,
+                    characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).CurrentMovementSpeed,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).Damage));
             }
         }
@@ -52,7 +57,7 @@ public class GameManager : NetworkBehaviour
             for (int i = 0; i < players.Count; i++)
             {
                 playerPrefabs[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
-                playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].MovementSpeed;
+                playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
             }
             players.OnListChanged += HandlePlayersStatsChanged;
 
@@ -96,7 +101,7 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             playerPrefabs[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
-            playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].MovementSpeed;
+            playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
         }
     }
     public void DealDamage(GameObject target, float damage)
@@ -117,6 +122,7 @@ public class GameManager : NetworkBehaviour
                 players[i].Health - damage,
                 players[i].AttackSpeed,
                 players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed
@@ -149,6 +155,7 @@ public class GameManager : NetworkBehaviour
                     players[i].MaxHealth,
                     players[i].AttackSpeed,
                     players[i].MovementSpeed,
+                    players[i].CurrentMovementSpeed,
                     players[i].Damage,
                     players[i].IsSilenced,
                     players[i].IsDisarmed
@@ -163,6 +170,7 @@ public class GameManager : NetworkBehaviour
                     players[i].Health + damage,
                     players[i].AttackSpeed,
                     players[i].MovementSpeed,
+                    players[i].CurrentMovementSpeed,
                     players[i].Damage,
                     players[i].IsSilenced,
                     players[i].IsDisarmed
@@ -188,6 +196,7 @@ public class GameManager : NetworkBehaviour
                 players[i].Health,
                 players[i].AttackSpeed,
                 players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
                 players[i].Damage + damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed
@@ -212,6 +221,7 @@ public class GameManager : NetworkBehaviour
                 players[i].Health,
                 players[i].AttackSpeed,
                 players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
                 players[i].Damage - damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed
@@ -219,26 +229,78 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    // Take in decimal of slow %, i.e. 50% slow = 0.5 or a speed %, 50% speed = 1.5
+    private float calculateMovementSpeed(ulong clientId)
+    {
+        float ans = 0;
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            ans = players[i].MovementSpeed;
+        }
+
+        for (int i = 0; i < movementSpeedTracker.Count; i++)
+        {
+            if (movementSpeedTracker[i].ClientId != clientId) { continue; }
+            ans *= movementSpeedTracker[i].Amount;
+        }
+        
+        return ans;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void addToMovementSpeedTrackerServerRpc(ulong clientId, float speedAmount, float speedDuration)
+    {
+        movementSpeedTracker.Add(new MovementSpeedBuffDebuff(clientId, speedAmount, speedDuration));
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void removeFromMovementSpeedTrackerServerRpc(ulong clientId, float speedAmount, float speedDuration)
+    {
+        foreach (MovementSpeedBuffDebuff m in movementSpeedTracker) {
+            if (m.ClientId != clientId || 
+                m.Amount != speedAmount || m.Duration != speedDuration) { return; }
+            movementSpeedTracker.Remove(m);
+            break;
+        }
+    }
+
+    // Take in decimal of speed % i.e. 50% speed = 1.5
     public void Speed(GameObject target, float speedAmount, float speedDuration)
     {
-        SpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount);
+        addToMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount, speedDuration);
+        calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
         StartCoroutine(Unspeed(target, speedAmount, speedDuration));
     }
 
     IEnumerator Unspeed(GameObject target, float speedAmount, float speedDuration)
     {
         yield return new WaitForSeconds(speedDuration);
-        Speed(target, 1 / speedAmount);
+        removeFromMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount, speedDuration);
+        calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
     }
 
-    public void Speed(GameObject target, float speedAmount)
+    public void PermSpeed(GameObject target, float speedAmount)
     {
-        SpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount);
+        PermIncreaseMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount);
+    }
+
+    // Take in decimal of slow %, i.e. 50% slow = 0.5
+    public void Slow(GameObject target, float slowAmount, float slowDuration)
+    {
+        addToMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, slowAmount, slowDuration);
+        calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+        StartCoroutine(Unslow(target, slowAmount, slowDuration));
+    }
+
+    IEnumerator Unslow(GameObject target, float slowAmount, float slowDuration)
+    {
+        yield return new WaitForSeconds(slowDuration);
+        removeFromMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, slowAmount, slowDuration);
+        calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void SpeedServerRpc(ulong clientId, float speedAmount)
+    private void calcAndSetMovementSpeedServerRpc(ulong clientId)
     {
         for (int i = 0; i < players.Count; i++)
         {
@@ -249,7 +311,64 @@ public class GameManager : NetworkBehaviour
                 players[i].MaxHealth,
                 players[i].Health,
                 players[i].AttackSpeed,
-                players[i].MovementSpeed * speedAmount,
+                players[i].MovementSpeed,
+                calculateMovementSpeed(clientId),
+                players[i].Damage,
+                players[i].IsSilenced,
+                players[i].IsDisarmed
+                );
+        }
+    }
+
+    public void PermSlow(GameObject target, float slowAmount)
+    {
+        PermReduceMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, slowAmount);
+    }
+
+
+    /*
+     *  Permanently reduce movement speed
+     *  Takes in an input float of direct value to subtract from player's current movement speed
+     */
+    [ServerRpc(RequireOwnership = false)]
+    private void PermReduceMovementSpeedServerRpc(ulong clientId, float slowAmount)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth,
+                players[i].Health,
+                players[i].AttackSpeed,
+                players[i].MovementSpeed - slowAmount,
+                players[i].CurrentMovementSpeed,
+                players[i].Damage,
+                players[i].IsSilenced,
+                players[i].IsDisarmed
+                );
+        }
+    }
+
+    /*
+     *  Permanently increase movement speed
+     *  Takes in an input float of direct value to add to player's current movement speed
+     */
+    [ServerRpc(RequireOwnership = false)]
+    private void PermIncreaseMovementSpeedServerRpc(ulong clientId, float slowAmount)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth,
+                players[i].Health,
+                players[i].AttackSpeed,
+                players[i].MovementSpeed + slowAmount,
+                players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed
@@ -287,6 +406,7 @@ public class GameManager : NetworkBehaviour
                 players[i].Health,
                 players[i].AttackSpeed,
                 players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 true,
                 players[i].IsDisarmed
@@ -307,6 +427,7 @@ public class GameManager : NetworkBehaviour
                 players[i].Health,
                 players[i].AttackSpeed,
                 players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 false,
                 players[i].IsDisarmed
@@ -339,6 +460,7 @@ public class GameManager : NetworkBehaviour
                 players[i].Health,
                 players[i].AttackSpeed,
                 players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
                 true
@@ -359,6 +481,7 @@ public class GameManager : NetworkBehaviour
                 players[i].Health,
                 players[i].AttackSpeed,
                 players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
                 false
@@ -367,10 +490,8 @@ public class GameManager : NetworkBehaviour
     }
     public void Stun(GameObject target, float stunDuration)
     {
-        DisarmServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-        StartCoroutine(Undisarm(target, stunDuration));
-        SilenceServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-        StartCoroutine(Unsilence(target, stunDuration));
+        Disarm(target, stunDuration);
+        Silence(target, stunDuration);
         Root(target, stunDuration);
     }
 
