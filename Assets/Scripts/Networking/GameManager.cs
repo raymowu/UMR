@@ -263,7 +263,10 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    // Take in decimal of speed % i.e. 50% speed = 1.5
+     /* 
+     * Take in decimal of speed % i.e. 50% speed = 1.5
+     * Client manages the speed buff/debuff, starts their own coroutine to wait out the duration and unbuffs whoever they speed/slowed
+     */
     public void Speed(GameObject target, float speedAmount, float speedDuration)
     {
         addToMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount, speedDuration);
@@ -276,11 +279,6 @@ public class GameManager : NetworkBehaviour
         yield return new WaitForSeconds(speedDuration);
         removeFromMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount, speedDuration);
         calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-    }
-
-    public void PermSpeed(GameObject target, float speedAmount)
-    {
-        PermIncreaseMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount);
     }
 
     // Take in decimal of slow %, i.e. 50% slow = 0.5
@@ -317,6 +315,11 @@ public class GameManager : NetworkBehaviour
                 players[i].IsDisarmed
                 );
         }
+    }
+
+    public void PermSpeed(GameObject target, float speedAmount)
+    {
+        PermIncreaseMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount);
     }
 
     public void PermSlow(GameObject target, float slowAmount)

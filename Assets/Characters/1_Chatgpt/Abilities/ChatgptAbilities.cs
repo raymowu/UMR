@@ -215,7 +215,7 @@ public class ChatgptAbilities : NetworkBehaviour
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
-            // SetTrigger does not work on network animator unless actual component is called for some reason
+            // SetTrigger does not work on network animator unless actual component is called
             // anim.SetTrigger("CastCyberball")
             GetComponent<OwnerNetworkAnimator>().SetTrigger("CastCyberball");
         }
@@ -273,6 +273,8 @@ public class ChatgptAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+
+            GetComponent<OwnerNetworkAnimator>().SetTrigger("CastHack");
         }
     }
 
@@ -333,7 +335,7 @@ public class ChatgptAbilities : NetworkBehaviour
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
 
-            GetComponent<OwnerNetworkAnimator>().SetTrigger("CastCyberball");
+            GetComponent<OwnerNetworkAnimator>().SetTrigger("CastNeuralNetwork");
         }
     }
 
