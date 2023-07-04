@@ -15,6 +15,7 @@ public class Character : ScriptableObject
     [SerializeField] private float health;
     [SerializeField] private float attackSpeed;
     [SerializeField] private float movementSpeed;
+    [SerializeField] private float currentMovementSpeed;
     [SerializeField] private float damage;
 
 
@@ -28,6 +29,7 @@ public class Character : ScriptableObject
     public float Health => health;
     public float AttackSpeed => attackSpeed;
     public float MovementSpeed => movementSpeed;
+    public float CurrentMovementSpeed => currentMovementSpeed;
     public float Damage => damage;
 
 }

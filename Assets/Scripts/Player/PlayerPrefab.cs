@@ -13,6 +13,7 @@ public class PlayerPrefab : NetworkBehaviour
     public float Health;
     public float AttackSpeed;
     public float MovementSpeed;
+    public float CurrentMovementSpeed;
     public float Damage;
     public bool IsSilenced;
     public bool IsDisarmed;
@@ -24,9 +25,15 @@ public class PlayerPrefab : NetworkBehaviour
     //TESTING ONLY
     private void Update()
     {
+        if (!IsOwner) { return; }
         if (Input.GetKeyDown(KeyCode.V))
         {
-            GameManager.Instance.DealDamage(gameObject, Damage);
+            GameManager.Instance.Slow(gameObject, 0.4f, 2f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            GameManager.Instance.Speed(gameObject, 1.7f, 2f);
         }
     }
 
@@ -42,6 +49,7 @@ public class PlayerPrefab : NetworkBehaviour
             Health = player.Health;
             AttackSpeed = player.AttackSpeed;
             MovementSpeed = player.MovementSpeed;
+            CurrentMovementSpeed = player.CurrentMovementSpeed;
             Damage = player.Damage;
             IsSilenced = player.IsSilenced;
             IsDisarmed = player.IsDisarmed;

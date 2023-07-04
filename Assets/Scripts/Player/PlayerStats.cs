@@ -12,14 +12,15 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
     public float Health;
     public float AttackSpeed;
     public float MovementSpeed;
+    public float CurrentMovementSpeed;
     public float Damage;
     public bool IsSilenced;
     public bool IsDisarmed;
 
 
     // Constructor
-    public PlayerStats(ulong clientId, int characterId = -1, float maxHealth = 0, float health = 0, float attackSpeed = 0, 
-        float movementSpeed = 0, float damage = 0, bool isSilenced = false, bool isDisarmed = false)
+    public PlayerStats(ulong clientId, int characterId = -1, float maxHealth = 0, float health = 0, float attackSpeed = 0,
+        float movementSpeed = 0, float currentMovementSpeed = 0, float damage = 0, bool isSilenced = false, bool isDisarmed = false)
     {
         ClientId = clientId;
         CharacterId = characterId;
@@ -27,6 +28,7 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
         Health = health;
         AttackSpeed = attackSpeed;
         MovementSpeed = movementSpeed;
+        CurrentMovementSpeed = currentMovementSpeed;
         Damage = damage;
         IsSilenced = isSilenced;
         IsDisarmed = isDisarmed;
@@ -41,6 +43,7 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
         serializer.SerializeValue(ref Health);
         serializer.SerializeValue(ref AttackSpeed);
         serializer.SerializeValue(ref MovementSpeed);
+        serializer.SerializeValue(ref CurrentMovementSpeed);
         serializer.SerializeValue(ref Damage);
         serializer.SerializeValue(ref IsSilenced);
         serializer.SerializeValue(ref IsDisarmed);
@@ -55,6 +58,7 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
             Health == other.Health &&
             AttackSpeed == other.AttackSpeed &&
             MovementSpeed == other.MovementSpeed &&
+            CurrentMovementSpeed == other.CurrentMovementSpeed &&
             Damage == other.Damage &&
             IsSilenced == other.IsSilenced &&
             IsDisarmed == other.IsDisarmed;
