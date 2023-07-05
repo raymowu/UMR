@@ -85,7 +85,6 @@ public class DarthogAbilities : NetworkBehaviour
             ability3Canvas.gameObject.SetActive(true);
         }
 
-
         abilityImage1.fillAmount = 0;
         abilityImage2.fillAmount = 0;
         abilityImage3.fillAmount = 0;
@@ -281,7 +280,7 @@ public class DarthogAbilities : NetworkBehaviour
             isAbility4Cooldown = true;
             currentAbility4Cooldown = ability4Cooldown;
 
-            StartCoroutine(BeastAwakening(stats.AttackSpeed, stats.Damage, stats.MovementSpeed, BEAST_AWAKENING_BUFF_DURATION));
+            StartCoroutine(BeastAwakening(stats.AttackSpeed, stats.Damage, stats.MaxHealth, BEAST_AWAKENING_BUFF_DURATION));
             GameManager.Instance.Speed(gameObject, stats.MovementSpeed + (stats.MovementSpeed * BEAST_AWAKENING_BUFF_AMOUNT), BEAST_AWAKENING_BUFF_DURATION);
             GameManager.Instance.IncreaseAttackSpeed(gameObject, stats.AttackSpeed * BEAST_AWAKENING_BUFF_AMOUNT);
             GameManager.Instance.IncreaseDamage(gameObject, stats.Damage * BEAST_AWAKENING_BUFF_AMOUNT);

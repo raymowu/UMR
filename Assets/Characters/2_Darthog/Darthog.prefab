@@ -323,12 +323,12 @@ MonoBehaviour:
   ability3Canvas: {fileID: 1103013272820803601}
   ability3Indicator: {fileID: 6216926741947899226}
   ability3DisableOverlay: {fileID: 4633691201036140479}
+  BEAST_AWAKENING_BUFF_AMOUNT: 0.2
+  BEAST_AWAKENING_BUFF_DURATION: 15
   abilityImage4: {fileID: 5652461820287072506}
   abilityText4: {fileID: 5652461820792762420}
   ability4Key: 114
   ability4Cooldown: 60
-  ability4Canvas: {fileID: 0}
-  ability4Indicator: {fileID: 0}
   ability4DisableOverlay: {fileID: 202392360801163602}
 --- !u!114 &-8998133480631184972
 MonoBehaviour:
@@ -3160,6 +3160,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ability 2 Disabled Overlay
       objectReference: {fileID: 0}
+    - target: {fileID: 1957727399993162509, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c9d01a66075de5b4f9182356ae3733ad, type: 3}
+    - target: {fileID: 1957727399993162509, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+      propertyPath: m_FillAmount
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2303527268160707858, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -3200,6 +3208,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ability 3 Disabled Overlay
       objectReference: {fileID: 0}
+    - target: {fileID: 8563429497483438483, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c9d01a66075de5b4f9182356ae3733ad, type: 3}
     - target: {fileID: 8718143254983696113, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
       propertyPath: m_Sprite
       value: 
