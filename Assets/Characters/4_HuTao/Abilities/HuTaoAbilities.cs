@@ -336,11 +336,11 @@ public class HuTaoAbilities : NetworkBehaviour
             }
             if (stats.Health / stats.MaxHealth <= 0.5)
             {
-                GameManager.Instance.HealDamage(gameObject, numEnemiesHit * ABILITY4LOWHPREGEN * stats.MaxHealth);
+                GameManager.Instance.Heal(gameObject, numEnemiesHit * ABILITY4LOWHPREGEN * stats.MaxHealth);
             }
             else
             {
-                GameManager.Instance.HealDamage(gameObject, numEnemiesHit * ABILITY4HPREGEN * stats.MaxHealth);
+                GameManager.Instance.Heal(gameObject, numEnemiesHit * ABILITY4HPREGEN * stats.MaxHealth);
             }
         }
     }

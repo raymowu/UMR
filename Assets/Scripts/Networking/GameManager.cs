@@ -135,18 +135,18 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void HealDamage(GameObject target, float damage)
+    public void Heal(GameObject target, float amount)
     {
-        HealDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
+        HealServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void HealDamageServerRpc(ulong clientId, float damage)
+    private void HealServerRpc(ulong clientId, float amount)
     {
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-            if (players[i].Health + damage >= players[i].MaxHealth)
+            if (players[i].Health + amount >= players[i].MaxHealth)
             {
                 players[i] = new PlayerStats(
                     players[i].ClientId,
@@ -167,7 +167,7 @@ public class GameManager : NetworkBehaviour
                     players[i].ClientId,
                     players[i].CharacterId,
                     players[i].MaxHealth,
-                    players[i].Health + damage,
+                    players[i].Health + amount,
                     players[i].AttackSpeed,
                     players[i].MovementSpeed,
                     players[i].CurrentMovementSpeed,
@@ -178,6 +178,129 @@ public class GameManager : NetworkBehaviour
             }
         }
     }
+
+    public void SetCurrentHealth (GameObject target, float newCurrentHealth)
+    {
+        SetCurrentHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, newCurrentHealth);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetCurrentHealthServerRpc(ulong clientId, float newCurrentHealth)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            if (newCurrentHealth >= players[i].Health)
+            {
+                players[i] = new PlayerStats(
+                    players[i].ClientId,
+                    players[i].CharacterId,
+                    players[i].MaxHealth,
+                    players[i].MaxHealth,
+                    players[i].AttackSpeed,
+                    players[i].MovementSpeed,
+                    players[i].CurrentMovementSpeed,
+                    players[i].Damage,
+                    players[i].IsSilenced,
+                    players[i].IsDisarmed
+                    );
+            }
+            else
+            {
+                players[i] = new PlayerStats(
+                    players[i].ClientId,
+                    players[i].CharacterId,
+                    players[i].MaxHealth,
+                    newCurrentHealth,
+                    players[i].AttackSpeed,
+                    players[i].MovementSpeed,
+                    players[i].CurrentMovementSpeed,
+                    players[i].Damage,
+                    players[i].IsSilenced,
+                    players[i].IsDisarmed
+                    );
+            }
+        }
+    }
+
+    public void IncreaseMaxHealth(GameObject target, float amount)
+    {
+        IncreaseMaxHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void IncreaseMaxHealthServerRpc(ulong clientId, float amount)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+                players[i] = new PlayerStats(
+                    players[i].ClientId,
+                    players[i].CharacterId,
+                    players[i].MaxHealth + amount,
+                    players[i].Health,
+                    players[i].AttackSpeed,
+                    players[i].MovementSpeed,
+                    players[i].CurrentMovementSpeed,
+                    players[i].Damage,
+                    players[i].IsSilenced,
+                    players[i].IsDisarmed
+                    );
+            }
+    }
+
+    public void DecreaseMaxHealth(GameObject target, float amount)
+    {
+       DecreaseMaxHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DecreaseMaxHealthServerRpc(ulong clientId, float amount)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth - amount,
+                players[i].Health,
+                players[i].AttackSpeed,
+                players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
+                players[i].Damage,
+                players[i].IsSilenced,
+                players[i].IsDisarmed
+                );
+        }
+    }
+
+    public void SetMaxHealth(GameObject target, float amount)
+    {
+        SetMaxHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetMaxHealthServerRpc(ulong clientId, float amount)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                amount,
+                players[i].Health,
+                players[i].AttackSpeed,
+                players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
+                players[i].Damage,
+                players[i].IsSilenced,
+                players[i].IsDisarmed
+                );
+        }
+    }
+
     public void IncreaseDamage(GameObject target, float damage)
     {
         IncreaseDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
@@ -223,6 +346,108 @@ public class GameManager : NetworkBehaviour
                 players[i].MovementSpeed,
                 players[i].CurrentMovementSpeed,
                 players[i].Damage - damage,
+                players[i].IsSilenced,
+                players[i].IsDisarmed
+                );
+        }
+    }
+
+    public void SetDamage(GameObject target, float damage)
+    {
+        SetDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetDamageServerRpc(ulong clientId, float damage)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth,
+                players[i].Health,
+                players[i].AttackSpeed,
+                players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
+                damage,
+                players[i].IsSilenced,
+                players[i].IsDisarmed
+                );
+        }
+    }
+
+    public void IncreaseAttackSpeed(GameObject target, float amount)
+    {
+        IncreaseAttackSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void IncreaseAttackSpeedServerRpc(ulong clientId, float amount)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth,
+                players[i].Health,
+                players[i].AttackSpeed - amount,
+                players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
+                players[i].Damage,
+                players[i].IsSilenced,
+                players[i].IsDisarmed
+                );
+        }
+    }
+    public void DecreaseAttackSpeed(GameObject target, float amount)
+    {
+        DecreaseAttackSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DecreaseAttackSpeedServerRpc(ulong clientId, float amount)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth,
+                players[i].Health,
+                players[i].AttackSpeed + amount,
+                players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
+                players[i].Damage,
+                players[i].IsSilenced,
+                players[i].IsDisarmed
+                );
+        }
+    }
+    public void SetAttackSpeed(GameObject target, float attackSpeed)
+    {
+        SetAttackSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, attackSpeed);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetAttackSpeedServerRpc(ulong clientId, float attackSpeed)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth,
+                players[i].Health,
+                attackSpeed,
+                players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
+                players[i].Damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed
                 );

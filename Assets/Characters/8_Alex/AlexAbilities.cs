@@ -226,7 +226,7 @@ public class AlexAbilities : NetworkBehaviour
     private IEnumerator Ability2Interval()
     {
         nextTickTime = Time.time + ATE_TOO_MUCH_TICK_INTERVAL;   
-        GameManager.Instance.HealDamage(gameObject,50f);     
+        GameManager.Instance.Heal(gameObject,50f);     
         yield return new WaitForSeconds(ATE_TOO_MUCH_TICK_INTERVAL);
     }
 

@@ -49,13 +49,12 @@ public class DarthogAbilities : NetworkBehaviour
     public GameObject ability3DisableOverlay;
 
     [Header("Ability 4")]
+    public float BEAST_AWAKENING_BUFF_AMOUNT = 0.2f;
+    public float BEAST_AWAKENING_BUFF_DURATION = 15f;
     public Image abilityImage4;
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
-
-    public Canvas ability4Canvas;
-    public Image ability4Indicator;
     public GameObject ability4DisableOverlay;
 
     private bool isAbility1Cooldown = false;
@@ -84,7 +83,6 @@ public class DarthogAbilities : NetworkBehaviour
             abilitiesCanvas.gameObject.SetActive(true);
             ability2Canvas.gameObject.SetActive(true);
             ability3Canvas.gameObject.SetActive(true);
-            ability4Canvas.gameObject.SetActive(true);
         }
 
 
@@ -100,11 +98,9 @@ public class DarthogAbilities : NetworkBehaviour
 
         ability2Indicator.enabled = false;
         ability3Indicator.enabled = false;
-        ability4Indicator.enabled = false;
 
         ability2Canvas.enabled = false;
         ability3Canvas.enabled = false;
-        ability4Canvas.enabled = false;
     }
 
     // Update is called once per frame
@@ -140,7 +136,6 @@ public class DarthogAbilities : NetworkBehaviour
 
         Ability2Canvas();
         Ability3Canvas();
-        Ability4Canvas();
     }
 
     private void Ability2Canvas()
@@ -173,21 +168,6 @@ public class DarthogAbilities : NetworkBehaviour
         }
     }
 
-    private void Ability4Canvas()
-    {
-        if (ability4Indicator.enabled)
-        {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            }
-            Quaternion ab4Canvas = Quaternion.LookRotation(position - transform.position);
-            ab4Canvas.eulerAngles = new Vector3(0, ab4Canvas.eulerAngles.y, ab4Canvas.eulerAngles.z);
-
-            ability4Canvas.transform.rotation = Quaternion.Lerp(ab4Canvas, ability4Canvas.transform.rotation, 0);
-        }
-    }
-
     private void Ability1Input()
     {
         if (Input.GetKeyDown(ability1Key) && !isAbility1Cooldown)
@@ -198,9 +178,6 @@ public class DarthogAbilities : NetworkBehaviour
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
-
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
 
             isAbility1Cooldown = true;
             currentAbility1Cooldown = ability1Cooldown;
@@ -226,10 +203,6 @@ public class DarthogAbilities : NetworkBehaviour
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
-
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
-
         }
         GameObject targetEnemy = GetComponent<PlayerMovement>().targetEnemy;
         if (!isAbility2Cooldown && ability2Canvas.enabled && targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.transform.position) <= POUNCE_DASH_RANGE)
@@ -266,10 +239,6 @@ public class DarthogAbilities : NetworkBehaviour
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
             abilityImage2.fillAmount = 0;
-
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
-
         }
         if (ability3Canvas.enabled && Input.GetKeyUp(ability3Key))
         {
@@ -302,9 +271,6 @@ public class DarthogAbilities : NetworkBehaviour
     {
         if (Input.GetKeyDown(ability4Key) && !isAbility4Cooldown)
         {
-            ability4Canvas.enabled = true;
-            ability4Indicator.enabled = true;
-
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
             abilityImage2.fillAmount = 0;
@@ -312,16 +278,24 @@ public class DarthogAbilities : NetworkBehaviour
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
 
-        }
-
-        if (ability4Canvas.enabled && Input.GetMouseButtonDown(0))
-        {
             isAbility4Cooldown = true;
             currentAbility4Cooldown = ability4Cooldown;
 
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
+            StartCoroutine(BeastAwakening(stats.AttackSpeed, stats.Damage, stats.MovementSpeed, BEAST_AWAKENING_BUFF_DURATION));
+            GameManager.Instance.Speed(gameObject, stats.MovementSpeed + (stats.MovementSpeed * BEAST_AWAKENING_BUFF_AMOUNT), BEAST_AWAKENING_BUFF_DURATION);
+            GameManager.Instance.IncreaseAttackSpeed(gameObject, stats.AttackSpeed * BEAST_AWAKENING_BUFF_AMOUNT);
+            GameManager.Instance.IncreaseDamage(gameObject, stats.Damage * BEAST_AWAKENING_BUFF_AMOUNT);
+            GameManager.Instance.IncreaseMaxHealth(gameObject, stats.MaxHealth * BEAST_AWAKENING_BUFF_AMOUNT);
+            GameManager.Instance.Heal(gameObject, stats.Health * BEAST_AWAKENING_BUFF_AMOUNT);
         }
+    }
+
+    IEnumerator BeastAwakening(float originalAttackSpeed, float originalDamage, float originalMaxHealth, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        GameManager.Instance.SetAttackSpeed(gameObject, originalAttackSpeed);
+        GameManager.Instance.SetDamage(gameObject, originalDamage);
+        GameManager.Instance.SetMaxHealth(gameObject, originalMaxHealth);
     }
 
     private void AbilityCooldown(ref float currentCooldown, float maxCooldown, ref bool isCooldown, Image skillImage, TMP_Text skillText)
