@@ -10,11 +10,13 @@ using TMPro;
 public class FBIAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
+    [SerializeField] private Canvas abilitiesCanvas;
     private PlayerMovement playerMovement;
     private PlayerPrefab stats;
 
     [Header("Ability 1")]
     [SerializeField] private GameObject ability1Projectile;
+    public float MAGNUM_SHOT_DAMAGE = 30f;
     public Image abilityImage1;
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
@@ -24,6 +26,10 @@ public class FBIAbilities : NetworkBehaviour
     public GameObject ability1DisableOverlay;
 
     [Header("Ability 2")]
+    [SerializeField] private GameObject ability2Projectile;
+    public float FBI_OPEN_UP_DAMAGE = 10f;
+    public float FBI_OPEN_UP_SLOW_AMOUNT = .6f;
+    public float FBI_OPEN_UP_SLOW_DURATION = 2f;
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
@@ -71,11 +77,13 @@ public class FBIAbilities : NetworkBehaviour
         stats = GetComponent<PlayerPrefab>();
 
         // Shows UI
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(0).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(1).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(2).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(3).gameObject.SetActive(true);
-        NetworkManager.Singleton.LocalClient.PlayerObject.transform.GetChild(4).gameObject.SetActive(true);
+        if (IsOwner)
+        {
+            abilitiesCanvas.gameObject.SetActive(true);
+            ability1Canvas.gameObject.SetActive(true);
+            ability2Canvas.gameObject.SetActive(true);
+            ability3Canvas.gameObject.SetActive(true);
+        }
 
         abilityImage1.fillAmount = 0;
         abilityImage2.fillAmount = 0;
@@ -238,7 +246,7 @@ public class FBIAbilities : NetworkBehaviour
     {
         GameObject go = Instantiate(ability1Projectile, shootTransform.position, rot);
         Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
-        go.GetComponent<MoveBullet>().parent = gameObject;
+        go.GetComponent<MoveBullet>().parent = this;
         go.GetComponent<NetworkObject>().Spawn();
     }
 
@@ -259,14 +267,32 @@ public class FBIAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
 
         }
-        if (ability2Canvas.enabled && Input.GetMouseButtonDown(0))
+        if (ability2Canvas.enabled && Input.GetKeyUp(ability2Key))
         {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                playerMovement.StopMovement();
+                playerMovement.Rotate(hit.point);
+                CastAbility2ServerRpc(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
+            }
+
             isAbility2Cooldown = true;
             currentAbility2Cooldown = ability2Cooldown;
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+
+            GetComponent<OwnerNetworkAnimator>().SetTrigger("CastFBIOpenUp");
         }
+    }
+
+    [ServerRpc]
+    private void CastAbility2ServerRpc(Quaternion rot)
+    {
+        GameObject go = Instantiate(ability2Projectile, new Vector3(shootTransform.position.x, 0.8f, shootTransform.position.z), rot);
+        Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
+        go.GetComponent<MoveDoor>().parent = this;
+        go.GetComponent<NetworkObject>().Spawn();
     }
 
     private void Ability3Input()
@@ -286,7 +312,7 @@ public class FBIAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
 
         }
-        if (ability3Canvas.enabled && Input.GetMouseButtonDown(0))
+        if (ability3Canvas.enabled && Input.GetKeyUp(ability3Key))
         {
             isAbility3Cooldown = true;
             currentAbility3Cooldown = ability3Cooldown;

@@ -7,31 +7,29 @@ public class MoveBullet : NetworkBehaviour
 {
     [SerializeField] private float shootForce;
     private Rigidbody rb;
-    public GameObject parent;
+    public FBIAbilities parent;
 
-    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // Move projectile forward based on the player facing direction
+        // Move projectile forward in straight line based on the player facing direction
         rb.velocity = rb.transform.forward * shootForce;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!IsOwner) { return; }
+        GameManager.Instance.DealDamage(other.gameObject, parent.GetComponent<PlayerPrefab>().Damage + parent.MAGNUM_SHOT_DAMAGE);
         DestroyAbility1ServerRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void DestroyAbility1ServerRpc()
     {
-        Debug.Log("reached");
         GetComponent<NetworkObject>().Despawn();
         Destroy(gameObject);
     }

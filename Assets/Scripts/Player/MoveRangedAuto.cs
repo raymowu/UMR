@@ -29,6 +29,7 @@ public class MoveRangedAuto : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!IsOwner) { return; }
+        Debug.Log("trigger");
         GameManager.Instance.DealDamage(other.gameObject, parent.GetComponent<PlayerPrefab>().Damage);
         DestroyRangedAutoServerRpc();
     }
@@ -36,7 +37,7 @@ public class MoveRangedAuto : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void DestroyRangedAutoServerRpc()
     {
-        Debug.Log("what");
+        Debug.Log("destroy");
         GetComponent<NetworkObject>().Despawn();
         Destroy(gameObject);
     }

@@ -4267,6 +4267,7 @@ MonoBehaviour:
   Health: 0
   AttackSpeed: 0
   MovementSpeed: 0
+  CurrentMovementSpeed: 0
   Damage: 0
   IsSilenced: 0
   IsDisarmed: 0
@@ -4358,7 +4359,8 @@ MonoBehaviour:
   shootTransform: {fileID: 2796468905741615266}
   ability1Projectile: {fileID: 3867712197477650447, guid: 6abc19d463322cd489167d57ea40c8c3, type: 3}
   JUMPTY_DUMPTY_DAMAGE: 10
-  JUMPTY_DUMPTY_SLOW: 10
+  JUMPTY_DUMPTY_SLOW_AMOUNT: 0.8
+  JUMPTY_DUMPTY_SLOW_DURATION: 5
   abilityImage1: {fileID: 4118015005628520782}
   abilityText1: {fileID: 4118015005450792430}
   ability1Key: 113
@@ -4394,7 +4396,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4679016535666749224}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
   m_Name: 
@@ -4474,12 +4476,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 2
-  m_Radius: 0.5
+  m_Radius: 0.3
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &4743723456776980951
 GameObject:
   m_ObjectHideFlags: 0
