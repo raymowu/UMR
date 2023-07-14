@@ -3610,8 +3610,8 @@ Transform:
   - {fileID: 7533039279938109732}
   - {fileID: 5547843902304091125}
   - {fileID: 6769123109475879919}
-  - {fileID: 386427614385320803}
   - {fileID: 7446614886584591548}
+  - {fileID: 386427614385320803}
   - {fileID: 2265588361511435994}
   - {fileID: 2345394612118366328}
   - {fileID: 3394627013524226856}
@@ -3693,6 +3693,7 @@ MonoBehaviour:
   Health: 0
   AttackSpeed: 0
   MovementSpeed: 0
+  CurrentMovementSpeed: 0
   Damage: 0
   IsSilenced: 0
   IsDisarmed: 0
@@ -4054,12 +4055,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6220452066504362734}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6415428752152480109}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &5198042839198200788
 SkinnedMeshRenderer:
@@ -4989,7 +4990,7 @@ Transform:
   m_Children:
   - {fileID: 645167670347888601}
   m_Father: {fileID: 6415428752152480109}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7942550023666510544
 GameObject:

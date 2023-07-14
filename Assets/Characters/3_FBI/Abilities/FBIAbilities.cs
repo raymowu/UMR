@@ -48,12 +48,14 @@ public class FBIAbilities : NetworkBehaviour
     public GameObject ability3DisableOverlay;
 
     [Header("Ability 4")]
+    [SerializeField] private GameObject policeCar;
+    public float HIGH_SPEED_CHASE_DURATION = 10f;
+    public float HIGH_SPEED_CHASE_SPEED = 3f;
+    public float HIGH_SPEED_CHASE_COLLISION_DAMAGE = 60f;
     public Image abilityImage4;
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
-    public Canvas ability4Canvas;
-    public Image ability4Indicator;
     public GameObject ability4DisableOverlay;
 
     private bool isAbility1Cooldown = false;
@@ -76,7 +78,6 @@ public class FBIAbilities : NetworkBehaviour
         playerMovement = GetComponent<PlayerMovement>();
         stats = GetComponent<PlayerPrefab>();
 
-        // Shows UI
         if (IsOwner)
         {
             abilitiesCanvas.gameObject.SetActive(true);
@@ -84,6 +85,9 @@ public class FBIAbilities : NetworkBehaviour
             ability2Canvas.gameObject.SetActive(true);
             ability3Canvas.gameObject.SetActive(true);
         }
+
+        policeCar.GetComponent<HandlePoliceCarCollision>().parent = this;
+        policeCar.gameObject.SetActive(false);
 
         abilityImage1.fillAmount = 0;
         abilityImage2.fillAmount = 0;
@@ -98,15 +102,12 @@ public class FBIAbilities : NetworkBehaviour
         ability1Indicator.enabled = false;
         ability2Indicator.enabled = false;
         ability3Indicator.enabled = false;
-        ability4Indicator.enabled = false;
 
         ability1Canvas.enabled = false;
         ability2Canvas.enabled = false;
         ability3Canvas.enabled = false;
-        ability4Canvas.enabled = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!IsOwner) { return; }
@@ -125,7 +126,6 @@ public class FBIAbilities : NetworkBehaviour
 
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        // TODO: Cast ability functionality
         Ability1Input();
         Ability2Input();
         Ability3Input();
@@ -139,7 +139,6 @@ public class FBIAbilities : NetworkBehaviour
         Ability1Canvas();
         Ability2Canvas();
         Ability3Canvas();
-        Ability4Canvas();
     }
 
     private void Ability1Canvas()
@@ -187,21 +186,6 @@ public class FBIAbilities : NetworkBehaviour
         }
     }
 
-    private void Ability4Canvas()
-    {
-        if (ability4Indicator.enabled)
-        {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            }
-            Quaternion ab4Canvas = Quaternion.LookRotation(position - transform.position);
-            ab4Canvas.eulerAngles = new Vector3(0, ab4Canvas.eulerAngles.y, ab4Canvas.eulerAngles.z);
-
-            ability4Canvas.transform.rotation = Quaternion.Lerp(ab4Canvas, ability4Canvas.transform.rotation, 0);
-        }
-    }
-
     private void Ability1Input()
     {
         if (Input.GetKeyDown(ability1Key) && !isAbility1Cooldown)
@@ -214,9 +198,6 @@ public class FBIAbilities : NetworkBehaviour
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
-
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
         }
 
         if (ability1Indicator.enabled && Input.GetKeyUp(ability1Key))
@@ -262,10 +243,6 @@ public class FBIAbilities : NetworkBehaviour
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
-
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
-
         }
         if (ability2Canvas.enabled && Input.GetKeyUp(ability2Key))
         {
@@ -307,10 +284,6 @@ public class FBIAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
-
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
-
         }
         if (ability3Canvas.enabled && Input.GetKeyUp(ability3Key))
         {
@@ -326,9 +299,6 @@ public class FBIAbilities : NetworkBehaviour
     {
         if (Input.GetKeyDown(ability4Key) && !isAbility4Cooldown)
         {
-            ability4Canvas.enabled = true;
-            ability4Indicator.enabled = true;
-
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
@@ -338,16 +308,31 @@ public class FBIAbilities : NetworkBehaviour
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
 
-        }
-
-        if (ability4Canvas.enabled && Input.GetMouseButtonDown(0))
-        {
             isAbility4Cooldown = true;
             currentAbility4Cooldown = ability4Cooldown;
 
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
+            TogglePoliceCarServerRpc(true);
+            GameManager.Instance.Speed(gameObject, HIGH_SPEED_CHASE_SPEED, HIGH_SPEED_CHASE_DURATION);
+            StartCoroutine(DestroyPoliceCar());
         }
+    }
+
+    [ServerRpc]
+    public void TogglePoliceCarServerRpc(bool active)
+    {
+        TogglePoliceCarClientRpc(active);
+    }
+
+    [ClientRpc]
+    private void TogglePoliceCarClientRpc(bool active)
+    {
+        policeCar.gameObject.SetActive(active);
+    }
+
+    IEnumerator DestroyPoliceCar()
+    {
+        yield return new WaitForSeconds(HIGH_SPEED_CHASE_DURATION);
+        TogglePoliceCarServerRpc(false);
     }
 
     private void AbilityCooldown(ref float currentCooldown, float maxCooldown, ref bool isCooldown, Image skillImage, TMP_Text skillText)

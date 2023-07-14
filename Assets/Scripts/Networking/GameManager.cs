@@ -488,10 +488,25 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-     /* 
-     * Take in decimal of speed % i.e. 50% speed = 1.5
-     * Client manages the speed buff/debuff, starts their own coroutine to wait out the duration and unbuffs whoever they speed/slowed
+    /* 
+     * Bug if same buff/debuff affects player again before duration of the first buff/debuff ends. So make sure that all buff/debuffs
+     * cool down is longer than the duration otherwise it will stack and lead to weird behavior :(
      */
+    [ServerRpc(RequireOwnership = false)]
+    public void RemoveSlowsAndSpeedsServerRpc(ulong clientId)
+    {
+        foreach (MovementSpeedBuffDebuff m in movementSpeedTracker)
+        {
+            if (m.ClientId != clientId) { continue; }
+            movementSpeedTracker.Remove(m);
+            break;
+        }
+    }
+
+    /* 
+    * Take in decimal of speed % i.e. 50% speed = 1.5
+    * Client manages the speed buff/debuff, starts their own coroutine to wait out the duration and unbuffs whoever they speed/slowed
+    */
     public void Speed(GameObject target, float speedAmount, float speedDuration)
     {
         addToMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount, speedDuration);
@@ -518,6 +533,12 @@ public class GameManager : NetworkBehaviour
     {
         yield return new WaitForSeconds(slowDuration);
         removeFromMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, slowAmount, slowDuration);
+        calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+    }
+
+    public void RemoveSlowsAndSpeeds(GameObject target)
+    {
+        RemoveSlowsAndSpeedsServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
         calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
     }
 

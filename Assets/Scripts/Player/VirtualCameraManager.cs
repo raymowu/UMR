@@ -10,7 +10,6 @@ public class VirtualCameraManager : MonoBehaviour
     void Start()
     {
         GetComponent<CinemachineVirtualCamera>().Follow = NetworkManager.Singleton.LocalClient.PlayerObject.transform;
-
     }
 
     // Update is called once per frame
