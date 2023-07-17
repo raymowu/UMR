@@ -13,6 +13,7 @@ public class FBIAbilities : NetworkBehaviour
     [SerializeField] private Canvas abilitiesCanvas;
     private PlayerMovement playerMovement;
     private PlayerPrefab stats;
+    private PlayerMovement moveScript;
 
     [Header("Ability 1")]
     [SerializeField] private GameObject ability1Projectile;
@@ -77,6 +78,7 @@ public class FBIAbilities : NetworkBehaviour
     {
         playerMovement = GetComponent<PlayerMovement>();
         stats = GetComponent<PlayerPrefab>();
+        moveScript = GetComponent<PlayerMovement>();
 
         if (IsOwner)
         {
@@ -250,7 +252,7 @@ public class FBIAbilities : NetworkBehaviour
             {
                 playerMovement.StopMovement();
                 playerMovement.Rotate(hit.point);
-                CastAbility2ServerRpc(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
+                CastAbility2ServerRpc(hit.point, Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
             }
 
             isAbility2Cooldown = true;
@@ -264,8 +266,9 @@ public class FBIAbilities : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void CastAbility2ServerRpc(Quaternion rot)
+    private void CastAbility2ServerRpc(Vector3 pos, Quaternion rot)
     {
+        playerMovement.Rotate(pos);
         GameObject go = Instantiate(ability2Projectile, new Vector3(shootTransform.position.x, 0.8f, shootTransform.position.z), rot);
         Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
         go.GetComponent<MoveDoor>().parent = this;
@@ -284,7 +287,10 @@ public class FBIAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+
+            GameObject targetEnemy = moveScript.targetEnemy;
         }
+
         if (ability3Canvas.enabled && Input.GetKeyUp(ability3Key))
         {
             isAbility3Cooldown = true;

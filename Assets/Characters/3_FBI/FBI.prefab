@@ -1015,6 +1015,7 @@ MonoBehaviour:
   policeCar: {fileID: 7924984611600443967}
   HIGH_SPEED_CHASE_DURATION: 10
   HIGH_SPEED_CHASE_SPEED: 8
+  HIGH_SPEED_CHASE_COLLISION_DAMAGE: 60
   abilityImage4: {fileID: 2881696733702909793}
   abilityText4: {fileID: 2881696734405699503}
   ability4Key: 114
@@ -3362,7 +3363,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3831914395081802500}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5008,6 +5009,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 733518908163667747, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 951099334
+      objectReference: {fileID: 0}
     - target: {fileID: 5573489061960533712, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
       propertyPath: m_Name
       value: 3D Health Canvas
@@ -5439,7 +5444,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 115512, guid: 27b2517d32041a84f9cb85822363149d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 437054, guid: 27b2517d32041a84f9cb85822363149d, type: 3}
       propertyPath: m_RootOrder
@@ -5516,6 +5521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1ee05759808129448b2d166f58e5fb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  parent: {fileID: 0}
 --- !u!4 &7924984611600777785 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 437054, guid: 27b2517d32041a84f9cb85822363149d, type: 3}

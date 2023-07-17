@@ -374,7 +374,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectableLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 320
 --- !u!114 &-5792207381430989670
 MonoBehaviour:
   m_ObjectHideFlags: 0
