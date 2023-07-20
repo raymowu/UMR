@@ -49,6 +49,8 @@ public class DarthogAbilities : NetworkBehaviour
     public GameObject ability3DisableOverlay;
 
     [Header("Ability 4")]
+    [SerializeField] GameObject STRENGTH_BUFF_PARTICLES;
+    [SerializeField] GameObject BEAST_AWAKENING_PARTICLES;
     public float BEAST_AWAKENING_BUFF_AMOUNT = 0.2f;
     public float BEAST_AWAKENING_BUFF_DURATION = 15f;
     public Image abilityImage4;
@@ -280,6 +282,11 @@ public class DarthogAbilities : NetworkBehaviour
             isAbility4Cooldown = true;
             currentAbility4Cooldown = ability4Cooldown;
 
+            SummonGlowingParticlesServerRpc();
+            playerMovement.StopMovement();
+            GameManager.Instance.Root(gameObject, 2.167f);
+            GetComponent<OwnerNetworkAnimator>().SetTrigger("CastBeastAwakening");
+
             StartCoroutine(BeastAwakening(stats.AttackSpeed, stats.Damage, stats.MaxHealth, BEAST_AWAKENING_BUFF_DURATION));
             GameManager.Instance.Speed(gameObject, stats.MovementSpeed + (stats.MovementSpeed * BEAST_AWAKENING_BUFF_AMOUNT), BEAST_AWAKENING_BUFF_DURATION);
             GameManager.Instance.IncreaseAttackSpeed(gameObject, stats.AttackSpeed * BEAST_AWAKENING_BUFF_AMOUNT);
@@ -289,9 +296,44 @@ public class DarthogAbilities : NetworkBehaviour
         }
     }
 
+
+    [ServerRpc]
+    private void SummonGlowingParticlesServerRpc()
+    {
+        SummonGlowingParticlesClientRpc();
+    }
+
+    [ClientRpc]
+    private void SummonGlowingParticlesClientRpc()
+    {
+        // Constant glowing particles
+        BEAST_AWAKENING_PARTICLES.SetActive(true);
+
+        // Strength buff particles (destroy is handled automatically by particlesystem)
+        GameObject go = Instantiate(STRENGTH_BUFF_PARTICLES, new Vector3(transform.position.x, 0f, transform.position.z), transform.rotation, gameObject.transform);
+        ParticleSystem ps = go.GetComponent<ParticleSystem>();
+        ps.Stop();
+        var main = ps.main;
+        main.duration = BEAST_AWAKENING_BUFF_DURATION;
+        ps.Play();
+    }
+
+    [ServerRpc]
+    private void DestroyGlowingParticlesServerRpc()
+    {
+        DestroyGlowingParticlesClientRpc();
+    }
+
+    [ClientRpc]
+    private void DestroyGlowingParticlesClientRpc()
+    {
+        BEAST_AWAKENING_PARTICLES.SetActive(false);
+    }
+
     IEnumerator BeastAwakening(float originalAttackSpeed, float originalDamage, float originalMaxHealth, float duration)
     {
         yield return new WaitForSeconds(duration);
+        DestroyGlowingParticlesServerRpc();
         GameManager.Instance.SetAttackSpeed(gameObject, originalAttackSpeed);
         GameManager.Instance.SetDamage(gameObject, originalDamage);
         GameManager.Instance.SetMaxHealth(gameObject, originalMaxHealth);

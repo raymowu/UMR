@@ -179,50 +179,6 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void SetCurrentHealth (GameObject target, float newCurrentHealth)
-    {
-        SetCurrentHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, newCurrentHealth);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void SetCurrentHealthServerRpc(ulong clientId, float newCurrentHealth)
-    {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            if (newCurrentHealth >= players[i].Health)
-            {
-                players[i] = new PlayerStats(
-                    players[i].ClientId,
-                    players[i].CharacterId,
-                    players[i].MaxHealth,
-                    players[i].MaxHealth,
-                    players[i].AttackSpeed,
-                    players[i].MovementSpeed,
-                    players[i].CurrentMovementSpeed,
-                    players[i].Damage,
-                    players[i].IsSilenced,
-                    players[i].IsDisarmed
-                    );
-            }
-            else
-            {
-                players[i] = new PlayerStats(
-                    players[i].ClientId,
-                    players[i].CharacterId,
-                    players[i].MaxHealth,
-                    newCurrentHealth,
-                    players[i].AttackSpeed,
-                    players[i].MovementSpeed,
-                    players[i].CurrentMovementSpeed,
-                    players[i].Damage,
-                    players[i].IsSilenced,
-                    players[i].IsDisarmed
-                    );
-            }
-        }
-    }
-
     public void IncreaseMaxHealth(GameObject target, float amount)
     {
         IncreaseMaxHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
@@ -260,11 +216,12 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
+            float newCurrentHealth = players[i].Health >= amount ? amount : players[i].Health;
             players[i] = new PlayerStats(
                 players[i].ClientId,
                 players[i].CharacterId,
                 players[i].MaxHealth - amount,
-                players[i].Health,
+                newCurrentHealth,
                 players[i].AttackSpeed,
                 players[i].MovementSpeed,
                 players[i].CurrentMovementSpeed,
@@ -286,11 +243,12 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
+            float newCurrentHealth = players[i].Health >= amount ? amount : players[i].Health;
             players[i] = new PlayerStats(
                 players[i].ClientId,
                 players[i].CharacterId,
                 amount,
-                players[i].Health,
+                newCurrentHealth,
                 players[i].AttackSpeed,
                 players[i].MovementSpeed,
                 players[i].CurrentMovementSpeed,
