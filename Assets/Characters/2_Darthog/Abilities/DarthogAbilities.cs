@@ -247,7 +247,7 @@ public class DarthogAbilities : NetworkBehaviour
             {
                 playerMovement.StopMovement();
                 playerMovement.Rotate(hit.point);
-                CastAbility3ServerRpc(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
+                CastAbility3ServerRpc(hit.point, Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
             }
 
             isAbility3Cooldown = true;
@@ -260,8 +260,9 @@ public class DarthogAbilities : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void CastAbility3ServerRpc(Quaternion rot)
+    private void CastAbility3ServerRpc(Vector3 pos, Quaternion rot)
     {
+        playerMovement.Rotate(pos);
         GameObject go = Instantiate(ability3Projectile, shootTransform.position, rot);
         Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
         go.GetComponent<MoveRockHurl>().parent = this;

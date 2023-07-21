@@ -206,7 +206,7 @@ public class ChatgptAbilities : NetworkBehaviour
             {
                 playerMovement.StopMovement();
                 playerMovement.Rotate(hit.point);
-                CastCyberballServerRpc(hit.point, Quaternion.LookRotation(hit.point, new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
+                CastCyberballServerRpc(hit.point, Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
             }
 
             isAbility1Cooldown = true;
@@ -225,7 +225,7 @@ public class ChatgptAbilities : NetworkBehaviour
     private void CastCyberballServerRpc(Vector3 pos, Quaternion rot)
     {
         playerMovement.Rotate(pos);
-        GameObject go = Instantiate(ability1Projectile, new Vector3(shootTransform.position.x, shootTransform.position.y, shootTransform.position.z + 1f), rot);
+        GameObject go = Instantiate(ability1Projectile, new Vector3(shootTransform.position.x, shootTransform.position.y, shootTransform.position.z), rot);
         Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
         go.GetComponent<MoveChatgptCyberball>().parent = this;
         go.GetComponent<NetworkObject>().Spawn();

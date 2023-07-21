@@ -18,6 +18,7 @@ public class MoveRockHurl : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!IsOwner) { return; }
         // Move projectile forward based on the player facing direction
         rb.velocity = rb.transform.forward * shootForce;
     }

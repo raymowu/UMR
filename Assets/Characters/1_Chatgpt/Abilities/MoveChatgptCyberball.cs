@@ -16,6 +16,7 @@ public class MoveChatgptCyberball : NetworkBehaviour
 
     void Update()
     {
+        if (!IsOwner) { return; }
         // Move projectile forward in straight line based on the player facing direction
         rb.velocity = rb.transform.forward * shootForce;
     }
