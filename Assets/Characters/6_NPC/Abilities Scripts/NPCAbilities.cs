@@ -40,12 +40,22 @@ public class NPCAbilities : NetworkBehaviour
     public GameObject ability2DisableOverlay;
 
     [Header("Ability 3")]
+    [SerializeField] private GameObject MentalDrainParticles;
+    public float MENTAL_DRAIN_RANGE = 5f;
+    public float MENTAL_DRAIN_DURATION = 5f;
+    public float MENTAL_DRAIN_RADIUS = 2.5f;
+    public float MENTAL_DRAIN_SLOW_AMOUNT = 0.5f;
+    public float MENTAL_DRAIN_SLOW_DURATION = 0.5f;
+    public float MENTAL_DRAIN_DAMAGE = 10f;
+    public float MENTAL_DRAIN_TICK_INTERVAL = 0.5f;
     public Image abilityImage3;
     public TMP_Text abilityText3;
     public KeyCode ability3Key = KeyCode.E;
     public float ability3Cooldown;
     public Canvas ability3Canvas;
     public Image ability3Indicator;
+    public Canvas ability3RangeIndicatorCanvas;
+    public Image ability3RangeIndicator;
     public GameObject ability3DisableOverlay;
 
     [Header("Ability 4")]
@@ -85,6 +95,7 @@ public class NPCAbilities : NetworkBehaviour
             ability1RangeIndicatorCanvas.gameObject.SetActive(true);    
             ability2Canvas.gameObject.SetActive(true);
             ability3Canvas.gameObject.SetActive(true);
+            ability3RangeIndicatorCanvas.gameObject.SetActive(true);
             ability4Canvas.gameObject.SetActive(true);
         }
 
@@ -102,12 +113,14 @@ public class NPCAbilities : NetworkBehaviour
         ability1RangeIndicator.enabled = false;
         ability2Indicator.enabled = false;
         ability3Indicator.enabled = false;
+        ability3RangeIndicator.enabled = false;
         ability4Indicator.enabled = false;
 
         ability1Canvas.enabled = false;
         ability1RangeIndicatorCanvas.enabled = false;
         ability2Canvas.enabled = false;
         ability3Canvas.enabled = false;
+        ability3RangeIndicatorCanvas.enabled = false;
         ability4Canvas.enabled = false;
     }
 
@@ -186,16 +199,23 @@ public class NPCAbilities : NetworkBehaviour
 
     private void Ability3Canvas()
     {
+        int layerMask = ~LayerMask.GetMask("Player");
         if (ability3Indicator.enabled)
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+                if (hit.collider.gameObject != this.gameObject)
+                {
+                    position = hit.point;
+                }
             }
-            Quaternion ab3Canvas = Quaternion.LookRotation(position - transform.position);
-            ab3Canvas.eulerAngles = new Vector3(0, ab3Canvas.eulerAngles.y, ab3Canvas.eulerAngles.z);
 
-            ability3Canvas.transform.rotation = Quaternion.Lerp(ab3Canvas, ability3Canvas.transform.rotation, 0);
+            var hitPosDir = (hit.point - transform.position).normalized;
+            float distance = Vector3.Distance(hit.point, transform.position);
+            distance = Mathf.Min(distance, MENTAL_DRAIN_RANGE);
+
+            var newHitPos = new Vector3(transform.position.x, 0.2f, transform.position.z) + hitPosDir * distance;
+            ability3Canvas.transform.position = (newHitPos);
         }
     }
 
@@ -229,6 +249,8 @@ public class NPCAbilities : NetworkBehaviour
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
+            ability3RangeIndicator.enabled = false;
+            ability3RangeIndicatorCanvas.enabled = false;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
@@ -281,6 +303,8 @@ public class NPCAbilities : NetworkBehaviour
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
+            ability3RangeIndicator.enabled = false;
+            ability3RangeIndicatorCanvas.enabled = false;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
@@ -321,6 +345,8 @@ public class NPCAbilities : NetworkBehaviour
         {
             ability3Canvas.enabled = true;
             ability3Indicator.enabled = true;
+            ability3RangeIndicator.enabled = true;
+            ability3RangeIndicatorCanvas.enabled = true;
 
             ability1Canvas.enabled = false;
             ability1RangeIndicatorCanvas.enabled = false;
@@ -333,15 +359,37 @@ public class NPCAbilities : NetworkBehaviour
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
 
+            Cursor.visible = false;
         }
-        if (ability3Canvas.enabled && Input.GetMouseButtonDown(0))
+        if (ability3Canvas.enabled && Input.GetKeyUp(ability3Key))
         {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                playerMovement.StopMovement();
+                playerMovement.Rotate(hit.point);
+                SummonMentalDrainParticlesServerRpc(new Vector3(hit.point.x, 0f, hit.point.z),
+                    Quaternion.LookRotation(new Vector3(hit.point.x, 0f, hit.point.z) - transform.position));
+            }
+
             isAbility3Cooldown = true;
             currentAbility3Cooldown = ability3Cooldown;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
+            ability3RangeIndicator.enabled = false;
+            ability3RangeIndicatorCanvas.enabled = false;
+
+            Cursor.visible = true;
         }
+    }
+
+    [ServerRpc]
+    private void SummonMentalDrainParticlesServerRpc(Vector3 pos, Quaternion rot)
+    {
+        GameObject go = Instantiate(MentalDrainParticles, pos, rot);
+        go.GetComponent<HandleMentalDrainCollision>().parent = this;
+        go.GetComponent<AutoDestroyGameObject>().delayBeforeDestroy = MENTAL_DRAIN_DURATION;
+        go.GetComponent<NetworkObject>().Spawn();
     }
 
     private void Ability4Input()
@@ -361,6 +409,8 @@ public class NPCAbilities : NetworkBehaviour
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
+            ability3RangeIndicator.enabled = false;
+            ability3RangeIndicatorCanvas.enabled = false;
 
         }
 

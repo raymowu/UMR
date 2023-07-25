@@ -228,7 +228,6 @@ public class HuTaoAbilities : NetworkBehaviour
     {
         nextTickTime = Time.time + ABILITY2TICKINTERVAL;
 
-        // HANDLE DAMAGING
         GameManager.Instance.DealDamage(gameObject, ABILITY2ACTIVATIONCOST * stats.MaxHealth);
         foreach (GameObject player in GameManager.Instance.playerPrefabs)
         {
