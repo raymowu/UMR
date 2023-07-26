@@ -255,8 +255,6 @@ public class HuTaoAbilities : NetworkBehaviour
     {
         if (Input.GetKeyDown(ability3Key) && !isAbility3Cooldown)
         {
-            playerMovement.StopMovement();
-
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
 
@@ -266,6 +264,10 @@ public class HuTaoAbilities : NetworkBehaviour
             isAbility3Cooldown = true;
             currentAbility3Cooldown = ability3Cooldown;
 
+            playerMovement.StopMovement();
+            GameManager.Instance.Root(gameObject, 1.5f);
+
+            GameManager.Instance.SummonStrengthParticles(gameObject);
             CastAbility3ServerRpc();
         }
     }

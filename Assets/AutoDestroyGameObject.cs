@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
+[RequireComponent(typeof(NetworkObject))]
 public class AutoDestroyGameObject : NetworkBehaviour
 {
     public float delayBeforeDestroy;

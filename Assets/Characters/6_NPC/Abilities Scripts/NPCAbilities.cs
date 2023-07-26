@@ -63,8 +63,6 @@ public class NPCAbilities : NetworkBehaviour
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
-    public Canvas ability4Canvas;
-    public Image ability4Indicator;
     public GameObject ability4DisableOverlay;
 
     private bool isAbility1Cooldown = false;
@@ -96,7 +94,6 @@ public class NPCAbilities : NetworkBehaviour
             ability2Canvas.gameObject.SetActive(true);
             ability3Canvas.gameObject.SetActive(true);
             ability3RangeIndicatorCanvas.gameObject.SetActive(true);
-            ability4Canvas.gameObject.SetActive(true);
         }
 
         abilityImage1.fillAmount = 0;
@@ -114,14 +111,12 @@ public class NPCAbilities : NetworkBehaviour
         ability2Indicator.enabled = false;
         ability3Indicator.enabled = false;
         ability3RangeIndicator.enabled = false;
-        ability4Indicator.enabled = false;
 
         ability1Canvas.enabled = false;
         ability1RangeIndicatorCanvas.enabled = false;
         ability2Canvas.enabled = false;
         ability3Canvas.enabled = false;
         ability3RangeIndicatorCanvas.enabled = false;
-        ability4Canvas.enabled = false;
     }
 
     // Update is called once per frame
@@ -157,7 +152,6 @@ public class NPCAbilities : NetworkBehaviour
         Ability1Canvas();
         Ability2Canvas();
         Ability3Canvas();
-        Ability4Canvas();
     }
 
     private void Ability1Canvas()
@@ -219,22 +213,6 @@ public class NPCAbilities : NetworkBehaviour
         }
     }
 
-    private void Ability4Canvas()
-    {
-        if (ability4Indicator.enabled)
-        {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            }
-            Quaternion ab4Canvas = Quaternion.LookRotation(position - transform.position);
-            ab4Canvas.eulerAngles = new Vector3(0, ab4Canvas.eulerAngles.y, ab4Canvas.eulerAngles.z);
-
-            ability4Canvas.transform.rotation = Quaternion.Lerp(ab4Canvas, ability4Canvas.transform.rotation, 0);
-        }
-    }
-
-    // Typical ability cast structure
     private void Ability1Input()
     {
         if (Input.GetKeyDown(ability1Key) && !isAbility1Cooldown)
@@ -251,9 +229,6 @@ public class NPCAbilities : NetworkBehaviour
             ability3Indicator.enabled = false;
             ability3RangeIndicator.enabled = false;
             ability3RangeIndicatorCanvas.enabled = false;
-
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
 
             Cursor.visible = false;
         }
@@ -305,10 +280,6 @@ public class NPCAbilities : NetworkBehaviour
             ability3Indicator.enabled = false;
             ability3RangeIndicator.enabled = false;
             ability3RangeIndicatorCanvas.enabled = false;
-
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
-
         }
 
         if (ability2Canvas.enabled && Input.GetKeyUp(ability2Key))
@@ -356,9 +327,6 @@ public class NPCAbilities : NetworkBehaviour
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
 
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
-
             Cursor.visible = false;
         }
         if (ability3Canvas.enabled && Input.GetKeyUp(ability3Key))
@@ -396,9 +364,6 @@ public class NPCAbilities : NetworkBehaviour
     {
         if (Input.GetKeyDown(ability4Key) && !isAbility4Cooldown)
         {
-            ability4Canvas.enabled = true;
-            ability4Indicator.enabled = true;
-
             ability1Canvas.enabled = false;
             ability1RangeIndicatorCanvas.enabled = false;
             ability1Indicator.enabled = false;
@@ -412,15 +377,19 @@ public class NPCAbilities : NetworkBehaviour
             ability3RangeIndicator.enabled = false;
             ability3RangeIndicatorCanvas.enabled = false;
 
-        }
-
-        if (ability4Canvas.enabled && Input.GetMouseButtonDown(0))
-        {
             isAbility4Cooldown = true;
             currentAbility4Cooldown = ability4Cooldown;
 
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
+            playerMovement.StopMovement();
+            playerMovement.Rotate(hit.point);
+            SummonNPCCloneServerRpc(new Vector3(transform.position.x + 2f, 0f, transform.position.z),
+                transform.rotation);
+            SummonNPCCloneServerRpc(new Vector3(transform.position.x - 2f, 0f, transform.position.z),
+                transform.rotation);
+            SummonNPCCloneServerRpc(new Vector3(transform.position.x, 0f, transform.position.z + 2f),
+                transform.rotation);
+            SummonNPCCloneServerRpc(new Vector3(transform.position.x, 0f, transform.position.z - 2f),
+                transform.rotation);
         }
     }
 

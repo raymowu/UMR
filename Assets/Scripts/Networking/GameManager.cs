@@ -16,6 +16,7 @@ public class GameManager : NetworkBehaviour
     // sync player prefabs
     [SerializeField] public GameObject[] playerPrefabs;
     [SerializeField] private CharacterDatabase characterDatabase;
+    [SerializeField] private ParticleDatabase particleDatabase;
 
     public static GameManager Instance { get; private set; }
 
@@ -104,6 +105,11 @@ public class GameManager : NetworkBehaviour
             playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
         }
     }
+
+    /*
+     * BUFFS AND DEBUFFS MANAGER
+     */
+
     public void DealDamage(GameObject target, float damage)
     {
         DealDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
@@ -743,6 +749,51 @@ public class GameManager : NetworkBehaviour
             player.GetComponent<PlayerMovement>().StopMovement();
             player.GetComponent<CharacterController>().Move(Vector3.down * 10 * Time.deltaTime);
             yield return null;
+        }
+    }
+
+    /*
+     * PARTICLE MANAGER
+     */
+
+
+    /*
+     * Summons strength boost particles with sword that flashes and then a glow around the player for a duration
+     */
+    public void SummonGlowingParticles(GameObject target, float duration)
+    {
+        SummonGlowingParticlesServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, duration);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SummonGlowingParticlesServerRpc(ulong clientId, float duration)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+
+            // Constant glowing particles
+            GameObject glowParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.GLOW_PARTICLES), playerPrefabs[i].transform, false);
+            glowParticles.GetComponent<AutoDestroyGameObject>().delayBeforeDestroy = duration;
+            glowParticles.GetComponent<NetworkObject>().Spawn();
+            glowParticles.gameObject.transform.parent = playerPrefabs[i].transform;
+        }
+    }
+
+    public void SummonStrengthParticles(GameObject target)
+    {
+        SummonStrengthParticlesServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SummonStrengthParticlesServerRpc(ulong clientId)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            // Strength buff particles (destroy is handled automatically by particlesystem)
+            GameObject strengthParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.STRENGTH_PARTICLES), playerPrefabs[i].transform, false);
+            strengthParticles.GetComponent<NetworkObject>().Spawn();
         }
     }
 }

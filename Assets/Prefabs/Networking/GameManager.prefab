@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefabs: []
   characterDatabase: {fileID: 11400000, guid: 114185c5cf980654c859ec66245b708f, type: 2}
+  particleDatabase: {fileID: 11400000, guid: a302a040673caea41b9fb8196923c22d, type: 2}
 --- !u!114 &3073329341644045296
 MonoBehaviour:
   m_ObjectHideFlags: 0

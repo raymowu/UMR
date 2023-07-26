@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bdbbc0389769e142a48faacd3fd8da9, type: 3}
+  m_Name: 1_Glow
+  m_EditorClassIdentifier: 
+  id: 1
+  displayName: Glow
+  particlePrefab: {fileID: 6508751582856025880, guid: 63f304cf12903e845afb20ab797483c3, type: 3}
