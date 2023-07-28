@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bdbbc0389769e142a48faacd3fd8da9, type: 3}
+  m_Name: 3_Stun
+  m_EditorClassIdentifier: 
+  id: 3
+  displayName: Stun
+  particlePrefab: {fileID: 6772626787909052183, guid: a0818f2429207b347b9d168b4f650c16, type: 3}

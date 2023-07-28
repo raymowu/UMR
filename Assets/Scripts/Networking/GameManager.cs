@@ -705,6 +705,7 @@ public class GameManager : NetworkBehaviour
         Disarm(target, stunDuration);
         Silence(target, stunDuration);
         Root(target, stunDuration);
+        SummonStunParticles(target, stunDuration);
     }
 
     public void Knockup(GameObject target, float knockupDuration)
@@ -756,9 +757,29 @@ public class GameManager : NetworkBehaviour
      * PARTICLE MANAGER
      */
 
+    [ClientRpc]
+    private void enableParticleClientRpc(NetworkObjectReference particle)
+    {
+        particle.TryGet(out NetworkObject go);
+        go.gameObject.SetActive(true);
+    }
+
+    IEnumerator DestroyParticle(GameObject particle, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        DestroyParticleServerRpc(particle);
+    }
+
+    [ServerRpc]
+    private void DestroyParticleServerRpc(NetworkObjectReference particle)
+    {
+        particle.TryGet(out NetworkObject go);
+        go.gameObject.GetComponent<NetworkObject>().Despawn();
+        Destroy(go.gameObject);
+    }
 
     /*
-     * Summons strength boost particles with sword that flashes and then a glow around the player for a duration
+     * Summons constant glowing particles around player
      */
     public void SummonGlowingParticles(GameObject target, float duration)
     {
@@ -771,15 +792,17 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-
-            // Constant glowing particles
             GameObject glowParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.GLOW_PARTICLES), playerPrefabs[i].transform, false);
-            glowParticles.GetComponent<AutoDestroyGameObject>().delayBeforeDestroy = duration;
             glowParticles.GetComponent<NetworkObject>().Spawn();
             glowParticles.gameObject.transform.parent = playerPrefabs[i].transform;
+            StartCoroutine(DestroyParticle(glowParticles, duration));
         }
     }
 
+
+    /*
+    * Summons strength boost particles with sword that flashes and then a glow around the player for a duration
+    */
     public void SummonStrengthParticles(GameObject target)
     {
         SummonStrengthParticlesServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
@@ -794,6 +817,27 @@ public class GameManager : NetworkBehaviour
             // Strength buff particles (destroy is handled automatically by particlesystem)
             GameObject strengthParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.STRENGTH_PARTICLES), playerPrefabs[i].transform, false);
             strengthParticles.GetComponent<NetworkObject>().Spawn();
+        }
+    }
+
+    /*
+    * Summons star dazed particles to indicate stun above the player for a duration
+    */
+    public void SummonStunParticles(GameObject target, float duration)
+    {
+        SummonStunParticlesServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, duration);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SummonStunParticlesServerRpc(ulong clientId, float duration)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            GameObject stunParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.STUN_PARTICLES), playerPrefabs[i].transform, false);
+            stunParticles.GetComponent<NetworkObject>().Spawn();
+            stunParticles.gameObject.transform.parent = playerPrefabs[i].transform;
+            StartCoroutine(DestroyParticle(stunParticles, duration));
         }
     }
 }

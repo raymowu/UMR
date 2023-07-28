@@ -8,6 +8,7 @@ public class ParticleDatabase : ScriptableObject
 {
     public const int GLOW_PARTICLES = 1;
     public const int STRENGTH_PARTICLES = 2;
+    public const int STUN_PARTICLES = 3;
 
     [SerializeField] private Particle[] particles = new Particle[0];
 

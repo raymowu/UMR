@@ -27,8 +27,16 @@ public class PlayerMovement : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (!IsOwner) { return; }
-        if ( GetComponent<PlayerPrefab>().CurrentMovementSpeed <= 0.1f) { return;  }    //TODO: change to check if is rooted
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            GameManager.Instance.Stun(gameObject, 4);
+        }
+        if ( GetComponent<PlayerPrefab>().CurrentMovementSpeed <= 0.1f) {
+            anim.SetFloat("Speed", 0);
+            return;  
+        }
         Animation();
         Move();
     }
