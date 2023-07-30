@@ -4,30 +4,29 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerCard : MonoBehaviour
+public class PlayerScoreboardCard : MonoBehaviour
 {
     [SerializeField] private CharacterDatabase characterDatabase;
     [SerializeField] private GameObject visuals;
     [SerializeField] private Image characterIconImage;
-    [SerializeField] private TMP_Text playerNameText;
-    [SerializeField] private TMP_Text characterNameText;
+    [SerializeField] private TMP_Text statsText;
+   //TODO: items
 
-    public void UpdateDisplay(CharacterSelectState state)
+    public void UpdateDisplay(PlayerStats player)
     {
-        if (state.CharacterId != -1)
+        if (player.CharacterId != -1)
         {
-            var character = characterDatabase.GetCharacterById(state.CharacterId);
+            var character = characterDatabase.GetCharacterById(player.CharacterId);
             characterIconImage.sprite = character.Icon;
             characterIconImage.enabled = true;
-            characterNameText.text = character.DisplayName;
+
         }
         else
         {
             characterIconImage.enabled = false;
         }
 
-        // TODO: change to player username
-        playerNameText.text = state.IsLockedIn ? $"Player {state.ClientId}" : $"Player {state.ClientId} (Picking...)";
+        statsText.text = player.Kills + "/" + player.Deaths;
 
         visuals.SetActive(true);
     }

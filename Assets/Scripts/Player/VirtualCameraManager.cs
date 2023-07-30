@@ -6,15 +6,8 @@ using Cinemachine;
 
 public class VirtualCameraManager : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
         GetComponent<CinemachineVirtualCamera>().Follow = NetworkManager.Singleton.LocalClient.PlayerObject.transform;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

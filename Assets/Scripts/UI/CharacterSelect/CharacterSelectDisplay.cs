@@ -210,7 +210,6 @@ public class CharacterSelectDisplay : NetworkBehaviour
         }
 
         // Undisable a players locked in character after they disconnect
-
         foreach (var button in characterButtons)
         {
             if (button.IsDisabled && !IsCharacterTaken(button.Character.Id, true))

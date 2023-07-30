@@ -196,7 +196,8 @@ public class HuTaoAbilities : NetworkBehaviour
         float startTime = Time.time;
         while(Time.time < startTime + ABILITY1DASHTIME)
         {
-            GetComponent<CharacterController>().Move(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position) * Vector3.forward * ABILITY1DASHSPEED * Time.deltaTime);
+            GetComponent<CharacterController>().Move(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - 
+                transform.position) * Vector3.forward * ABILITY1DASHSPEED * Time.deltaTime);
             playerMovement.StopMovement();
             yield return null;
         }
@@ -218,10 +219,16 @@ public class HuTaoAbilities : NetworkBehaviour
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
-            ability2Active = !ability2Active;
 
+            ability2Active = !ability2Active;
             SummonAbility2ParticlesServerRpc(ability2Active);
- 
+        }
+
+        if (stats.Health - (ABILITY2ACTIVATIONCOST * stats.MaxHealth) <= 100f)
+        {
+            abilityImage2.fillAmount = 1;
+            ability2Active = false;
+            SummonAbility2ParticlesServerRpc(ability2Active);
         }
     }
     private IEnumerator Ability2Interval()

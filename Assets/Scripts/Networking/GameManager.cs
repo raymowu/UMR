@@ -17,6 +17,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] public GameObject[] playerPrefabs;
     [SerializeField] private CharacterDatabase characterDatabase;
     [SerializeField] private ParticleDatabase particleDatabase;
+    [SerializeField] public PlayerScoreboardCard[] playerScoreboardCards;
 
     public static GameManager Instance { get; private set; }
 
@@ -60,6 +61,20 @@ public class GameManager : NetworkBehaviour
                 playerPrefabs[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
                 playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
             }
+
+            for (int i = 0; i < playerScoreboardCards.Length; i++)
+            {
+                // Check if there are enough players (only go through existing players)
+                if (players.Count > i)
+                {
+                    playerScoreboardCards[i].UpdateDisplay(players[i]);
+                }
+                else
+                {
+                    playerScoreboardCards[i].DisableDisplay();
+                }
+            }
+
             players.OnListChanged += HandlePlayersStatsChanged;
 
         }
@@ -104,6 +119,20 @@ public class GameManager : NetworkBehaviour
             playerPrefabs[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
             playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
         }
+
+        // Updates scoreboard Display
+        for (int i = 0; i < playerScoreboardCards.Length; i++)
+        {
+            // Check if there are enough players (only go through existing players)
+            if (players.Count > i)
+            {
+                playerScoreboardCards[i].UpdateDisplay(players[i]);
+            }
+            else
+            {
+                playerScoreboardCards[i].DisableDisplay();
+            }
+        }
     }
 
     /*
@@ -116,11 +145,13 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DealDamageServerRpc(ulong clientId, float damage)
+    private void DealDamageServerRpc(ulong clientId, float damage, ServerRpcParams serverRpcParams = default)
     {
+
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
+            int deaths = players[i].Health > 0 ? players[i].Deaths : players[i].Deaths + 1;
             players[i] = new PlayerStats(
                 players[i].ClientId,
                 players[i].CharacterId,
@@ -131,12 +162,36 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                players[i].Kills,
+                deaths
                 );
+
+            // Update killer scoreboard
             if (players[i].Health <= 0)
             {
-                // Handle death
-                Debug.Log("died");
+                var killerId = serverRpcParams.Receive.SenderClientId;
+                if (NetworkManager.ConnectedClients.ContainsKey(killerId))
+                {
+                    for (int j = 0; j < players.Count; j++)
+                    {
+                        if (players[j].ClientId != killerId) { continue; }
+                        players[j] = new PlayerStats(
+                            players[j].ClientId,
+                            players[j].CharacterId,
+                            players[j].MaxHealth,
+                            players[j].Health,
+                            players[j].AttackSpeed,
+                            players[j].MovementSpeed,
+                            players[j].CurrentMovementSpeed,
+                            players[j].Damage,
+                            players[j].IsSilenced,
+                            players[j].IsDisarmed,
+                            players[j].Kills + 1,
+                            players[j].Deaths
+                            );
+                    }
+                }
             }
         }
     }
@@ -164,7 +219,9 @@ public class GameManager : NetworkBehaviour
                     players[i].CurrentMovementSpeed,
                     players[i].Damage,
                     players[i].IsSilenced,
-                    players[i].IsDisarmed
+                    players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                     );
             }
             else
@@ -179,7 +236,9 @@ public class GameManager : NetworkBehaviour
                     players[i].CurrentMovementSpeed,
                     players[i].Damage,
                     players[i].IsSilenced,
-                    players[i].IsDisarmed
+                    players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                     );
             }
         }
@@ -206,7 +265,9 @@ public class GameManager : NetworkBehaviour
                     players[i].CurrentMovementSpeed,
                     players[i].Damage,
                     players[i].IsSilenced,
-                    players[i].IsDisarmed
+                    players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                     );
             }
     }
@@ -233,7 +294,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -260,7 +323,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -286,7 +351,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage + damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -311,7 +378,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage - damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -337,7 +406,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -363,7 +434,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -388,7 +461,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -413,7 +488,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -522,7 +599,9 @@ public class GameManager : NetworkBehaviour
                 calculateMovementSpeed(clientId),
                 players[i].Damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -558,7 +637,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -583,7 +664,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -621,7 +704,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 true,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
@@ -642,7 +727,9 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 false,
-                players[i].IsDisarmed
+                players[i].IsDisarmed,
+                    players[i].Kills,
+                    players[i].Deaths
                 );
         }
     }
