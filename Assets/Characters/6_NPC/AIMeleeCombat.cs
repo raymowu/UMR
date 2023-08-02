@@ -74,7 +74,7 @@ public class AIMeleeCombat : NetworkBehaviour
 
         if (targetEnemy != null)
         {
-            GameManager.Instance.DealDamage(targetEnemy, stats.Damage);
+            GameManager.Instance.DealDamage(gameObject, targetEnemy, stats.Damage); // TODO: see if it links to owner
         }
 
         // Set the next attack time

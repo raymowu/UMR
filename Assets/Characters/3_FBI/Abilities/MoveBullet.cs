@@ -24,7 +24,7 @@ public class MoveBullet : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!IsOwner) { return; }
-        GameManager.Instance.DealDamage(other.gameObject, parent.GetComponent<PlayerPrefab>().Damage + parent.MAGNUM_SHOT_DAMAGE);
+        GameManager.Instance.DealDamage(parent.gameObject, other.gameObject, parent.GetComponent<PlayerPrefab>().Damage + parent.MAGNUM_SHOT_DAMAGE);
         DestroyAbility1ServerRpc();
     }
 

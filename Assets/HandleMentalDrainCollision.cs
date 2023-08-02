@@ -29,7 +29,7 @@ public class HandleMentalDrainCollision : NetworkBehaviour
             {
                 Debug.Log("here");
                 GameManager.Instance.Slow(player, parent.MENTAL_DRAIN_SLOW_AMOUNT, parent.MENTAL_DRAIN_SLOW_DURATION);
-                GameManager.Instance.DealDamage(player, parent.MENTAL_DRAIN_DAMAGE);
+                GameManager.Instance.DealDamage(parent.gameObject, player, parent.MENTAL_DRAIN_DAMAGE);
             }
         }
         yield return new WaitForSeconds(parent.MENTAL_DRAIN_TICK_INTERVAL);

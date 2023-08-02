@@ -235,12 +235,12 @@ public class HuTaoAbilities : NetworkBehaviour
     {
         nextTickTime = Time.time + ABILITY2TICKINTERVAL;
 
-        GameManager.Instance.DealDamage(gameObject, ABILITY2ACTIVATIONCOST * stats.MaxHealth);
+        GameManager.Instance.DealDamage(gameObject, gameObject, ABILITY2ACTIVATIONCOST * stats.MaxHealth);
         foreach (GameObject player in GameManager.Instance.playerPrefabs)
         {
             if (Vector3.Distance(transform.position, player.transform.position) <= ABILITY2RANGE)
             {
-                GameManager.Instance.DealDamage(player, stats.Damage);
+                GameManager.Instance.DealDamage(gameObject, player, stats.Damage);
             }
         }
         yield return new WaitForSeconds(ABILITY2TICKINTERVAL);
@@ -283,7 +283,7 @@ public class HuTaoAbilities : NetworkBehaviour
     private void CastAbility3ServerRpc()
     {
         // ability cost: 30% of CURRENT HP
-        GameManager.Instance.DealDamage(gameObject, stats.Health * ABILITY3ACTIVATIONCOST);
+        GameManager.Instance.DealDamage(gameObject, gameObject, stats.Health * ABILITY3ACTIVATIONCOST);
         // atk increase (% max hp)
         GameManager.Instance.IncreaseDamage(gameObject, stats.MaxHealth * ABILITY3ATTACKINCREASE);
         StartCoroutine(DestroyGuideToAfterlife());
@@ -334,11 +334,11 @@ public class HuTaoAbilities : NetworkBehaviour
                     numEnemiesHit++;
                     if (stats.Health / stats.MaxHealth <= 0.5f)
                     {
-                        GameManager.Instance.DealDamage(player, stats.Damage * ABILITY4LOWHPDAMAGE);
+                        GameManager.Instance.DealDamage(gameObject, player, stats.Damage * ABILITY4LOWHPDAMAGE);
                     }
                     else
                     {
-                        GameManager.Instance.DealDamage(player, stats.Damage * ABILITY4DAMAGE);
+                        GameManager.Instance.DealDamage(gameObject, player, stats.Damage * ABILITY4DAMAGE);
                     }
                 }
             }

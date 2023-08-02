@@ -72,7 +72,7 @@ public class MeleeCombat : NetworkBehaviour
 
         if (targetEnemy != null)
         {
-            GameManager.Instance.DealDamage(targetEnemy, stats.Damage);
+            GameManager.Instance.DealDamage(gameObject, targetEnemy, stats.Damage);
         }
 
         // Set the next attack time

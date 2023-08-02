@@ -19,6 +19,14 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private ParticleDatabase particleDatabase;
     [SerializeField] public PlayerScoreboardCard[] playerScoreboardCards;
 
+    public int gamePhase = 1;
+    public Vector3[] spawnPoints = { new Vector3 { x = -42.6f, y = 0f, z = -21.5f },
+                        new Vector3 { x = 44.5f, y = 0f, z = 24.5f},
+                        new Vector3 { x = -42f, y = 0f, z = 23.8f},
+                        new Vector3 { x = 44.5f, y = 0f, z = -21.5f},
+                        new Vector3 { x = 0, y = 0f, z = 51},
+                        new Vector3 { x = 0, y = 0f, z = -50}};
+
     public static GameManager Instance { get; private set; }
 
     // Player stats sync
@@ -139,18 +147,22 @@ public class GameManager : NetworkBehaviour
      * BUFFS AND DEBUFFS MANAGER
      */
 
-    public void DealDamage(GameObject target, float damage)
+    public void DealDamage(GameObject sender, GameObject target, float damage)
     {
-        DealDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
+        DealDamageServerRpc(sender.GetComponent<NetworkObject>().OwnerClientId, target.GetComponent<NetworkObject>().OwnerClientId, damage);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DealDamageServerRpc(ulong clientId, float damage, ServerRpcParams serverRpcParams = default)
+    private void DealDamageServerRpc(ulong senderId, ulong clientId, float damage)
     {
 
+        int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
+            Debug.Log(players[i].CharacterId);
+
+            if (playerPrefabs[i].layer == LayerIgnoreRaycast) { return; }
             int deaths = players[i].Health > 0 ? players[i].Deaths : players[i].Deaths + 1;
             players[i] = new PlayerStats(
                 players[i].ClientId,
@@ -167,33 +179,39 @@ public class GameManager : NetworkBehaviour
                 deaths
                 );
 
-            // Update killer scoreboard
+            // Handle death
             if (players[i].Health <= 0)
             {
-                var killerId = serverRpcParams.Receive.SenderClientId;
-                if (NetworkManager.ConnectedClients.ContainsKey(killerId))
+                playerPrefabs[i].layer = LayerIgnoreRaycast;
+
+                StartCoroutine(Respawn(gamePhase == 1 ? 10f : gamePhase == 2 ? 30f : 999f));
+                for (int j = 0; j < players.Count; j++)
                 {
-                    for (int j = 0; j < players.Count; j++)
-                    {
-                        if (players[j].ClientId != killerId) { continue; }
-                        players[j] = new PlayerStats(
-                            players[j].ClientId,
-                            players[j].CharacterId,
-                            players[j].MaxHealth,
-                            players[j].Health,
-                            players[j].AttackSpeed,
-                            players[j].MovementSpeed,
-                            players[j].CurrentMovementSpeed,
-                            players[j].Damage,
-                            players[j].IsSilenced,
-                            players[j].IsDisarmed,
-                            players[j].Kills + 1,
-                            players[j].Deaths
-                            );
-                    }
+                    if (players[j].ClientId != senderId) { continue; }
+                    Debug.Log(players[j].CharacterId);
+                    players[j] = new PlayerStats(
+                        players[j].ClientId,
+                        players[j].CharacterId,
+                        players[j].MaxHealth,
+                        players[j].Health,
+                        players[j].AttackSpeed,
+                        players[j].MovementSpeed,
+                        players[j].CurrentMovementSpeed,
+                        players[j].Damage,
+                        players[j].IsSilenced,
+                        players[j].IsDisarmed,
+                        players[j].Kills + 1,
+                        players[j].Deaths
+                        );
                 }
             }
         }
+    }
+
+    private IEnumerator Respawn(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
     }
 
     public void Heal(GameObject target, float amount)
