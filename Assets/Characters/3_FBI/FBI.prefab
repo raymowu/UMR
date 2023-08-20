@@ -2517,6 +2517,9 @@ MonoBehaviour:
   Damage: 0
   IsSilenced: 0
   IsDisarmed: 0
+  Kills: 0
+  Deaths: 0
+  IsDead: 0
 --- !u!114 &8078906729750711139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2529,6 +2532,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17cfa7349e2cd1146b30419ffd7c087d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthCanvas: {fileID: 3882384799774084192}
   healthSlider3D: {fileID: 3983592503454448822}
   healthSlider2D: {fileID: 5425419409277083926}
 --- !u!143 &-9033902588832410495
@@ -5103,6 +5107,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+--- !u!223 &3882384799774084192 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 3445409208591197170, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+  m_PrefabInstance: {fileID: 1887444803538988946}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &3983592503454448822 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3276682411216638756, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}

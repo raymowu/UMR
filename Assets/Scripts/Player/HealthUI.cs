@@ -5,8 +5,15 @@ using UnityEngine.UI;
 
 public class HealthUI : MonoBehaviour
 {
+    public Canvas healthCanvas;
     public Slider healthSlider3D;
     public Slider healthSlider2D;
+
+    void Update()
+    {
+        healthCanvas.gameObject.SetActive(GetComponent<PlayerPrefab>().IsDead ? false : true);
+    }
+
     public void Start3DSlider(float maxValue)
     {
         healthSlider3D.maxValue = maxValue;

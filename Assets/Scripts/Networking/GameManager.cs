@@ -52,6 +52,7 @@ public class GameManager : NetworkBehaviour
             foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClientsList)
             {
                 // Initialize players network list
+                // (only stats that the character database needs to know so NOT game manager stats etc isDead, silenced, etc)
                 players.Add(new PlayerStats(client.ClientId, HostManager.Instance.ClientData[client.ClientId].characterId,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).Health,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).MaxHealth,
@@ -160,10 +161,10 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-            Debug.Log(players[i].CharacterId);
-
+            // safety check
             if (playerPrefabs[i].layer == LayerIgnoreRaycast) { return; }
-            int deaths = players[i].Health > 0 ? players[i].Deaths : players[i].Deaths + 1;
+            int deaths = players[i].Health - damage > 0 ? players[i].Deaths : players[i].Deaths + 1;
+            bool isDead = players[i].Health - damage > 0 ? false : true;
             players[i] = new PlayerStats(
                 players[i].ClientId,
                 players[i].CharacterId,
@@ -176,19 +177,18 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                 players[i].Kills,
-                deaths
+                deaths,
+                isDead
                 );
 
             // Handle death
             if (players[i].Health <= 0)
             {
-                playerPrefabs[i].layer = LayerIgnoreRaycast;
-
-                StartCoroutine(Respawn(gamePhase == 1 ? 10f : gamePhase == 2 ? 30f : 999f));
+                StartCoroutine(Respawn(clientId, gamePhase == 1 ? 10f : gamePhase == 2 ? 30f : 999f));
                 for (int j = 0; j < players.Count; j++)
                 {
                     if (players[j].ClientId != senderId) { continue; }
-                    Debug.Log(players[j].CharacterId);
+                    playerPrefabs[i].GetComponent<PlayerMovement>().targetEnemy = null;
                     players[j] = new PlayerStats(
                         players[j].ClientId,
                         players[j].CharacterId,
@@ -201,17 +201,60 @@ public class GameManager : NetworkBehaviour
                         players[j].IsSilenced,
                         players[j].IsDisarmed,
                         players[j].Kills + 1,
-                        players[j].Deaths
+                        players[j].Deaths,
+                        players[j].IsDead
                         );
                 }
             }
         }
     }
 
-    private IEnumerator Respawn(float duration)
+    private IEnumerator Respawn(ulong clientId, float duration)
     {
+        HandleBeforeDeath(playerPrefabs[clientId], duration);
         yield return new WaitForSeconds(duration);
+        HandleAfterDeathServerRpc(clientId, false);
+    }
 
+    [ServerRpc]
+    private void HandleAfterDeathServerRpc(ulong clientId, bool isDead)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth,
+                players[i].MaxHealth,
+                players[i].AttackSpeed,
+                players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
+                players[i].Damage,
+                players[i].IsSilenced,
+                players[i].IsDisarmed,
+                players[i].Kills,
+                players[i].Deaths,
+                isDead
+                );
+
+            playerPrefabs[i].GetComponent<CharacterController>().enabled = false;
+            teleportPlayerClientRpc(clientId);
+            playerPrefabs[i].GetComponent<CharacterController>().enabled = true;
+            playerPrefabs[i].GetComponent<PlayerMovement>().StopMovement();
+            //safety check
+            playerPrefabs[i].GetComponent<PlayerMovement>().targetEnemy = null;
+        }
+    }
+
+    [ClientRpc]
+    private void teleportPlayerClientRpc(ulong clientId)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            playerPrefabs[i].transform.position = spawnPoints[i];
+        }
     }
 
     public void Heal(GameObject target, float amount)
@@ -239,7 +282,8 @@ public class GameManager : NetworkBehaviour
                     players[i].IsSilenced,
                     players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                     );
             }
             else
@@ -256,7 +300,8 @@ public class GameManager : NetworkBehaviour
                     players[i].IsSilenced,
                     players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                     );
             }
         }
@@ -273,26 +318,27 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-                players[i] = new PlayerStats(
-                    players[i].ClientId,
-                    players[i].CharacterId,
-                    players[i].MaxHealth + amount,
-                    players[i].Health,
-                    players[i].AttackSpeed,
-                    players[i].MovementSpeed,
-                    players[i].CurrentMovementSpeed,
-                    players[i].Damage,
-                    players[i].IsSilenced,
-                    players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths
-                    );
-            }
+            players[i] = new PlayerStats(
+                players[i].ClientId,
+                players[i].CharacterId,
+                players[i].MaxHealth + amount,
+                players[i].Health,
+                players[i].AttackSpeed,
+                players[i].MovementSpeed,
+                players[i].CurrentMovementSpeed,
+                players[i].Damage,
+                players[i].IsSilenced,
+                players[i].IsDisarmed,
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
+                );
+        }
     }
 
     public void DecreaseMaxHealth(GameObject target, float amount)
     {
-       DecreaseMaxHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+        DecreaseMaxHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -314,7 +360,8 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -330,7 +377,7 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-            float newCurrentHealth = players[i].Health >= amount ? amount : players[i].Health;
+            float newCurrentHealth = players[i].Health >= amount ? amount : players[i].MaxHealth;
             players[i] = new PlayerStats(
                 players[i].ClientId,
                 players[i].CharacterId,
@@ -343,7 +390,8 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -371,7 +419,8 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -398,7 +447,8 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -426,7 +476,8 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -454,7 +505,8 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -481,7 +533,8 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -508,7 +561,8 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -540,7 +594,7 @@ public class GameManager : NetworkBehaviour
     private void removeFromMovementSpeedTrackerServerRpc(ulong clientId, float speedAmount, float speedDuration)
     {
         foreach (MovementSpeedBuffDebuff m in movementSpeedTracker) {
-            if (m.ClientId != clientId || 
+            if (m.ClientId != clientId ||
                 m.Amount != speedAmount || m.Duration != speedDuration) { continue; }
             movementSpeedTracker.Remove(m);
             break;
@@ -619,7 +673,8 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -657,7 +712,8 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -684,7 +740,8 @@ public class GameManager : NetworkBehaviour
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -724,7 +781,8 @@ public class GameManager : NetworkBehaviour
                 true,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -747,7 +805,8 @@ public class GameManager : NetworkBehaviour
                 false,
                 players[i].IsDisarmed,
                     players[i].Kills,
-                    players[i].Deaths
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -780,7 +839,10 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
-                true
+                true,
+                    players[i].Kills,
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
@@ -801,16 +863,77 @@ public class GameManager : NetworkBehaviour
                 players[i].CurrentMovementSpeed,
                 players[i].Damage,
                 players[i].IsSilenced,
-                false
+                false,
+                    players[i].Kills,
+                    players[i].Deaths,
+                    players[i].IsDead
                 );
         }
     }
+
+    public void Untargetable(GameObject target, float duration)
+    {
+        UntargetableServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+        StartCoroutine(Retargetable(target, duration));
+    }
+
+    IEnumerator Retargetable(GameObject target, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        RetargetableServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void UntargetableServerRpc(ulong clientId)
+    {
+        UntargetableClientRpc(clientId);
+    }
+
+    [ClientRpc]
+    private void UntargetableClientRpc(ulong clientId)
+    {
+        int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            playerPrefabs[i].layer = LayerIgnoreRaycast;
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RetargetableServerRpc(ulong clientId)
+    {
+        RetargetableClientRpc(clientId);
+    }
+
+    [ClientRpc]
+    private void RetargetableClientRpc(ulong clientId)
+    {
+        int playerLayer = LayerMask.NameToLayer("Player");
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            playerPrefabs[i].layer = playerLayer;
+        }
+    }
+
     public void Stun(GameObject target, float stunDuration)
     {
         Disarm(target, stunDuration);
         Silence(target, stunDuration);
         Root(target, stunDuration);
         SummonStunParticles(target, stunDuration);
+    }
+
+    public void HandleBeforeDeath(GameObject target, float stunDuration)
+    {
+        Disarm(target, stunDuration);
+        Silence(target, stunDuration);
+        Root(target, stunDuration);
+        // 5 seconds of invincibility after respawn
+        Untargetable(target, stunDuration + 5f);
     }
 
     public void Knockup(GameObject target, float knockupDuration)

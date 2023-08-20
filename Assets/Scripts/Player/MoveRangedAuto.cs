@@ -19,7 +19,6 @@ public class MoveRangedAuto : NetworkBehaviour
         {
             DestroyRangedAutoServerRpc();
         }*/
-
         transform.position = Vector3.MoveTowards(transform.position, 
             new Vector3(target.transform.position.x, 1, target.transform.position.z), 
             velocity * Time.deltaTime);

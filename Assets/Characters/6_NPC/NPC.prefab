@@ -2034,8 +2034,6 @@ MonoBehaviour:
   abilityText4: {fileID: 1783206033592286435}
   ability4Key: 114
   ability4Cooldown: 60
-  ability4Canvas: {fileID: 1568284208525756425}
-  ability4Indicator: {fileID: 738647322021767380}
   ability4DisableOverlay: {fileID: 6053302600782632325}
 --- !u!114 &4384169694838345888
 MonoBehaviour:
@@ -2103,6 +2101,9 @@ MonoBehaviour:
   Damage: 0
   IsSilenced: 0
   IsDisarmed: 0
+  Kills: 0
+  Deaths: 0
+  IsDead: 0
 --- !u!114 &-8661930681160313929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2129,6 +2130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17cfa7349e2cd1146b30419ffd7c087d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthCanvas: {fileID: 5762878911095533871}
   healthSlider3D: {fileID: 8360960938131995226}
   healthSlider2D: {fileID: 5571036264877441529}
 --- !u!1 &4399760301956523524
@@ -4215,6 +4217,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &5762878911095533871 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 3445409208591197170, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+  m_PrefabInstance: {fileID: 6929164873658028765}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6936151907545311237
 PrefabInstance:
   m_ObjectHideFlags: 0

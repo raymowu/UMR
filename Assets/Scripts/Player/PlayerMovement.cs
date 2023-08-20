@@ -24,19 +24,28 @@ public class PlayerMovement : NetworkBehaviour
         hmScript = GetComponent<HighlightManager>();
     }
 
-    // Update is called once per frame
     void Update()
     {
 
         if (!IsOwner) { return; }
-        if (Input.GetKeyDown(KeyCode.V))
+
+        if (GetComponent<PlayerPrefab>().Health <= 0)
         {
-            GameManager.Instance.Stun(gameObject, 4);
+            anim.SetBool("isDead", true);
+            hmScript.DeselectHighlight();
+            targetEnemy = null;
         }
-        if ( GetComponent<PlayerPrefab>().CurrentMovementSpeed <= 0.1f) {
+        else
+        {
+            anim.SetBool("isDead", false);
+        }
+
+        if (GetComponent<PlayerPrefab>().CurrentMovementSpeed <= 0.1f) {
             anim.SetFloat("Speed", 0);
             return;  
         }
+
+
         Animation();
         Move();
     }

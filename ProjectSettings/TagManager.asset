@@ -13,6 +13,7 @@ TagManager:
   - Ability2Text
   - Ability3Text
   - Ability4Text
+  - UIAbovePlayer
   layers:
   - Default
   - TransparentFX

@@ -17,6 +17,9 @@ public class PlayerPrefab : NetworkBehaviour
     public float Damage;
     public bool IsSilenced;
     public bool IsDisarmed;
+    public int Kills;
+    public int Deaths;
+    public bool IsDead;
 
     void Start()
     {
@@ -26,6 +29,10 @@ public class PlayerPrefab : NetworkBehaviour
     private void Update()
     {
         if (!IsOwner) { return; }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            GameManager.Instance.DealDamage(gameObject, gameObject, 9999);
+        }
     }
 
     public void UpdatePlayerStats(PlayerStats player)
@@ -40,6 +47,9 @@ public class PlayerPrefab : NetworkBehaviour
             Damage = player.Damage;
             IsSilenced = player.IsSilenced;
             IsDisarmed = player.IsDisarmed;
+            Kills = player.Kills;
+            Deaths = player.Deaths;
+            IsDead = player.IsDead;
 
             healthUI.Update2DSlider(player.MaxHealth, Health);
             healthUI.Update3DSlider(player.MaxHealth, Health);

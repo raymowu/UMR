@@ -50,7 +50,6 @@ public class DarthogAbilities : NetworkBehaviour
 
     [Header("Ability 4")]
     [SerializeField] GameObject STRENGTH_BUFF_PARTICLES;
-    [SerializeField] GameObject BEAST_AWAKENING_PARTICLES;
     public float BEAST_AWAKENING_BUFF_AMOUNT = 0.2f;
     public float BEAST_AWAKENING_BUFF_DURATION = 15f;
     public Image abilityImage4;

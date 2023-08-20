@@ -38,7 +38,7 @@ public class RangedCombat : NetworkBehaviour
 
         // Perform the ranged auto attack if in range
         if (targetEnemy != null && targetEnemy != NetworkManager.Singleton.LocalClient.PlayerObject.gameObject &&
-            performRangedAttack && Time.time > nextAttackTime)
+            performRangedAttack && Time.time > nextAttackTime && !targetEnemy.GetComponent<PlayerPrefab>().IsDead)
         {
             if (Vector3.Distance(transform.position, targetEnemy.transform.position) <= moveScript.stoppingDistance)
             {
@@ -73,7 +73,7 @@ public class RangedCombat : NetworkBehaviour
 
         if (targetEnemy != null)
         {
-            SummonAutoProjectileServerRpc();
+            SummonAutoProjectile(gameObject, targetEnemy);
         }
         // Set the next attack time
         nextAttackTime = Time.time + attackInterval;
@@ -83,13 +83,37 @@ public class RangedCombat : NetworkBehaviour
         anim.SetBool("isAttacking", false);
     }
 
-    [ServerRpc]
-    private void SummonAutoProjectileServerRpc()
+    public void SummonAutoProjectile(GameObject parent, GameObject target)
     {
+        SummonAutoProjectileServerRpc(parent.GetComponent<NetworkObject>().OwnerClientId,
+            target.GetComponent<NetworkObject>().OwnerClientId);
+    }
+
+    [ServerRpc]
+    private void SummonAutoProjectileServerRpc(ulong parentId, ulong targetId)
+    {
+        NetworkList<PlayerStats> players = GameManager.Instance.players;
+        GameObject[] playerPrefabs = GameManager.Instance.playerPrefabs;
+        GameObject parent = playerPrefabs[0];
+        GameObject target = playerPrefabs[0];
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != parentId) { continue; }
+            parent = playerPrefabs[i];
+            break;
+        }
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != targetId) { continue; }
+            target = playerPrefabs[i];
+            break;
+        }
+
         GameObject go = Instantiate(projectilePrefab, shootTransform.position, Quaternion.identity);
-        Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
-        go.GetComponent<MoveRangedAuto>().parent = gameObject;
-        go.GetComponent<MoveRangedAuto>().target = targetEnemy;
+        Physics.IgnoreCollision(go.GetComponent<Collider>(), parent.GetComponent<Collider>());
+        go.GetComponent<MoveRangedAuto>().parent = parent;
+        go.GetComponent<MoveRangedAuto>().target = target;
         go.GetComponent<NetworkObject>().Spawn();
     }
 }
