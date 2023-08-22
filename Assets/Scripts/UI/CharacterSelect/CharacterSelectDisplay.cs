@@ -4,6 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class CharacterSelectDisplay : NetworkBehaviour
 {
@@ -84,7 +85,7 @@ public class CharacterSelectDisplay : NetworkBehaviour
     private void HandleClientDisconnected(ulong clientId)
     {
         // Remove that client from players list
-        // RAYMOND NOTE: theres a deallocation error when calling .Count so I just put an if
+        // theres a deallocation error when calling .Count so I just put an if
         // statement that checks if the game has started
 
         if (!HostManager.Instance.gameHasStarted)

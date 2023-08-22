@@ -918,7 +918,7 @@ MonoBehaviour:
   TransitionStateInfoList:
   - Layer: 0
     OriginatingState: -453240694
-    DestinationState: -1028202203
+    DestinationState: -1092128709
     TransitionDuration: 0.25
     TriggerNameHash: -308190105
     TransitionIndex: 1
@@ -5453,7 +5453,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 115512, guid: 27b2517d32041a84f9cb85822363149d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 437054, guid: 27b2517d32041a84f9cb85822363149d, type: 3}
       propertyPath: m_RootOrder

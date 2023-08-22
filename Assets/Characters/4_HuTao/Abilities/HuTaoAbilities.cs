@@ -275,6 +275,7 @@ public class HuTaoAbilities : NetworkBehaviour
             GameManager.Instance.Root(gameObject, 1.5f);
 
             GameManager.Instance.SummonStrengthParticles(gameObject);
+            GameManager.Instance.SummonGlowingParticles(gameObject, ability3Duration);
             CastAbility3ServerRpc();
         }
     }

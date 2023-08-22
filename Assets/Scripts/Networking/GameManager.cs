@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.AI;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
@@ -87,6 +88,7 @@ public class GameManager : NetworkBehaviour
             players.OnListChanged += HandlePlayersStatsChanged;
 
         }
+        DontDestroyOnLoad(gameObject);
     }
 
     public override void OnNetworkDespawn()
@@ -104,6 +106,7 @@ public class GameManager : NetworkBehaviour
 
     private void HandleClientDisconnected(ulong clientId)
     {
+
         // Remove that client from players list
         // RAYMOND NOTE: theres a deallocation error when calling .Count so I just put an if
         // statement that checks if the game has started

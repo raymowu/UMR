@@ -179,6 +179,7 @@ GameObject:
   - component: {fileID: 9201535253802665431}
   - component: {fileID: 8131230603449845897}
   - component: {fileID: 2773015462725307649}
+  - component: {fileID: 5683929649981871956}
   m_Layer: 6
   m_Name: 3D Health Canvas
   m_TagString: Untagged
@@ -224,7 +225,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -250,7 +251,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &8131230603449845897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,6 +281,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ced02b61dd2ef834aaf1f3bbc001546f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5683929649981871956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5573489061960533712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &6696754358356726798
 GameObject:
   m_ObjectHideFlags: 0
