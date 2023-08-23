@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-public class BillboardCanvas : NetworkBehaviour
+public class BillboardCanvas : MonoBehaviour
 {
     Transform cameraTransform;
     void Start()

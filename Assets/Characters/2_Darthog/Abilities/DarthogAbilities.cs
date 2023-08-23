@@ -15,18 +15,15 @@ public class DarthogAbilities : NetworkBehaviour
     private PlayerPrefab stats;
 
     [Header("Ability 1")]
-    public float SMASH_RANGE = 3f;
-    public float SMASH_KNOCKUP_DURATION = 1f;
     public Image abilityImage1;
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
     public GameObject ability1DisableOverlay;
+    public float SMASH_RANGE = 3f;
+    public float SMASH_KNOCKUP_DURATION = 1f;
 
     [Header("Ability 2")]
-    public float POUNCE_DASH_SPEED = 20f;
-    public float POUNCE_DASH_TIME = 0.2f;
-    public float POUNCE_DASH_RANGE = 5f;
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
@@ -34,29 +31,30 @@ public class DarthogAbilities : NetworkBehaviour
     public Canvas ability2Canvas;
     public Image ability2Indicator;
     public GameObject ability2DisableOverlay;
+    public float POUNCE_DASH_SPEED = 20f;
+    public float POUNCE_DASH_TIME = 0.2f;
+    public float POUNCE_DASH_RANGE = 5f;
 
     [Header("Ability 3")]
-    public float ROCK_HURL_STUN_DURATION = 1.5f;
+    [SerializeField] private GameObject ability3Projectile;
     public Image abilityImage3;
     public TMP_Text abilityText3;
     public KeyCode ability3Key = KeyCode.E;
     public float ability3Cooldown;
-
-    [SerializeField] private GameObject ability3Projectile;
-
     public Canvas ability3Canvas;
     public Image ability3Indicator;
     public GameObject ability3DisableOverlay;
+    public float ROCK_HURL_STUN_DURATION = 1.5f;
 
     [Header("Ability 4")]
     [SerializeField] GameObject STRENGTH_BUFF_PARTICLES;
-    public float BEAST_AWAKENING_BUFF_AMOUNT = 0.2f;
-    public float BEAST_AWAKENING_BUFF_DURATION = 15f;
     public Image abilityImage4;
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
     public GameObject ability4DisableOverlay;
+    public float BEAST_AWAKENING_BUFF_AMOUNT = 0.2f;
+    public float BEAST_AWAKENING_BUFF_DURATION = 15f;
 
     private bool isAbility1Cooldown = false;
     private bool isAbility2Cooldown = false;
@@ -103,7 +101,6 @@ public class DarthogAbilities : NetworkBehaviour
         ability3Canvas.enabled = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!IsOwner) { return; }
@@ -122,8 +119,6 @@ public class DarthogAbilities : NetworkBehaviour
 
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-
-        // TODO: Cast ability functionality
         Ability1Input();
         Ability2Input();
         Ability3Input();
@@ -192,7 +187,6 @@ public class DarthogAbilities : NetworkBehaviour
             }
         }
     }
-
     private void Ability2Input()
     {
         if (Input.GetKeyDown(ability2Key) && !isAbility2Cooldown)

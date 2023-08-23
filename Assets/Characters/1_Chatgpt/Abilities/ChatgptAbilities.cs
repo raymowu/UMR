@@ -1,7 +1,3 @@
-
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
@@ -16,38 +12,38 @@ public class ChatgptAbilities : NetworkBehaviour
 
     [Header("Ability 1")]
     [SerializeField] private GameObject ability1Projectile;
-    public float CYBERBALL_DAMAGE = 10;
-    public Image abilityImage1;
-    public TMP_Text abilityText1;
+    public Image ability1Image;
+    public TMP_Text ability1Text;
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
     public Canvas ability1Canvas;
     public Image ability1Indicator;
     public GameObject ability1DisableOverlay;
+    public float CYBERBALL_DAMAGE = 10;
 
     [Header("Ability 2")]
     [SerializeField] private GameObject ability2Projectile;
-    public float AT_CAPACITY_ROOT_DURATION = 2f;
-    public Image abilityImage2;
-    public TMP_Text abilityText2;
+    public Image ability2Image;
+    public TMP_Text ability2Text;
     public KeyCode ability2Key = KeyCode.W;
     public float ability2Cooldown;
     public Canvas ability2Canvas;
     public Image ability2Indicator;
     public GameObject ability2DisableOverlay;
+    public float AT_CAPACITY_ROOT_DURATION = 2f;
 
     [Header("Ability 3")]
-    public float NATURAL_LANGUAGE_PROCESSING_SPEED_DURATION = 2f;
-    public Image abilityImage3;
-    public TMP_Text abilityText3;
+    public Image ability3Image;
+    public TMP_Text ability3Text;
     public KeyCode ability3Key = KeyCode.E;
     public float ability3Cooldown;
     public GameObject ability3DisableOverlay;
+    public float NATURAL_LANGUAGE_PROCESSING_SPEED_DURATION = 2f;
 
     [Header("Ability 4")]
     [SerializeField] private GameObject ability4Projectile;
-    public Image abilityImage4;
-    public TMP_Text abilityText4;
+    public Image ability4Image;
+    public TMP_Text ability4Text;
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
     public Canvas ability4Canvas;
@@ -68,7 +64,6 @@ public class ChatgptAbilities : NetworkBehaviour
     private RaycastHit hit;
     private Ray ray;
 
-    // Start is called before the first frame update
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
@@ -83,15 +78,15 @@ public class ChatgptAbilities : NetworkBehaviour
             ability4Canvas.gameObject.SetActive(true);
         }
 
-        abilityImage1.fillAmount = 0;
-        abilityImage2.fillAmount = 0;
-        abilityImage3.fillAmount = 0;
-        abilityImage4.fillAmount = 0;
+        ability1Image.fillAmount = 0;
+        ability2Image.fillAmount = 0;
+        ability3Image.fillAmount = 0;
+        ability4Image.fillAmount = 0;
 
-        abilityText1.text = "";
-        abilityText2.text = "";
-        abilityText3.text = "";
-        abilityText4.text = "";
+        ability1Text.text = "";
+        ability2Text.text = "";
+        ability3Text.text = "";
+        ability4Text.text = "";
 
         ability1Indicator.enabled = false;
         ability2Indicator.enabled = false;
@@ -102,7 +97,6 @@ public class ChatgptAbilities : NetworkBehaviour
         ability4Canvas.enabled = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!IsOwner) { return; }
@@ -121,16 +115,15 @@ public class ChatgptAbilities : NetworkBehaviour
 
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        // TODO: Cast ability functionality
         Ability1Input();
         Ability2Input();
         Ability3Input();
         Ability4Input();
 
-        AbilityCooldown(ref currentAbility1Cooldown, ability1Cooldown, ref isAbility1Cooldown, abilityImage1, abilityText1);
-        AbilityCooldown(ref currentAbility2Cooldown, ability2Cooldown, ref isAbility2Cooldown, abilityImage2, abilityText2);
-        AbilityCooldown(ref currentAbility3Cooldown, ability3Cooldown, ref isAbility3Cooldown, abilityImage3, abilityText3);
-        AbilityCooldown(ref currentAbility4Cooldown, ability4Cooldown, ref isAbility4Cooldown, abilityImage4, abilityText4);
+        AbilityCooldown(ref currentAbility1Cooldown, ability1Cooldown, ref isAbility1Cooldown, ability1Image, ability1Text);
+        AbilityCooldown(ref currentAbility2Cooldown, ability2Cooldown, ref isAbility2Cooldown, ability2Image, ability2Text);
+        AbilityCooldown(ref currentAbility3Cooldown, ability3Cooldown, ref isAbility3Cooldown, ability3Image, ability3Text);
+        AbilityCooldown(ref currentAbility4Cooldown, ability4Cooldown, ref isAbility4Cooldown, ability4Image, ability4Text);
 
         Ability1Canvas();
         Ability2Canvas();
@@ -182,7 +175,6 @@ public class ChatgptAbilities : NetworkBehaviour
         }
     }
 
-    // Typical ability cast structure
     private void Ability1Input()
     {
         if (Input.GetKeyDown(ability1Key) && !isAbility1Cooldown)
@@ -199,7 +191,7 @@ public class ChatgptAbilities : NetworkBehaviour
 
         if (ability1Canvas.enabled && Input.GetKeyUp(ability1Key))
         {
-            // Raymond note: There was a bug with the raycast hit hitting the player prefab and using that y value, 
+            // There was a bug with the raycast hit hitting the player prefab and using that y value, 
             // which sends the projectile into the air cuz the click was on top of a guy. There r prob 2 ways to solve this,
             // either set the layer mask to only get the ground layer OR dont use the hit's y value
             if (Physics.Raycast(ray, out hit, Mathf.Infinity))
@@ -216,7 +208,6 @@ public class ChatgptAbilities : NetworkBehaviour
             ability1Indicator.enabled = false;
 
             // SetTrigger does not work on network animator unless actual component is called
-            // anim.SetTrigger("CastCyberball")
             GetComponent<OwnerNetworkAnimator>().SetTrigger("CastCyberball");
         }
     }
@@ -262,9 +253,9 @@ public class ChatgptAbilities : NetworkBehaviour
                     Debug.Log(directionToTarget);
                     Debug.Log(distance);
 
+                    // Target is in front of me
                     if (Mathf.Abs(angle) > 130 && distance < 4.5)
                     {
-                        Debug.Log("target is in front of me");
                         GameManager.Instance.Root(player, AT_CAPACITY_ROOT_DURATION);
                     }
                 }

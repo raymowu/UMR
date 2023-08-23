@@ -314,19 +314,19 @@ MonoBehaviour:
   TransitionStateInfoList:
   - Layer: 0
     OriginatingState: -1724663407
-    DestinationState: -939481016
+    DestinationState: -82630979
     TransitionDuration: 0.1
     TriggerNameHash: -489498588
     TransitionIndex: 1
   - Layer: 0
     OriginatingState: -1724663407
-    DestinationState: -1028202203
+    DestinationState: 1645901575
     TransitionDuration: 0.25
     TriggerNameHash: -317704921
     TransitionIndex: 2
   - Layer: 0
     OriginatingState: -1724663407
-    DestinationState: -1028202203
+    DestinationState: -1954950606
     TransitionDuration: 0.25
     TriggerNameHash: -1063111926
     TransitionIndex: 3
@@ -346,32 +346,32 @@ MonoBehaviour:
   shootTransform: {fileID: 523256378716002170}
   abilitiesCanvas: {fileID: 9188325070734120881}
   ability1Projectile: {fileID: 9181678076344273277, guid: 4e73af4e091746b45afb0280160a1137, type: 3}
-  CYBERBALL_DAMAGE: 10
-  abilityImage1: {fileID: 9188325070398098771}
-  abilityText1: {fileID: 9188325069901609459}
+  ability1Image: {fileID: 9188325070398098771}
+  ability1Text: {fileID: 9188325069901609459}
   ability1Key: 113
   ability1Cooldown: 3
   ability1Canvas: {fileID: 208892598009147444}
   ability1Indicator: {fileID: 3594055329706134259}
   ability1DisableOverlay: {fileID: 8678979324152983680}
+  CYBERBALL_DAMAGE: 10
   ability2Projectile: {fileID: 1542166905197993964, guid: b627c99516a36e643bbaead1519c89d5, type: 3}
-  AT_CAPACITY_ROOT_DURATION: 2
-  abilityImage2: {fileID: 9188325071042435380}
-  abilityText2: {fileID: 9188325070886483161}
+  ability2Image: {fileID: 9188325071042435380}
+  ability2Text: {fileID: 9188325070886483161}
   ability2Key: 119
   ability2Cooldown: 5
   ability2Canvas: {fileID: 4849130565617042045}
   ability2Indicator: {fileID: 7794124358514598298}
   ability2DisableOverlay: {fileID: 1111058790730901174}
-  NATURAL_LANGUAGE_PROCESSING_SPEED_DURATION: 2
-  abilityImage3: {fileID: 9188325070725914918}
-  abilityText3: {fileID: 9188325069408897177}
+  AT_CAPACITY_ROOT_DURATION: 2
+  ability3Image: {fileID: 9188325070725914918}
+  ability3Text: {fileID: 9188325069408897177}
   ability3Key: 101
   ability3Cooldown: 7
   ability3DisableOverlay: {fileID: 8195642520177913974}
+  NATURAL_LANGUAGE_PROCESSING_SPEED_DURATION: 2
   ability4Projectile: {fileID: 1539730877320686712, guid: d1afc66266d3f2148be8cedfa68b14b3, type: 3}
-  abilityImage4: {fileID: 9188325070122858291}
-  abilityText4: {fileID: 9188325069411680253}
+  ability4Image: {fileID: 9188325070122858291}
+  ability4Text: {fileID: 9188325069411680253}
   ability4Key: 114
   ability4Cooldown: 4
   ability4Canvas: {fileID: 4840799964697296485}
@@ -3737,6 +3737,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5683929649981871956, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 951099334
+      objectReference: {fileID: 0}
     - target: {fileID: 5822181468620268273, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3828,6 +3832,10 @@ PrefabInstance:
     - target: {fileID: 9199333289425964089, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 9201535253802665431, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}

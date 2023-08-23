@@ -10,13 +10,12 @@ using TMPro;
 public class HuTaoAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
+    [SerializeField] private Canvas abilitiesCanvas;
     private PlayerMovement playerMovement;
     private Animator anim;
     private PlayerPrefab stats;
 
     [Header("Ability 1")]
-    public float ABILITY1DASHSPEED = 20f;
-    public float ABILITY1DASHTIME = 0.15f;
     public Image abilityImage1;
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
@@ -24,35 +23,33 @@ public class HuTaoAbilities : NetworkBehaviour
     public Canvas ability1Canvas;
     public Image ability1Indicator;
     public GameObject ability1DisableOverlay;
+    public float DASH_SPEED = 20f;
+    public float DASH_TIME = 0.15f;
 
     [Header("Ability 2")]
-    public float ABILITY2ACTIVATIONCOST = 0.02f;
-    public float ABILITY2TICKINTERVAL = 0.5f;
-    public float ABILITY2RANGE = 1.5f;
+    public GameObject spiritOfTheAfterlifeParticles;
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
-    public bool ability2Active = false;
     private float nextTickTime = 0f;
     public GameObject ability2DisableOverlay;
+    public float ABILITY2ACTIVATIONCOST = 0.02f;
+    public float ABILITY2TICKINTERVAL = 0.5f;
+    public float ABILITY2RANGE = 1.5f;
+    public bool ability2Active = false;
 
     [Header("Ability 3")]
-    public float ABILITY3ACTIVATIONCOST = 0.3f;
-    public float ABILITY3ATTACKINCREASE = .063f;
     public Image abilityImage3;
     public TMP_Text abilityText3;
     public KeyCode ability3Key = KeyCode.E;
     public float ability3Cooldown;
     public float ability3Duration = 9f;
     public GameObject ability3DisableOverlay;
+    public float ABILITY3ACTIVATIONCOST = 0.3f;
+    public float ABILITY3ATTACKINCREASE = .063f;
 
     [Header("Ability 4")]
     [SerializeField] private GameObject ability4Particles;
-    public float ABILITY4RANGE = 4f;
-    public float ABILITY4DAMAGE = 4.50f;
-    public float ABILITY4LOWHPDAMAGE = 5.50f;
-    public float ABILITY4HPREGEN = 0.1f;
-    public float ABILITY4LOWHPREGEN = 0.2f;
     public Image abilityImage4;
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
@@ -60,6 +57,11 @@ public class HuTaoAbilities : NetworkBehaviour
     public Canvas ability4Canvas;
     public Image ability4Indicator;
     public GameObject ability4DisableOverlay;
+    public float ABILITY4RANGE = 4f;
+    public float ABILITY4DAMAGE = 4.50f;
+    public float ABILITY4LOWHPDAMAGE = 5.50f;
+    public float ABILITY4HPREGEN = 0.1f;
+    public float ABILITY4LOWHPREGEN = 0.2f;
 
     private bool isAbility1Cooldown = false;
     private bool isAbility3Cooldown = false;
@@ -73,7 +75,6 @@ public class HuTaoAbilities : NetworkBehaviour
     private RaycastHit hit;
     private Ray ray;
 
-    // Start is called before the first frame update
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
@@ -83,9 +84,9 @@ public class HuTaoAbilities : NetworkBehaviour
         // Shows UI
         if (IsOwner)
         {
-            transform.GetChild(0).gameObject.SetActive(true);
-            transform.GetChild(1).gameObject.SetActive(true);
-            transform.GetChild(2).gameObject.SetActive(true);
+            abilitiesCanvas.gameObject.SetActive(true);
+            ability1Canvas.gameObject.SetActive(true);
+            ability4Canvas.gameObject.SetActive(true);
         }
 
         abilityImage1.fillAmount = 0;
@@ -105,7 +106,6 @@ public class HuTaoAbilities : NetworkBehaviour
         ability4Canvas.enabled = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!IsOwner) { return; }
@@ -194,10 +194,10 @@ public class HuTaoAbilities : NetworkBehaviour
     IEnumerator Dash()
     {
         float startTime = Time.time;
-        while(Time.time < startTime + ABILITY1DASHTIME)
+        while(Time.time < startTime + DASH_TIME)
         {
             GetComponent<CharacterController>().Move(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - 
-                transform.position) * Vector3.forward * ABILITY1DASHSPEED * Time.deltaTime);
+                transform.position) * Vector3.forward * DASH_SPEED * Time.deltaTime);
             playerMovement.StopMovement();
             yield return null;
         }
@@ -221,14 +221,14 @@ public class HuTaoAbilities : NetworkBehaviour
             ability4Indicator.enabled = false;
 
             ability2Active = !ability2Active;
-            SummonAbility2ParticlesServerRpc(ability2Active);
+            ToggleAbility2ParticlesServerRpc(ability2Active);
         }
 
         if (stats.Health - (ABILITY2ACTIVATIONCOST * stats.MaxHealth) <= 100f)
         {
             abilityImage2.fillAmount = 1;
             ability2Active = false;
-            SummonAbility2ParticlesServerRpc(ability2Active);
+            ToggleAbility2ParticlesServerRpc(ability2Active);
         }
     }
     private IEnumerator Ability2Interval()
@@ -247,15 +247,15 @@ public class HuTaoAbilities : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void SummonAbility2ParticlesServerRpc(bool active)
+    private void ToggleAbility2ParticlesServerRpc(bool active)
     {
-        SummonAbility2ParticlesClientRpc(active);
+        ToggleAbility2ParticlesClientRpc(active);
     }
 
     [ClientRpc]
-    private void SummonAbility2ParticlesClientRpc(bool active)
+    private void ToggleAbility2ParticlesClientRpc(bool active)
     {
-        transform.GetChild(3).gameObject.SetActive(active);
+        spiritOfTheAfterlifeParticles.gameObject.SetActive(active);
     }
 
     private void Ability3Input()

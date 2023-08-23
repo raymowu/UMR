@@ -50,14 +50,15 @@ public class FBIAbilities : NetworkBehaviour
 
     [Header("Ability 4")]
     [SerializeField] private GameObject policeCar;
-    public float HIGH_SPEED_CHASE_DURATION = 10f;
-    public float HIGH_SPEED_CHASE_SPEED = 3f;
-    public float HIGH_SPEED_CHASE_COLLISION_DAMAGE = 60f;
     public Image abilityImage4;
     public TMP_Text abilityText4;
     public KeyCode ability4Key = KeyCode.R;
     public float ability4Cooldown;
     public GameObject ability4DisableOverlay;
+    public float HIGH_SPEED_CHASE_DURATION = 10f;
+    public float HIGH_SPEED_CHASE_SPEED = 3f;
+    public float HIGH_SPEED_CHASE_COLLISION_DAMAGE = 60f;
+    private bool highSpeedChaseActive = false;
 
     private bool isAbility1Cooldown = false;
     private bool isAbility2Cooldown = false;
@@ -88,7 +89,6 @@ public class FBIAbilities : NetworkBehaviour
             ability3Canvas.gameObject.SetActive(true);
         }
 
-        policeCar.GetComponent<HandlePoliceCarCollision>().parent = this;
         policeCar.gameObject.SetActive(false);
 
         abilityImage1.fillAmount = 0;
@@ -303,6 +303,21 @@ public class FBIAbilities : NetworkBehaviour
 
     private void Ability4Input()
     {
+        if (highSpeedChaseActive)
+        {
+            foreach (GameObject player in GameManager.Instance.playerPrefabs)
+            {
+                if (player == gameObject) { return; }
+                if (Vector3.Distance(transform.position, player.transform.position) <= 2f)
+                {
+                    highSpeedChaseActive = false;
+                    GameManager.Instance.DealDamage(gameObject, player.gameObject, GetComponent<PlayerPrefab>().Damage + HIGH_SPEED_CHASE_COLLISION_DAMAGE);
+                    GameManager.Instance.RemoveSlowsAndSpeeds(gameObject);
+                    TogglePoliceCarServerRpc(false);
+                }
+            }
+        }
+
         if (Input.GetKeyDown(ability4Key) && !isAbility4Cooldown)
         {
             ability1Canvas.enabled = false;
@@ -317,6 +332,7 @@ public class FBIAbilities : NetworkBehaviour
             isAbility4Cooldown = true;
             currentAbility4Cooldown = ability4Cooldown;
 
+            highSpeedChaseActive = true;
             TogglePoliceCarServerRpc(true);
             GameManager.Instance.Speed(gameObject, HIGH_SPEED_CHASE_SPEED, HIGH_SPEED_CHASE_DURATION);
             StartCoroutine(DestroyPoliceCar());
@@ -338,6 +354,7 @@ public class FBIAbilities : NetworkBehaviour
     IEnumerator DestroyPoliceCar()
     {
         yield return new WaitForSeconds(HIGH_SPEED_CHASE_DURATION);
+        GameManager.Instance.RemoveSlowsAndSpeeds(gameObject);
         TogglePoliceCarServerRpc(false);
     }
 

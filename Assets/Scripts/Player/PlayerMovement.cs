@@ -29,6 +29,8 @@ public class PlayerMovement : NetworkBehaviour
 
         if (!IsOwner) { return; }
 
+        if (GetComponent<PlayerPrefab>().IsDead) { return; }
+
         if (GetComponent<PlayerPrefab>().Health <= 0)
         {
             anim.SetBool("isDead", true);
@@ -75,6 +77,7 @@ public class PlayerMovement : NetworkBehaviour
                 }
             }
         }
+        // Stop when at the max attack range
         if (targetEnemy != null)
         {
             if (Vector3.Distance(transform.position, targetEnemy.transform.position) > stoppingDistance)

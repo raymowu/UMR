@@ -104,6 +104,26 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    private GameObject[] RemoveIndices(GameObject[] IndicesArray, int RemoveAt)
+    {
+        GameObject[] newIndicesArray = new GameObject[IndicesArray.Length - 1];
+
+        int i = 0;
+        int j = 0;
+        while (i < IndicesArray.Length)
+        {
+            if (i != RemoveAt)
+            {
+                newIndicesArray[j] = IndicesArray[i];
+                j++;
+            }
+
+            i++;
+        }
+
+        return newIndicesArray;
+    }
+
     private void HandleClientDisconnected(ulong clientId)
     {
 
@@ -118,6 +138,7 @@ public class GameManager : NetworkBehaviour
             {
                 if (players[i].ClientId != clientId) { continue; }
                 players.RemoveAt(i);
+                playerPrefabs = RemoveIndices(playerPrefabs, i);
                 break;
 
             }

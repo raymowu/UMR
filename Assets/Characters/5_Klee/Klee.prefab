@@ -4360,10 +4360,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootTransform: {fileID: 2796468905741615266}
-  ability1Projectile: {fileID: 3867712197477650447, guid: 6abc19d463322cd489167d57ea40c8c3, type: 3}
-  JUMPTY_DUMPTY_DAMAGE: 10
-  JUMPTY_DUMPTY_SLOW_AMOUNT: 0.8
-  JUMPTY_DUMPTY_SLOW_DURATION: 5
+  ability1Projectile: {fileID: 6697205436987128126, guid: 601003cfff78db84cb1d86b1b36787ae, type: 3}
+  JUMPY_DUMPTY_DAMAGE: 10
+  JUMPY_DUMPTY_SLOW_AMOUNT: 0.8
+  JUMPY_DUMPTY_SLOW_DURATION: 5
   abilityImage1: {fileID: 4118015005628520782}
   abilityText1: {fileID: 4118015005450792430}
   ability1Key: 113
@@ -4385,10 +4385,11 @@ MonoBehaviour:
   ability3Canvas: {fileID: 2255818850071878277}
   ability3Indicator: {fileID: 6208286822615165633}
   ability3DisableOverlay: {fileID: 3970373181056279659}
+  kingDodoco: {fileID: 3416572366628645178, guid: ff16afa8cde354746a6a7f2c3b78836b, type: 3}
   abilityImage4: {fileID: 4118015005367952174}
   abilityText4: {fileID: 4118015005940198368}
   ability4Key: 114
-  ability4Cooldown: 60
+  ability4Cooldown: 5
   ability4Canvas: {fileID: 6963185587682613901}
   ability4Indicator: {fileID: 5994148116150650691}
   ability4DisableOverlay: {fileID: 8473731607126737542}
@@ -8150,6 +8151,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8718143254983696113, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 58b04f9e7cffd1542af2b6c5ce2c16d3, type: 3}
+    - target: {fileID: 8718143255459355688, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 42ac6e1c0f736e3449ecc93ae041d697, type: 3}
+    - target: {fileID: 8718143255717832264, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 58b04f9e7cffd1542af2b6c5ce2c16d3, type: 3}
+    - target: {fileID: 8718143255739118594, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 66b0f5e05bde1b5489f4d2bea6a033b6, type: 3}
+    - target: {fileID: 8718143256062137763, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 42ac6e1c0f736e3449ecc93ae041d697, type: 3}
     - target: {fileID: 8718143256456477861, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -8254,6 +8275,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8718143256464804413, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 04d248485cf12b9419460d75750fde7c, type: 3}
+    - target: {fileID: 8718143256685097519, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 66b0f5e05bde1b5489f4d2bea6a033b6, type: 3}
+    - target: {fileID: 8718143256952899144, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 04d248485cf12b9419460d75750fde7c, type: 3}
     - target: {fileID: 9155677681889270683, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
       propertyPath: m_IsActive
       value: 0
