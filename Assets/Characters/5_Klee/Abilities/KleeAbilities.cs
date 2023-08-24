@@ -9,10 +9,15 @@ using TMPro;
 
 public class KleeAbilities : NetworkBehaviour
 {
+    [SerializeField] private Canvas abilitiesCanvas;
     [SerializeField] private Transform shootTransform;
+    [SerializeField] private Transform fishTrapTransform;
     private PlayerMovement playerMovement;
     private Animator anim;
     private PlayerPrefab stats;
+
+    public float FISH_TRAP_RANGE = 5f;
+    public float FISH_TRAP_DAMAGE = 10f;
 
     [Header("Ability 1")]
     [SerializeField] private GameObject ability1Projectile;
@@ -28,12 +33,15 @@ public class KleeAbilities : NetworkBehaviour
     public GameObject ability1DisableOverlay;
 
     [Header("Ability 2")]
+    [SerializeField] private GameObject fishTrap;
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
     public float ability2Cooldown;
     public Canvas ability2Canvas;
     public Image ability2Indicator;
+    public Canvas ability2RangeIndicatorCanvas;
+    public Image ability2RangeIndicator;
     public GameObject ability2DisableOverlay;
 
     [Header("Ability 3")]
@@ -79,12 +87,12 @@ public class KleeAbilities : NetworkBehaviour
         // Shows UI
         if (IsOwner)
         {
-            transform.GetChild(0).gameObject.SetActive(true);
-            transform.GetChild(1).gameObject.SetActive(true);
-            transform.GetChild(2).gameObject.SetActive(true);
-            transform.GetChild(3).gameObject.SetActive(true);
-            transform.GetChild(4).gameObject.SetActive(true);
-
+            abilitiesCanvas.gameObject.SetActive(true);
+            ability1Canvas.gameObject.SetActive(true);
+            ability2Canvas.gameObject.SetActive(true);
+            ability2RangeIndicatorCanvas.gameObject.SetActive(true);
+            ability3Canvas.gameObject.SetActive(true);
+            ability4Canvas.gameObject.SetActive(true);
         }
 
         abilityImage1.fillAmount = 0;
@@ -99,11 +107,13 @@ public class KleeAbilities : NetworkBehaviour
 
         ability1Indicator.enabled = false;
         ability2Indicator.enabled = false;
+        ability2RangeIndicator.enabled = false;
         ability3Indicator.enabled = false;
         ability4Indicator.enabled = false;
 
         ability1Canvas.enabled = false;
         ability2Canvas.enabled = false;
+        ability2RangeIndicatorCanvas.enabled = false;
         ability3Canvas.enabled = false;
         ability4Canvas.enabled = false;
     }
@@ -161,16 +171,23 @@ public class KleeAbilities : NetworkBehaviour
 
     private void Ability2Canvas()
     {
+        int layerMask = ~LayerMask.GetMask("Player");
         if (ability2Indicator.enabled)
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
             {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+                if (hit.collider.gameObject != this.gameObject)
+                {
+                    position = hit.point;
+                }
             }
-            Quaternion ab2Canvas = Quaternion.LookRotation(position - transform.position);
-            ab2Canvas.eulerAngles = new Vector3(0, ab2Canvas.eulerAngles.y, ab2Canvas.eulerAngles.z);
 
-            ability2Canvas.transform.rotation = Quaternion.Lerp(ab2Canvas, ability2Canvas.transform.rotation, 0);
+            var hitPosDir = (hit.point - transform.position).normalized;
+            float distance = Vector3.Distance(hit.point, transform.position);
+            distance = Mathf.Min(distance, FISH_TRAP_RANGE);
+
+            var newHitPos = new Vector3(transform.position.x, 0.2f, transform.position.z) + hitPosDir * distance;
+            ability2Canvas.transform.position = (newHitPos);
         }
     }
 
@@ -214,6 +231,8 @@ public class KleeAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+            ability2RangeIndicator.enabled = false;
+            ability2RangeIndicatorCanvas.enabled = false;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
@@ -231,7 +250,8 @@ public class KleeAbilities : NetworkBehaviour
             {
                 playerMovement.StopMovement();
                 playerMovement.Rotate(hit.point);
-                CastAbility1ServerRpc(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
+                GameManager.Instance.Root(gameObject, 0.5f);
+                CastAbility1ServerRpc(new Vector3(hit.point.x, 0f, hit.point.z), Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
             }
 
             isAbility1Cooldown = true;
@@ -245,8 +265,9 @@ public class KleeAbilities : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void CastAbility1ServerRpc(Quaternion rot)
+    private void CastAbility1ServerRpc(Vector3 pos, Quaternion rot)
     {
+        playerMovement.Rotate(pos);
         GameObject go = Instantiate(ability1Projectile, shootTransform.position, rot);
         Physics.IgnoreCollision(go.GetComponent<Collider>(), GetComponent<Collider>());
         go.GetComponent<MoveJumpyDumpty>().parent = this;
@@ -259,6 +280,8 @@ public class KleeAbilities : NetworkBehaviour
         {
             ability2Canvas.enabled = true;
             ability2Indicator.enabled = true;
+            ability2RangeIndicator.enabled = true;
+            ability2RangeIndicatorCanvas.enabled = true;
 
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
@@ -269,16 +292,43 @@ public class KleeAbilities : NetworkBehaviour
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
 
+            Cursor.visible = false;
         }
-        if (ability2Canvas.enabled && Input.GetMouseButtonDown(0))
+
+        if (ability2Canvas.enabled && Input.GetKeyUp(ability2Key))
         {
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                playerMovement.StopMovement();
+                playerMovement.Rotate(hit.point);
+                float distance = Vector3.Distance(hit.point, transform.position);
+                Vector3 fishTrapPosition = distance <= FISH_TRAP_RANGE ? hit.point : fishTrapTransform.position;
+                CastFishTrapServerRpc(new Vector3(fishTrapPosition.x, 0f, fishTrapPosition.z),
+                Quaternion.LookRotation(new Vector3(hit.point.x, 0f, hit.point.z) - transform.position));
+            }
+
             isAbility2Cooldown = true;
             currentAbility2Cooldown = ability2Cooldown;
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+            ability2RangeIndicator.enabled = false;
+            ability2RangeIndicatorCanvas.enabled = false;
+
+            Cursor.visible = true;
         }
     }
+
+    [ServerRpc]
+    private void CastFishTrapServerRpc(Vector3 pos, Quaternion rot)
+    {
+        playerMovement.Rotate(pos);
+        GameObject go = Instantiate(fishTrap, new Vector3(pos.x, pos.y, pos.z), rot);
+        go.GetComponent<HandleFishTrapCollision>().parent = this;
+        go.GetComponent<NetworkObject>().Spawn();
+    }
+
 
     private void Ability3Input()
     {
@@ -292,6 +342,8 @@ public class KleeAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+            ability2RangeIndicator.enabled = false;
+            ability2RangeIndicatorCanvas.enabled = false;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
@@ -319,6 +371,8 @@ public class KleeAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+            ability2RangeIndicator.enabled = false;
+            ability2RangeIndicatorCanvas.enabled = false;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;

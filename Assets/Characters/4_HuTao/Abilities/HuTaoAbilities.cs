@@ -272,8 +272,7 @@ public class HuTaoAbilities : NetworkBehaviour
             isAbility3Cooldown = true;
             currentAbility3Cooldown = ability3Cooldown;
 
-            playerMovement.StopMovement();
-            GameManager.Instance.Root(gameObject, 1.5f);
+            GameManager.Instance.Root(gameObject, 0.5f);
 
             GameManager.Instance.SummonStrengthParticles(gameObject);
             GameManager.Instance.SummonGlowingParticles(gameObject, ability3Duration);

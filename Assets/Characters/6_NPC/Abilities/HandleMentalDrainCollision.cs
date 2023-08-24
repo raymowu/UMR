@@ -27,7 +27,6 @@ public class HandleMentalDrainCollision : NetworkBehaviour
             if (player == parent.gameObject) { continue; }
             if (Vector3.Distance(transform.position, player.transform.position) <= parent.MENTAL_DRAIN_RADIUS)
             {
-                Debug.Log("here");
                 GameManager.Instance.Slow(player, parent.MENTAL_DRAIN_SLOW_AMOUNT, parent.MENTAL_DRAIN_SLOW_DURATION);
                 GameManager.Instance.DealDamage(parent.gameObject, player, parent.MENTAL_DRAIN_DAMAGE);
             }
