@@ -2133,6 +2133,8 @@ MonoBehaviour:
   healthCanvas: {fileID: 5762878911095533871}
   healthSlider3D: {fileID: 8360960938131995226}
   healthSlider2D: {fileID: 5571036264877441529}
+  healthSlider3DText: {fileID: 7643994316504842015}
+  healthSlider2DText: {fileID: 3275663323555316266}
 --- !u!1 &4399760301956523524
 GameObject:
   m_ObjectHideFlags: 0
@@ -4222,6 +4224,17 @@ Canvas:
   m_CorrespondingSourceObject: {fileID: 3445409208591197170, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
   m_PrefabInstance: {fileID: 6929164873658028765}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7643994316504842015 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 737951425071443394, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+  m_PrefabInstance: {fileID: 6929164873658028765}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6936151907545311237
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4455,6 +4468,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 9155677681889270683, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
   m_PrefabInstance: {fileID: 6936151907545311237}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3275663323555316266 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5564011629947431471, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+  m_PrefabInstance: {fileID: 6936151907545311237}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6053302600782632325 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3766011827683212672, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}

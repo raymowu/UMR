@@ -238,6 +238,7 @@ public class HuTaoAbilities : NetworkBehaviour
         GameManager.Instance.DealDamage(gameObject, gameObject, ABILITY2ACTIVATIONCOST * stats.MaxHealth);
         foreach (GameObject player in GameManager.Instance.playerPrefabs)
         {
+            if (player == gameObject) { continue; }
             if (Vector3.Distance(transform.position, player.transform.position) <= ABILITY2RANGE)
             {
                 GameManager.Instance.DealDamage(gameObject, player, stats.Damage);

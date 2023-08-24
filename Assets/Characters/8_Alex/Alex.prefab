@@ -2299,6 +2299,8 @@ MonoBehaviour:
   healthCanvas: {fileID: 6050552033142360172}
   healthSlider3D: {fileID: 5863248169211623610}
   healthSlider2D: {fileID: 8547306302057790083}
+  healthSlider3DText: {fileID: 8510350319860287068}
+  healthSlider2DText: {fileID: 3450678804606927603}
 --- !u!114 &5909548442132338222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2394,12 +2396,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 2
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.8, z: 0}
 --- !u!1 &4031202956292028210
 GameObject:
   m_ObjectHideFlags: 0
@@ -4542,6 +4544,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1dc65aba65b96fa48920fb862f22c7b9, type: 3}
+--- !u!114 &3450678804606927603 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7708722969630413178, guid: 1dc65aba65b96fa48920fb862f22c7b9, type: 3}
+  m_PrefabInstance: {fileID: 4979191895271396233}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8547306302057790083 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3713083125463214346, guid: 1dc65aba65b96fa48920fb862f22c7b9, type: 3}
@@ -4679,3 +4692,14 @@ Canvas:
   m_CorrespondingSourceObject: {fileID: 3445409208591197170, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
   m_PrefabInstance: {fileID: 8946238412978383774}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8510350319860287068 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 737951425071443394, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+  m_PrefabInstance: {fileID: 8946238412978383774}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

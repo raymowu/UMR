@@ -251,7 +251,7 @@ MonoBehaviour:
   TransitionStateInfoList:
   - Layer: 0
     OriginatingState: -453240694
-    DestinationState: -1028202203
+    DestinationState: -1054417186
     TransitionDuration: 0.25
     TriggerNameHash: -465035211
     TransitionIndex: 1
@@ -303,16 +303,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootTransform: {fileID: 6958608841004688631}
   abilitiesCanvas: {fileID: 5652461819407259768}
-  SMASH_RANGE: 3
-  SMASH_KNOCKUP_DURATION: 1
   abilityImage1: {fileID: 5652461820010758810}
   abilityText1: {fileID: 5652461820235691578}
   ability1Key: 113
   ability1Cooldown: 3
   ability1DisableOverlay: {fileID: 5297083486808522569}
-  POUNCE_DASH_SPEED: 20
-  POUNCE_DASH_TIME: 0.2
-  POUNCE_DASH_RANGE: 5
+  SMASH_RANGE: 3
+  SMASH_KNOCKUP_DURATION: 1
   abilityImage2: {fileID: 5652461819094816509}
   abilityText2: {fileID: 5652461819585313552}
   ability2Key: 119
@@ -320,24 +317,26 @@ MonoBehaviour:
   ability2Canvas: {fileID: 1077326657984316780}
   ability2Indicator: {fileID: 8686224177279091611}
   ability2DisableOverlay: {fileID: 4510828910279207295}
-  ROCK_HURL_STUN_DURATION: 1.5
+  POUNCE_DASH_SPEED: 20
+  POUNCE_DASH_TIME: 0.2
+  POUNCE_DASH_RANGE: 5
+  ability3Projectile: {fileID: 117232, guid: adaf99a597441d0499f53ad466e10256, type: 3}
   abilityImage3: {fileID: 5652461819415572207}
   abilityText3: {fileID: 5652461820799682384}
   ability3Key: 101
   ability3Cooldown: 5
-  ability3Projectile: {fileID: 117232, guid: adaf99a597441d0499f53ad466e10256, type: 3}
   ability3Canvas: {fileID: 1103013272820803601}
   ability3Indicator: {fileID: 6216926741947899226}
   ability3DisableOverlay: {fileID: 4633691201036140479}
+  ROCK_HURL_STUN_DURATION: 1.5
   STRENGTH_BUFF_PARTICLES: {fileID: 3874635022589376825, guid: 972e52cfdd26b1345a58a6d2ee8c0217, type: 3}
-  BEAST_AWAKENING_PARTICLES: {fileID: 0}
-  BEAST_AWAKENING_BUFF_AMOUNT: 0.2
-  BEAST_AWAKENING_BUFF_DURATION: 15
   abilityImage4: {fileID: 5652461820287072506}
   abilityText4: {fileID: 5652461820792762420}
   ability4Key: 114
   ability4Cooldown: 60
   ability4DisableOverlay: {fileID: 202392360801163602}
+  BEAST_AWAKENING_BUFF_AMOUNT: 0.2
+  BEAST_AWAKENING_BUFF_DURATION: 15
 --- !u!114 &-8998133480631184972
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -436,6 +435,8 @@ MonoBehaviour:
   healthCanvas: {fileID: 2403095025033331945}
   healthSlider3D: {fileID: 2589589645754397759}
   healthSlider2D: {fileID: 2505890146244671117}
+  healthSlider3DText: {fileID: 339095654906104537}
+  healthSlider2DText: {fileID: 8915950868019072765}
 --- !u!143 &4273541289901249312
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3141,6 +3142,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+--- !u!114 &339095654906104537 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 737951425071443394, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+  m_PrefabInstance: {fileID: 1047385271310411547}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!223 &2403095025033331945 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 3445409208591197170, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
@@ -3510,6 +3522,17 @@ MonoBehaviour:
 --- !u!114 &5652461820799682384 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8718143255097467778, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+  m_PrefabInstance: {fileID: 3930662854834021586}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8915950868019072765 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5564011629947431471, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
   m_PrefabInstance: {fileID: 3930662854834021586}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}

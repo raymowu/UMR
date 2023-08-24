@@ -1013,14 +1013,14 @@ MonoBehaviour:
   ability3Indicator: {fileID: 9056851550622928627}
   ability3DisableOverlay: {fileID: 3009088869815838756}
   policeCar: {fileID: 7924984611600443967}
-  HIGH_SPEED_CHASE_DURATION: 10
-  HIGH_SPEED_CHASE_SPEED: 8
-  HIGH_SPEED_CHASE_COLLISION_DAMAGE: 60
   abilityImage4: {fileID: 2881696733702909793}
   abilityText4: {fileID: 2881696734405699503}
   ability4Key: 114
   ability4Cooldown: 60
   ability4DisableOverlay: {fileID: 7729101912521739977}
+  HIGH_SPEED_CHASE_DURATION: 10
+  HIGH_SPEED_CHASE_SPEED: 8
+  HIGH_SPEED_CHASE_COLLISION_DAMAGE: 60
 --- !u!114 &-7388314550147305548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2535,6 +2535,8 @@ MonoBehaviour:
   healthCanvas: {fileID: 3882384799774084192}
   healthSlider3D: {fileID: 3983592503454448822}
   healthSlider2D: {fileID: 5425419409277083926}
+  healthSlider3DText: {fileID: 1156360661836055120}
+  healthSlider2DText: {fileID: 1312678250231896422}
 --- !u!143 &-9033902588832410495
 CharacterController:
   m_ObjectHideFlags: 0
@@ -5107,6 +5109,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+--- !u!114 &1156360661836055120 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 737951425071443394, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+  m_PrefabInstance: {fileID: 1887444803538988946}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!223 &3882384799774084192 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 3445409208591197170, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
@@ -5311,6 +5324,17 @@ PrefabInstance:
     - {fileID: 8718143256456477860, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
     - {fileID: -3659335817546822309, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+--- !u!114 &1312678250231896422 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5564011629947431471, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+  m_PrefabInstance: {fileID: 6845690171730211657}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2310142817787701458 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9155677681889270683, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
@@ -5518,19 +5542,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 115512, guid: 27b2517d32041a84f9cb85822363149d, type: 3}
   m_PrefabInstance: {fileID: 7924984611600361735}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3780595187367625880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7924984611600443967}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1ee05759808129448b2d166f58e5fb9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parent: {fileID: 0}
 --- !u!4 &7924984611600777785 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 437054, guid: 27b2517d32041a84f9cb85822363149d, type: 3}

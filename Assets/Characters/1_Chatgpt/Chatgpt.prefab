@@ -475,6 +475,8 @@ MonoBehaviour:
   healthCanvas: {fileID: 7864531492459809352}
   healthSlider3D: {fileID: 8038359739628141214}
   healthSlider2D: {fileID: 1383833396199209284}
+  healthSlider3DText: {fileID: 5244822452845986936}
+  healthSlider2DText: {fileID: 5352874471462715700}
 --- !u!143 &8215572481948044943
 CharacterController:
   m_ObjectHideFlags: 0
@@ -3594,6 +3596,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3766011827683212672, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
   m_PrefabInstance: {fileID: 539989820880087835}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5352874471462715700 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5564011629947431471, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+  m_PrefabInstance: {fileID: 539989820880087835}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8195642520177913974 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8557587589906357101, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
@@ -3844,6 +3857,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5822181468620268273, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
   m_PrefabInstance: {fileID: 4824728296639998394}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5244822452845986936 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 737951425071443394, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
+  m_PrefabInstance: {fileID: 4824728296639998394}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!223 &7864531492459809352 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 3445409208591197170, guid: 327b07dc898c27f4c9d740760ab243c1, type: 3}
