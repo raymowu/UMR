@@ -6,7 +6,9 @@ using TMPro;
 public class NPCAbilities : NetworkBehaviour
 {
     [SerializeField] private Transform shootTransform;
+    [SerializeField] private Transform multiplyShootTransform;
     [SerializeField] private Transform wallShootTransform;
+    [SerializeField] private Transform mentalDrainShootTransform;
     [SerializeField] private Canvas abilitiesCanvas;
     private PlayerMovement playerMovement;
     private Animator anim;
@@ -232,7 +234,9 @@ public class NPCAbilities : NetworkBehaviour
             {
                 playerMovement.StopMovement();
                 playerMovement.Rotate(hit.point);
-                SummonNPCCloneServerRpc(new Vector3(hit.point.x, 0f, hit.point.z), 
+                float distance = Vector3.Distance(hit.point, transform.position);
+                Vector3 spawnClonePosition = distance <= MULTIPLY_RANGE ? hit.point : multiplyShootTransform.position;
+                    SummonNPCCloneServerRpc(new Vector3(spawnClonePosition.x, 0f, spawnClonePosition.z), 
                     Quaternion.LookRotation(new Vector3(hit.point.x, 0f, hit.point.z) - transform.position));
             }
 
@@ -251,6 +255,7 @@ public class NPCAbilities : NetworkBehaviour
     [ServerRpc]
     private void SummonNPCCloneServerRpc(Vector3 pos, Quaternion rot)
     {
+        playerMovement.Rotate(pos);
         GameObject go = Instantiate(NPCClone, new Vector3(pos.x, pos.y, pos.z), rot);
         go.GetComponent<MeleeMobAI>().parent = this;
         go.GetComponent<AIMeleeCombat>().parent = gameObject;
@@ -328,7 +333,9 @@ public class NPCAbilities : NetworkBehaviour
             {
                 playerMovement.StopMovement();
                 playerMovement.Rotate(hit.point);
-                SummonMentalDrainParticlesServerRpc(new Vector3(hit.point.x, .1f, hit.point.z),
+                float distance = Vector3.Distance(hit.point, transform.position);
+                Vector3 spawnMentalDrainPosition = distance <= MULTIPLY_RANGE ? hit.point : mentalDrainShootTransform.position;
+                SummonMentalDrainParticlesServerRpc(new Vector3(spawnMentalDrainPosition.x, .1f, spawnMentalDrainPosition.z),
                     Quaternion.LookRotation(new Vector3(hit.point.x, 0f, hit.point.z) - transform.position));
             }
 
@@ -347,6 +354,7 @@ public class NPCAbilities : NetworkBehaviour
     [ServerRpc]
     private void SummonMentalDrainParticlesServerRpc(Vector3 pos, Quaternion rot)
     {
+        playerMovement.Rotate(hit.point);
         GameObject go = Instantiate(MentalDrainParticles, pos, rot);
         go.GetComponent<HandleMentalDrainCollision>().parent = this;
         go.GetComponent<AutoDestroyGameObject>().delayBeforeDestroy = MENTAL_DRAIN_DURATION;
