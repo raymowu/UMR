@@ -29,13 +29,12 @@ public class PlayerMovement : NetworkBehaviour
 
         if (!IsOwner) { return; }
 
-        if (GetComponent<PlayerPrefab>().IsDead) { return; }
-
-        if (GetComponent<PlayerPrefab>().Health <= 0)
+        if (GetComponent<PlayerPrefab>().IsDead)
         {
             anim.SetBool("isDead", true);
             hmScript.DeselectHighlight();
             targetEnemy = null;
+            return;
         }
         else
         {
