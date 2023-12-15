@@ -180,7 +180,6 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void DealDamageServerRpc(ulong senderId, ulong clientId, float damage)
     {
-
         int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
         for (int i = 0; i < players.Count; i++)
         {
@@ -383,9 +382,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
@@ -413,9 +412,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
@@ -442,9 +441,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage + damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
@@ -528,9 +527,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
@@ -556,9 +555,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
@@ -584,9 +583,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
@@ -696,9 +695,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
@@ -735,9 +734,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
@@ -763,9 +762,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage,
                 players[i].IsSilenced,
                 players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
@@ -804,9 +803,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage,
                 true,
                 players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
@@ -828,9 +827,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage,
                 false,
                 players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
@@ -864,9 +863,9 @@ public class GameManager : NetworkBehaviour
                 players[i].Damage,
                 players[i].IsSilenced,
                 true,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
+                players[i].Kills,
+                players[i].Deaths,
+                players[i].IsDead
                 );
         }
     }
