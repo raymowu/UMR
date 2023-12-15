@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -4825428781233336214}
   - component: {fileID: -1147368139607227733}
   - component: {fileID: 688815295661561852}
+  - component: {fileID: -2586394901099831207}
   m_Layer: 7
   m_Name: KleeAutoProjectile
   m_TagString: Untagged
@@ -174,3 +175,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-2586394901099831207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903262673038850558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c0be61502bb534f922ebb746851216, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

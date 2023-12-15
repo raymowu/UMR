@@ -69,7 +69,6 @@ public class MoveJumpyDumpty : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SpawnBombParticlesServerRpc(Vector3 position)
     {
-        Debug.Log("Bomb Position: " + position);
         GameObject particles = Instantiate(bombParticles, new Vector3(position.x, 0.3f, position.z), Quaternion.Euler(90, 0, 0));
         particles.GetComponent<HandleBombParticleCollision>().parent = parent;
         particles.GetComponent<NetworkObject>().Spawn();
