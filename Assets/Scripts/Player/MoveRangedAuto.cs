@@ -10,7 +10,6 @@ public class MoveRangedAuto : NetworkBehaviour
 
     public float velocity = 5;
 
-    // Update is called once per frame
     void Update()
     {
         if (!IsOwner) { return;  }
@@ -28,7 +27,6 @@ public class MoveRangedAuto : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (!IsOwner) { return; }
-        Debug.Log("trigger");
         GameManager.Instance.DealDamage(parent, other.gameObject, parent.GetComponent<PlayerPrefab>().Damage);
         DestroyRangedAutoServerRpc();
     }
@@ -36,7 +34,6 @@ public class MoveRangedAuto : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void DestroyRangedAutoServerRpc()
     {
-        Debug.Log("destroy");
         GetComponent<NetworkObject>().Despawn();
         Destroy(gameObject);
     }
