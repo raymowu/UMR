@@ -17,9 +17,10 @@ public class AlexAbilities : NetworkBehaviour
     public TMP_Text abilityText1;
     public KeyCode ability1Key = KeyCode.Q;
     public float ability1Cooldown;
-
-    public Canvas ability1Canvas;
-    public Image ability1Indicator;
+    public float ABILITY1DURATION = 1f;
+    public float ABILITY1RANGE = 2.5f;
+    public float ABILITY1DAMAGE = 20f;
+    public float ABILITY1TICKINTERVAL = 0.5f;
 
     [Header("Ability 2")]
     public float ATE_TOO_MUCH_TICK_INTERVAL = 0.5f;
@@ -87,13 +88,9 @@ public class AlexAbilities : NetworkBehaviour
         abilityText2.text = "";
         abilityText3.text = "";
         abilityText4.text = "";
-
-        ability1Indicator.enabled = false;
         
         ability3Indicator.enabled = false;
         ability4Indicator.enabled = false;
-
-        ability1Canvas.enabled = false;
         
         ability3Canvas.enabled = false;
         ability4Canvas.enabled = false;
@@ -115,29 +112,10 @@ public class AlexAbilities : NetworkBehaviour
         AbilityCooldown(ref currentAbility2Cooldown, ability2Cooldown, ref isAbility2Cooldown, abilityImage2, abilityText2);
         AbilityCooldown(ref currentAbility3Cooldown, ability3Cooldown, ref isAbility3Cooldown, abilityImage3, abilityText3);
         AbilityCooldown(ref currentAbility4Cooldown, ability4Cooldown, ref isAbility4Cooldown, abilityImage4, abilityText4);
-
-        Ability1Canvas();
         
         Ability3Canvas();
         Ability4Canvas();
     }
-
-    private void Ability1Canvas()
-    {
-        if (ability1Indicator.enabled)
-        {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Ground")))
-            {
-                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
-            }
-            Quaternion ab1Canvas = Quaternion.LookRotation(position - transform.position);
-            ab1Canvas.eulerAngles = new Vector3(0, ab1Canvas.eulerAngles.y, ab1Canvas.eulerAngles.z);
-
-            ability1Canvas.transform.rotation = Quaternion.Lerp(ab1Canvas, ability1Canvas.transform.rotation, 0);
-        }
-    }
-
-
 
     private void Ability3Canvas()
     {
@@ -173,24 +151,30 @@ public class AlexAbilities : NetworkBehaviour
     {
         if (Input.GetKeyDown(ability1Key) && !isAbility1Cooldown)
         {
-            ability1Canvas.enabled = true;
-            ability1Indicator.enabled = true;
-
-            ability3Canvas.enabled = false;
-            ability3Indicator.enabled = false;
-
-            ability4Canvas.enabled = false;
-            ability4Indicator.enabled = false;
-        }
-
-        if (ability1Indicator.enabled && Input.GetKeyUp(ability1Key))
-        {
             isAbility1Cooldown = true;
             currentAbility1Cooldown = ability1Cooldown;
 
-            ability1Canvas.enabled = false;
-            ability1Indicator.enabled = false;
+            float startTime = Time.time;
+            if (Time.time < startTime + ABILITY1DURATION)
+            {
+                StartCoroutine(Ability1Interval());
+            }
+
+            GetComponent<OwnerNetworkAnimator>().SetTrigger("CastOwangatangFlail");
         }
+    }
+
+    private IEnumerator Ability1Interval()
+    {
+        foreach (GameObject player in GameManager.Instance.playerPrefabs)
+        {
+            if (player == gameObject) { continue; }
+            if (Vector3.Distance(transform.position, player.transform.position) <= ABILITY1RANGE)
+            {
+                GameManager.Instance.DealDamage(gameObject, player, ABILITY1DAMAGE);
+            }
+        }
+        yield return new WaitForSeconds(ABILITY1TICKINTERVAL);
     }
 
     private void Ability2Input()
@@ -208,9 +192,6 @@ public class AlexAbilities : NetworkBehaviour
             StartCoroutine(Ability2ActiveInterval());
             playerMovement.StopMovement(); 
             GameManager.Instance.Stun(gameObject, ATE_TOO_MUCH_DURATION); // fix later to stun  
-
-            ability1Canvas.enabled = false;
-            ability1Indicator.enabled = false;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
@@ -243,9 +224,6 @@ public class AlexAbilities : NetworkBehaviour
             ability3Canvas.enabled = true;
             ability3Indicator.enabled = true;
 
-            ability1Canvas.enabled = false;
-            ability1Indicator.enabled = false;
-
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
 
@@ -266,9 +244,6 @@ public class AlexAbilities : NetworkBehaviour
         {
             ability4Canvas.enabled = true;
             ability4Indicator.enabled = true;
-
-            ability1Canvas.enabled = false;
-            ability1Indicator.enabled = false; 
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
