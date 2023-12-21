@@ -16,9 +16,8 @@ public class CharacterSpawner : NetworkBehaviour
             if (character != null)
             {
                 // TODO: set spawnpoints here
-                var spawnPos = GameManager.Instance.spawnPoints[client.Value.clientId];
-                Debug.Log(client.Value.clientId);
-                Debug.Log(spawnPos);
+                //var spawnPos = GameManager.Instance.spawnPoints[client.Value.clientId];
+                var spawnPos = new Vector3(0f, 0f, 0f);
 
                 // Makes sure client it belongs to is the owner of that object
                 var characterInstance = Instantiate(character.GameplayPrefab, spawnPos, Quaternion.identity);

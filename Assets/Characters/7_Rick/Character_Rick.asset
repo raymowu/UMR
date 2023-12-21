@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Character_Rick
   m_EditorClassIdentifier: 
   id: 7
-  displayName: Rick
+  displayName: Rick Sanchez
   icon: {fileID: 21300000, guid: d2542e69bb9b01340b6f5c4c535ae4bc, type: 3}
   introPrefab: {fileID: 5922830341598487621, guid: c879bd706e92e09439eb227784ab8cbb, type: 3}
   gameplayPrefab: {fileID: 2428640937737423025, guid: ecea0c3c151af354face8ebbc0100fc7, type: 3}
