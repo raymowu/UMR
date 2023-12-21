@@ -2104,7 +2104,7 @@ MonoBehaviour:
   healthSlider3D: {fileID: 5863248169211623610}
   healthSlider2D: {fileID: 869732015357069599}
   healthSlider3DText: {fileID: 8510350319860287068}
-  healthSlider2DText: {fileID: 0}
+  healthSlider2DText: {fileID: 6155452520147251567}
 --- !u!114 &5909548442132338222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4011,6 +4011,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6155452520147251567 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5564011629947431471, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+  m_PrefabInstance: {fileID: 1755234443091532608}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &6964475376053454696 stripped
