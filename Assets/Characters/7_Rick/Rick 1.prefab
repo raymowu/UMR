@@ -1132,7 +1132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetEnemy: {fileID: 0}
   performRangedAttack: 1
-  projectilePrefab: {fileID: 0}
+  projectilePrefab: {fileID: 6352326048345049624, guid: bb9245335d5e43344b601b81cd80d44a, type: 3}
   shootTransform: {fileID: 8578293564617012737}
 --- !u!114 &8173647208758293065
 MonoBehaviour:
