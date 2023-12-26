@@ -15,6 +15,12 @@ public class RickAbilities : NetworkBehaviour
     private Animator anim;
     private PlayerPrefab stats;
 
+    public float PORTAL_CAST_RANGE = 5f;
+    public bool entrancePortalExists = false;
+    public bool exitPortalExists = false;
+    public GameObject entrancePortal;
+    public GameObject exitPortal;
+
     [Header("Ability 1")]
     public Image abilityImage1;
     public TMP_Text abilityText1;
@@ -25,12 +31,17 @@ public class RickAbilities : NetworkBehaviour
     public GameObject ability1DisableOverlay;
 
     [Header("Ability 2")]
+    [SerializeField] private GameObject entrancePortalPrefab;
+    [SerializeField] public GameObject exitPortalPrefab;
+
     public Image abilityImage2;
     public TMP_Text abilityText2;
     public KeyCode ability2Key = KeyCode.W;
     public float ability2Cooldown;
     public Canvas ability2Canvas;
     public Image ability2Indicator;
+    public Canvas ability2RangeIndicatorCanvas;
+    public Image ability2RangeIndicator;
     public GameObject ability2DisableOverlay;
 
     [Header("Ability 3")]
@@ -65,19 +76,18 @@ public class RickAbilities : NetworkBehaviour
     private RaycastHit hit;
     private Ray ray;
 
-    // Start is called before the first frame update
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
         anim = GetComponent<Animator>();
         stats = GetComponent<PlayerPrefab>();
 
-        // Shows UI
         if (IsOwner)
         {
             abilitiesCanvas.gameObject.SetActive(true);
             ability1Canvas.gameObject.SetActive(true);
             ability2Canvas.gameObject.SetActive(true);
+            ability2RangeIndicatorCanvas.gameObject.SetActive(true);
             ability3Canvas.gameObject.SetActive(true);
             ability4Canvas.gameObject.SetActive(true);
         }
@@ -94,16 +104,17 @@ public class RickAbilities : NetworkBehaviour
 
         ability1Indicator.enabled = false;
         ability2Indicator.enabled = false;
+        ability2RangeIndicator.enabled = false;
         ability3Indicator.enabled = false;
         ability4Indicator.enabled = false;
 
         ability1Canvas.enabled = false;
         ability2Canvas.enabled = false;
+        ability2RangeIndicatorCanvas.enabled = false;
         ability3Canvas.enabled = false;
         ability4Canvas.enabled = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!IsOwner) { return; }
@@ -122,7 +133,6 @@ public class RickAbilities : NetworkBehaviour
 
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        // TODO: Cast ability functionality
         Ability1Input();
         Ability2Input();
         Ability3Input();
@@ -156,6 +166,24 @@ public class RickAbilities : NetworkBehaviour
 
     private void Ability2Canvas()
     {
+        int layerMask = ~LayerMask.GetMask("Player");
+        if (ability2Indicator.enabled)
+        {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+            {
+                if (hit.collider.gameObject != this.gameObject)
+                {
+                    position = hit.point;
+                }
+            }
+
+            var hitPosDir = (hit.point - transform.position).normalized;
+            float distance = Vector3.Distance(hit.point, transform.position);
+            distance = Mathf.Min(distance, PORTAL_CAST_RANGE);
+
+            var newHitPos = new Vector3(transform.position.x, 0.2f, transform.position.z) + hitPosDir * distance;
+            ability2Canvas.transform.position = (newHitPos);
+        }
     }
 
     private void Ability3Canvas()
@@ -197,6 +225,8 @@ public class RickAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+            ability2RangeIndicator.enabled = false;
+            ability2RangeIndicatorCanvas.enabled = false;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
@@ -228,6 +258,8 @@ public class RickAbilities : NetworkBehaviour
         {
             ability2Canvas.enabled = true;
             ability2Indicator.enabled = true;
+            ability2RangeIndicator.enabled = true;
+            ability2RangeIndicatorCanvas.enabled = true;
 
             ability1Canvas.enabled = false;
             ability1Indicator.enabled = false;
@@ -237,18 +269,89 @@ public class RickAbilities : NetworkBehaviour
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
+
+            Cursor.visible = false;
         }
 
         if (ability2Canvas.enabled && Input.GetKeyUp(ability2Key))
         {
-            isAbility2Cooldown = true;
-            currentAbility2Cooldown = ability2Cooldown;
-
+            // cast entrance portal
+            if (!entrancePortalExists)
+            {
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                {
+                    playerMovement.StopMovement();
+                    playerMovement.Rotate(hit.point);
+                    float distance = Vector3.Distance(hit.point, transform.position);
+                    Vector3 portalPosition = hit.point;
+                    CastEntrancePortalServerRpc(new Vector3(portalPosition.x, 0f, portalPosition.z),
+                    Quaternion.LookRotation(new Vector3(hit.point.x, 0f, hit.point.z) - transform.position));
+                }
+                entrancePortalExists = true;
+            }
+            // exit portal
+            else
+            {
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+                {
+                    playerMovement.StopMovement();
+                    playerMovement.Rotate(hit.point);
+                    float distance = Vector3.Distance(hit.point, transform.position);
+                    Vector3 portalPosition = hit.point;
+                    CastExitPortalServerRpc(new Vector3(portalPosition.x, 0f, portalPosition.z),
+                    Quaternion.LookRotation(new Vector3(hit.point.x, 0f, hit.point.z) - transform.position));
+                }
+                exitPortalExists = true;
+                isAbility2Cooldown = true;
+                currentAbility2Cooldown = ability2Cooldown;
+            }
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+            ability2RangeIndicator.enabled = false;
+            ability2RangeIndicatorCanvas.enabled = false;
+
+            Cursor.visible = true;
+            Debug.Log(entrancePortalExists);
+            Debug.Log(exitPortalExists);
+
         }
     }
 
+    [ServerRpc]
+    private void CastEntrancePortalServerRpc(Vector3 pos, Quaternion rot)
+    {
+        playerMovement.Rotate(pos);
+        GameObject go = Instantiate(entrancePortalPrefab, new Vector3(pos.x, pos.y, pos.z), rot);
+        entrancePortal = go;
+        entrancePortalExists = true;
+        go.GetComponent<HandleRickPortalCollision>().parent = this;
+        go.GetComponent<NetworkObject>().Spawn();
+        UpdateEntrancePortalStatusClientRpc();
+    }
+
+    [ClientRpc]
+    private void UpdateEntrancePortalStatusClientRpc()
+    {
+        entrancePortalExists = true;
+    }
+
+    [ServerRpc]
+    private void CastExitPortalServerRpc(Vector3 pos, Quaternion rot)
+    {
+        playerMovement.Rotate(pos);
+        GameObject go = Instantiate(exitPortalPrefab, new Vector3(pos.x, pos.y, pos.z), rot);
+        exitPortal = go;
+        exitPortalExists = true;
+        go.GetComponent<AutoDestroyPortals>().parent = this;
+        go.GetComponent<NetworkObject>().Spawn();
+        UpdateExitPortalStatusClientRpc();
+    }
+
+    [ClientRpc]
+    private void UpdateExitPortalStatusClientRpc()
+    {
+        exitPortalExists = true;
+    }
 
     private void Ability3Input()
     {
@@ -262,6 +365,8 @@ public class RickAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+            ability2RangeIndicator.enabled = false;
+            ability2RangeIndicatorCanvas.enabled = false;
 
             ability4Canvas.enabled = false;
             ability4Indicator.enabled = false;
@@ -289,6 +394,8 @@ public class RickAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
+            ability2RangeIndicator.enabled = false;
+            ability2RangeIndicatorCanvas.enabled = false;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;

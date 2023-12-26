@@ -262,7 +262,7 @@ public class GameManager : NetworkBehaviour
                 );
 
             playerPrefabs[i].GetComponent<CharacterController>().enabled = false;
-            teleportPlayerClientRpc(clientId);
+            RespawnPlayerClientRpc(clientId);
             playerPrefabs[i].GetComponent<CharacterController>().enabled = true;
             playerPrefabs[i].GetComponent<PlayerMovement>().StopMovement();
             //safety check
@@ -271,12 +271,33 @@ public class GameManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void teleportPlayerClientRpc(ulong clientId)
+    private void RespawnPlayerClientRpc(ulong clientId)
     {
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
             playerPrefabs[i].transform.position = spawnPoints[i];
+        }
+    }
+
+    public void TeleportPlayer(GameObject target, Vector3 pos)
+    {
+        TeleportPlayerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, pos);
+    }
+
+    [ServerRpc]
+    private void TeleportPlayerServerRpc(ulong clientId, Vector3 pos)
+    {
+        TeleportPlayerClientRpc(clientId, pos);
+    }
+
+    [ClientRpc]
+    private void TeleportPlayerClientRpc(ulong clientId, Vector3 pos)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i].ClientId != clientId) { continue; }
+            playerPrefabs[i].transform.position = pos;
         }
     }
 
