@@ -847,6 +847,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilitiesCanvas: {fileID: 1489168646930172725}
   shootTransform: {fileID: 8578293564617012737}
+  Morty: {fileID: 4953611859109329589, guid: 90262682e7b94a2468689f6223b7f177, type: 3}
   PORTAL_CAST_RANGE: 5
   entrancePortalExists: 0
   exitPortalExists: 0

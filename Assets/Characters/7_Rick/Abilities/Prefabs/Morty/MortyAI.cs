@@ -4,7 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MeleeMobAI : NetworkBehaviour
+public class MortyAI : NetworkBehaviour
 {
     public NavMeshAgent agent;
     public float rotateSpeedMovement = 0.05f;
@@ -57,16 +57,7 @@ public class MeleeMobAI : NetworkBehaviour
 
     public void Move()
     {
-        GameObject targetEnemy = nearestPlayer();
-        if (targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.transform.position) <= detectionRange)
-        {
-            // TODO: OR compare tag "Enemy" for monsters
-            MoveTowardsEnemy(targetEnemy);
-        }
-        else
-        {
-            MoveTowardsEnemy(parent);
-        }
+        MoveTowardsRick(parent);
     }
 
     public void MoveToPosition(Vector3 position)
@@ -80,7 +71,7 @@ public class MeleeMobAI : NetworkBehaviour
         }
     }
 
-    public void MoveTowardsEnemy(GameObject enemy)
+    public void MoveTowardsRick(GameObject enemy)
     {
         targetEnemy = enemy;
         agent.SetDestination(targetEnemy.transform.position);
@@ -96,10 +87,13 @@ public class MeleeMobAI : NetworkBehaviour
 
     public void Rotate(Vector3 lookAtPosition)
     {
-        Quaternion rotationToLookAt = Quaternion.LookRotation(lookAtPosition - transform.position);
-        float rotationY = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationToLookAt.eulerAngles.y,
-            ref rotateVelocity, rotateSpeedMovement * (Time.deltaTime * 5));
+        if (lookAtPosition - transform.position != Vector3.zero)
+        {
+            Quaternion rotationToLookAt = Quaternion.LookRotation(lookAtPosition - transform.position);
+            float rotationY = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationToLookAt.eulerAngles.y,
+                ref rotateVelocity, rotateSpeedMovement * (Time.deltaTime * 5));
 
-        transform.eulerAngles = new Vector3(0, rotationY, 0);
+            transform.eulerAngles = new Vector3(0, rotationY, 0);
+        }
     }
 }

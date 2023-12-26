@@ -11,6 +11,7 @@ public class RickAbilities : NetworkBehaviour
 {
     [SerializeField] private Canvas abilitiesCanvas;
     [SerializeField] private Transform shootTransform;
+    [SerializeField] private GameObject Morty;
     private PlayerMovement playerMovement;
     private Animator anim;
     private PlayerPrefab stats;
@@ -113,6 +114,17 @@ public class RickAbilities : NetworkBehaviour
         ability2RangeIndicatorCanvas.enabled = false;
         ability3Canvas.enabled = false;
         ability4Canvas.enabled = false;
+
+        // spawn morty on game start
+        SummonMortyServerRpc(gameObject.transform.position);
+    }
+
+    [ServerRpc]
+    private void SummonMortyServerRpc(Vector3 pos)
+    {
+        GameObject go = Instantiate(Morty, new Vector3(pos.x, pos.y, pos.z), new Quaternion(0, 0, 0, 1));
+        go.GetComponent<MortyAI>().parent = gameObject;
+        go.GetComponent<NetworkObject>().Spawn();
     }
 
     void Update()
@@ -148,7 +160,7 @@ public class RickAbilities : NetworkBehaviour
         Ability3Canvas();
         Ability4Canvas();
     }
-
+        
     private void Ability1Canvas()
     {
         if (ability1Indicator.enabled)

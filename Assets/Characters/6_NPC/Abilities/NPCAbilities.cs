@@ -257,7 +257,7 @@ public class NPCAbilities : NetworkBehaviour
     {
         playerMovement.Rotate(pos);
         GameObject go = Instantiate(NPCClone, new Vector3(pos.x, pos.y, pos.z), rot);
-        go.GetComponent<MeleeMobAI>().parent = this;
+        go.GetComponent<MeleeMobAI>().parent = gameObject;
         go.GetComponent<AIMeleeCombat>().parent = gameObject;
         go.GetComponent<NetworkObject>().Spawn();
     }
