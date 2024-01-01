@@ -14,9 +14,11 @@ public class GameManager : NetworkBehaviour
     //[SerializeField] private TMP_Text playerNameText;
     //[SerializeField] private TMP_Text characterNameText;
     [Header("References")]
-    // sync player prefabs
+    // sync prefabs TODO: find a way to couple the prefab with stats
     [SerializeField] public GameObject[] playerPrefabs;
+    [SerializeField] public GameObject[] mobPrefabs;
     [SerializeField] private CharacterDatabase characterDatabase;
+    [SerializeField] private MobDatabase mobDatabase;
     [SerializeField] private ParticleDatabase particleDatabase;
     [SerializeField] public PlayerScoreboardCard[] playerScoreboardCards;
 
@@ -30,14 +32,16 @@ public class GameManager : NetworkBehaviour
 
     public static GameManager Instance { get; private set; }
 
-    // Player stats sync
+    // sync stats
     public NetworkList<PlayerStats> players;
+    public NetworkList<MobStats> mobs;
 
     private NetworkList<MovementSpeedBuffDebuff> movementSpeedTracker;
 
     private void Awake()
     {
         players = new NetworkList<PlayerStats>();
+        mobs = new NetworkList<MobStats>();
         movementSpeedTracker = new NetworkList<MovementSpeedBuffDebuff>();
         Instance = this;
     }
@@ -45,7 +49,9 @@ public class GameManager : NetworkBehaviour
     //TODO: handle client disconnect and remove from players and playerPrefabs list
     public override void OnNetworkSpawn()
     {
+        // Players and mobs are already spawned by their spawner gameobjects?
         playerPrefabs = GameObject.FindGameObjectsWithTag("Player");
+        mobPrefabs = GameObject.FindGameObjectsWithTag("Mob");
 
         if (IsServer)
         {
@@ -53,14 +59,27 @@ public class GameManager : NetworkBehaviour
             foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClientsList)
             {
                 // Initialize players network list
-                // (only stats that the character database needs to know so NOT game manager stats etc isDead, silenced, etc)
+                // (only stats that the character database needs to know are necessary on initialization so NOT game manager stats etc isDead, silenced, etc)
                 players.Add(new PlayerStats(client.ClientId, HostManager.Instance.ClientData[client.ClientId].characterId,
-                    characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).Health,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).MaxHealth,
+                    characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).Health,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).AttackSpeed,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).MovementSpeed,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).CurrentMovementSpeed,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).Damage));
+            }
+
+            // Initialize mobs network list for phase 1
+            foreach (GameObject mob in mobPrefabs)
+            {
+                mobs.Add(new MobStats(mob.GetComponent<NetworkObject>().NetworkObjectId,
+                    mob.GetComponent<MobPrefab>().MobId,
+                    mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).MaxHealth,
+                    mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).Health,
+                    mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).AttackSpeed,
+                    mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).MovementSpeed,
+                    mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).CurrentMovementSpeed,
+                    mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).Damage));
             }
         }
         if (IsClient)
@@ -126,7 +145,6 @@ public class GameManager : NetworkBehaviour
 
     private void HandleClientDisconnected(ulong clientId)
     {
-
         // Remove that client from players list
         // RAYMOND NOTE: theres a deallocation error when calling .Count so I just put an if
         // statement that checks if the game has started

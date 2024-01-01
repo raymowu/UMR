@@ -8,6 +8,8 @@ using Unity.Netcode;
 public class MobPrefab : NetworkBehaviour
 {
     [SerializeField] private HealthUI healthUI;
+    [Header("Mob Id")]
+    public int MobId;
     [Header("Base Stats")]
     public float MaxHealth;
     public float Health;
@@ -33,21 +35,21 @@ public class MobPrefab : NetworkBehaviour
         }
     }
 
-    //public void UpdateMobStats(MobStats mob)
-    //{
-    //    if (mob.MobId != -1)
-    //    {
-    //        MaxHealth = mob.MaxHealth;
-    //        Health = mob.Health;
-    //        AttackSpeed = mob.AttackSpeed;
-    //        MovementSpeed = mob.MovementSpeed;
-    //        CurrentMovementSpeed = mob.CurrentMovementSpeed;
-    //        Damage = mob.Damage;
-    //        IsSilenced = mob.IsSilenced;
-    //        IsDisarmed =  mob.IsDisarmed;
-    //        IsDead = mob.IsDead;
+    public void UpdateMobStats(MobStats mob)
+    {
+        if (mob.MobId != -1)
+        {
+            MaxHealth = mob.MaxHealth;
+            Health = mob.Health;
+            AttackSpeed = mob.AttackSpeed;
+            MovementSpeed = mob.MovementSpeed;
+            CurrentMovementSpeed = mob.CurrentMovementSpeed;
+            Damage = mob.Damage;
+            IsSilenced = mob.IsSilenced;
+            IsDisarmed = mob.IsDisarmed;
+            IsDead = mob.IsDead;
 
-    //        healthUI.Update3DSlider(mob.MaxHealth, Health);
-    //    }
-    //}
+            healthUI.Update3DSlider(mob.MaxHealth, Health);
+        }
+    }
 }
