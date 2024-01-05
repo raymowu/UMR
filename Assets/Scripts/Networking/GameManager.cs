@@ -30,6 +30,11 @@ public class GameManager : NetworkBehaviour
                         new Vector3 { x = 0, y = 0f, z = 51},
                         new Vector3 { x = 0, y = 0f, z = -50}};
 
+    public Vector3[] mobSpawnPoints = { new Vector3 { x = 15f, y = 0f, z = -41f },
+                        new Vector3 { x = 21f, y = 0f, z = -32f},
+                        new Vector3 { x = 34, y = 0f, z = -31f},
+                        new Vector3 { x = 44.5f, y = 0f, z = -21.5f} };
+
     public static GameManager Instance { get; private set; }
 
     // sync stats
@@ -72,6 +77,16 @@ public class GameManager : NetworkBehaviour
             // Initialize mobs network list for phase 1
             foreach (GameObject mob in mobPrefabs)
             {
+                Debug.Log("mob" + mob);
+                Debug.Log("mob network id: " + mob.GetComponent<NetworkObject>().NetworkObjectId);
+                Debug.Log(mob.GetComponent<MobPrefab>().MobId);
+                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).MaxHealth);
+                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).Health);
+                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).AttackSpeed);
+                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).MovementSpeed);
+                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).CurrentMovementSpeed);
+                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).Damage);
+
                 mobs.Add(new MobStats(mob.GetComponent<NetworkObject>().NetworkObjectId,
                     mob.GetComponent<MobPrefab>().MobId,
                     mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).MaxHealth,

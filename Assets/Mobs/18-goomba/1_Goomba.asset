@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7829e20bf0ff5e94eb1165cec07d0f1d, type: 3}
+  m_Name: 1_Goomba
+  m_EditorClassIdentifier: 
+  id: 1
+  displayName: Goomba
+  gameplayPrefab: {fileID: 8394039404811214666, guid: 52a67d53615c84c4a97e781cb819ddd4, type: 3}
+  maxHealth: 400
+  health: 400
+  attackSpeed: 3.5
+  movementSpeed: 5
+  currentMovementSpeed: 5
+  damage: 50

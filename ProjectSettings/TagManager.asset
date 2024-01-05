@@ -14,6 +14,7 @@ TagManager:
   - Ability3Text
   - Ability4Text
   - UIAbovePlayer
+  - Mob
   layers:
   - Default
   - TransparentFX
