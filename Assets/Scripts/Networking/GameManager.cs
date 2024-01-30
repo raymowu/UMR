@@ -106,6 +106,12 @@ public class GameManager : NetworkBehaviour
                 playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
             }
 
+            for (int i = 0; i < mobs.Count; i++)
+            {
+                mobPrefabs[i].GetComponent<MobPrefab>().UpdateMobStats(mobs[i]);
+                mobPrefabs[i].GetComponent<NavMeshAgent>().speed = mobs[i].CurrentMovementSpeed;
+            }
+
             for (int i = 0; i < playerScoreboardCards.Length; i++)
             {
                 // Check if there are enough players (only go through existing players)
@@ -120,6 +126,7 @@ public class GameManager : NetworkBehaviour
             }
 
             players.OnListChanged += HandlePlayersStatsChanged;
+            mobs.OnListChanged += HandleMobsStatsChanged;
 
         }
         DontDestroyOnLoad(gameObject);
@@ -130,11 +137,11 @@ public class GameManager : NetworkBehaviour
         if (IsClient)
         {
             players.OnListChanged -= HandlePlayersStatsChanged;
+            mobs.OnListChanged -= HandleMobsStatsChanged;
         }
         if (IsServer)
         {
             NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
-
         }
     }
 
@@ -198,6 +205,15 @@ public class GameManager : NetworkBehaviour
             {
                 playerScoreboardCards[i].DisableDisplay();
             }
+        }
+    }
+
+    private void HandleMobsStatsChanged(NetworkListEvent<MobStats> changeEvent)
+    {
+        for (int i = 0; i < mobs.Count; i++)
+        {
+            mobPrefabs[i].GetComponent<MobPrefab>().UpdateMobStats(mobs[i]);
+            mobPrefabs[i].GetComponent<NavMeshAgent>().speed = mobs[i].CurrentMovementSpeed;
         }
     }
 

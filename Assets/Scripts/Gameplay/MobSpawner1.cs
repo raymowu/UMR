@@ -20,7 +20,6 @@ public class MobSpawner1 : NetworkBehaviour
             if (mob != null)
             {
                 var spawnPos = GameManager.Instance.mobSpawnPoints[j++];
-                Debug.Log(spawnPos);
 
                 var mobInstance = Instantiate(mob.GameplayPrefab, spawnPos, Quaternion.identity);
                 mobInstance.GetComponent<EnvMeleeMobAI>().spawnPoint = spawnPos;

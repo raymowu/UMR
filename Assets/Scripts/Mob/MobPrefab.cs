@@ -7,7 +7,7 @@ using Unity.Netcode;
 
 public class MobPrefab : NetworkBehaviour
 {
-    [SerializeField] private HealthUI healthUI;
+    [SerializeField] private MobHealthUI healthUI;
     [Header("Mob Id")]
     public int MobId;
     [Header("Base Stats")]
@@ -23,16 +23,17 @@ public class MobPrefab : NetworkBehaviour
 
     void Start()
     {
-        healthUI = GetComponent<HealthUI>();
+        healthUI = GetComponent<MobHealthUI>();
+        healthUI.Start3DSlider(MaxHealth);
     }
 
     private void Update()
     {
         if (!IsOwner) { return; }
-        if (Input.GetKeyDown(KeyCode.V))
+/*        if (Input.GetKeyDown(KeyCode.V))
         {
             GameManager.Instance.DealDamage(gameObject, gameObject, 9999);
-        }
+        }*/
     }
 
     public void UpdateMobStats(MobStats mob)
