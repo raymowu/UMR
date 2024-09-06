@@ -47,6 +47,8 @@ public class FBIAbilities : NetworkBehaviour
     public Canvas ability3Canvas;
     public Image ability3Indicator;
     public GameObject ability3DisableOverlay;
+    public float TAZE_RANGE = 5f;
+    public float TAZE_DURATION = 1.5f;
 
     [Header("Ability 4")]
     [SerializeField] private GameObject policeCar;
@@ -287,15 +289,22 @@ public class FBIAbilities : NetworkBehaviour
 
             ability2Canvas.enabled = false;
             ability2Indicator.enabled = false;
-
-            GameObject targetEnemy = moveScript.targetEnemy;
         }
-
-        if (ability3Canvas.enabled && Input.GetKeyUp(ability3Key))
+        GameObject targetEnemy = moveScript.targetEnemy;
+        if (!isAbility2Cooldown && ability3Canvas.enabled && targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.transform.position) <= TAZE_RANGE)
         {
             isAbility3Cooldown = true;
             currentAbility3Cooldown = ability3Cooldown;
 
+            ability3Canvas.enabled = false;
+            ability3Indicator.enabled = false;
+
+            playerMovement.Rotate(hit.point);
+            GameManager.Instance.Stun(targetEnemy, TAZE_DURATION);
+            //TODO add taze particles
+        }
+        if (Input.GetKeyUp(ability3Key))
+        {
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
         }
