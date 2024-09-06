@@ -13,6 +13,7 @@ public class DarthogAbilities : NetworkBehaviour
     [SerializeField] private Canvas abilitiesCanvas;
     private PlayerMovement playerMovement;
     private PlayerPrefab stats;
+    private PlayerMovement moveScript;
 
     [Header("Ability 1")]
     public Image abilityImage1;
@@ -75,6 +76,7 @@ public class DarthogAbilities : NetworkBehaviour
     {
         playerMovement = GetComponent<PlayerMovement>();
         stats = GetComponent<PlayerPrefab>();
+        moveScript = GetComponent<PlayerMovement>();
 
         // Shows UI
         if (IsOwner)
@@ -193,12 +195,11 @@ public class DarthogAbilities : NetworkBehaviour
         {
             ability2Canvas.enabled = true;
             ability2Indicator.enabled = true;
-            abilityImage2.fillAmount = 1;
 
             ability3Canvas.enabled = false;
             ability3Indicator.enabled = false;
         }
-        GameObject targetEnemy = GetComponent<PlayerMovement>().targetEnemy;
+        GameObject targetEnemy = moveScript.targetEnemy;
         if (!isAbility2Cooldown && ability2Canvas.enabled && targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.transform.position) <= POUNCE_DASH_RANGE)
         {
             isAbility2Cooldown = true;
@@ -209,6 +210,11 @@ public class DarthogAbilities : NetworkBehaviour
 
             playerMovement.Rotate(hit.point);
             StartCoroutine(Dash());
+        }
+        if (Input.GetKeyUp(ability2Key))
+        {
+            ability2Canvas.enabled = false;
+            ability2Indicator.enabled = false;
         }
     }
 
