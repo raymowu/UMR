@@ -181,9 +181,9 @@ public class DarthogAbilities : NetworkBehaviour
 
             foreach (GameObject player in GameManager.Instance.playerPrefabs)
             {
+                if (player == gameObject) { continue; }
                 if (Vector3.Distance(transform.position, player.transform.position) <= SMASH_RANGE)
                 {
-                    if (player == gameObject) { continue; }
                     GameManager.Instance.Knockup(player, SMASH_KNOCKUP_DURATION);
                 }
             }

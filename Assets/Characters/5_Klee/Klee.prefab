@@ -4397,40 +4397,34 @@ MonoBehaviour:
   abilityText1: {fileID: 4118015005450792430}
   ability1Key: 113
   ability1Cooldown: 3
-  ability1Canvas: {fileID: 7156045912658890377}
-  ability1Indicator: {fileID: 1460837211948533035}
+  ability1IndicatorCanvas: {fileID: 7156045912658890377}
   ability1DisableOverlay: {fileID: 4527438801048134813}
   abilityImage2: {fileID: 4118015004444101929}
   abilityText2: {fileID: 4118015005001212100}
   ability2Key: 119
   ability2Cooldown: 10
-  ability2Canvas: {fileID: 9002466526005084892}
-  ability2Indicator: {fileID: 8358096044622100990}
+  ability2IndicatorCanvas: {fileID: 9002466526005084892}
   ability2DisableOverlay: {fileID: 5318217042250527403}
   abilityImage3: {fileID: 4118015005167547707}
   abilityText3: {fileID: 4118015005947681924}
   ability3Key: 101
   ability3Cooldown: 10
-  ability3Canvas: {fileID: 2255818850071878277}
-  ability3Indicator: {fileID: 6208286822615165633}
+  ability3IndicatorCanvas: {fileID: 2255818850071878277}
   ability3DisableOverlay: {fileID: 3970373181056279659}
   abilityImage4: {fileID: 4118015005367952174}
   abilityText4: {fileID: 4118015005940198368}
   ability4Key: 114
   ability4Cooldown: 5
-  ability4Canvas: {fileID: 6963185587682613901}
-  ability4Indicator: {fileID: 5994148116150650691}
+  ability4IndicatorCanvas: {fileID: 6963185587682613901}
   ability4DisableOverlay: {fileID: 8473731607126737542}
-  fishTrapTransform: {fileID: 6370592558420529199}
-  FISH_TRAP_RANGE: 5
-  FISH_TRAP_DAMAGE: 40
   ability1Projectile: {fileID: 6697205436987128126, guid: 601003cfff78db84cb1d86b1b36787ae, type: 3}
   JUMPY_DUMPTY_DAMAGE: 10
   JUMPY_DUMPTY_SLOW_AMOUNT: 0.8
   JUMPY_DUMPTY_SLOW_DURATION: 5
+  fishTrapTransform: {fileID: 6370592558420529199}
   fishTrap: {fileID: 1200711338167563086, guid: 3291772d3b5bf504b8ecf1c6d6ada337, type: 3}
-  ability2RangeIndicatorCanvas: {fileID: 0}
-  ability2RangeIndicator: {fileID: 0}
+  FISH_TRAP_RANGE: 5
+  FISH_TRAP_DAMAGE: 40
   sparkPrefab: {fileID: 0}
   kingDodoco: {fileID: 3416572366628645178, guid: ff16afa8cde354746a6a7f2c3b78836b, type: 3}
 --- !u!114 &-5525166541350269327

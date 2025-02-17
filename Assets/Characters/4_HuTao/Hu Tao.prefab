@@ -3791,42 +3791,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3f8e86e3797e7f498f75350c393382b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootTransform: {fileID: 6769123109475879919}
   abilitiesCanvas: {fileID: 5046254900617088539}
+  shootTransform: {fileID: 6769123109475879919}
   abilityImage1: {fileID: 5046254902025803001}
   abilityText1: {fileID: 5046254902489800793}
   ability1Key: 113
   ability1Cooldown: 5
-  ability1Canvas: {fileID: 6394533525845233821}
-  ability1Indicator: {fileID: 5291704584620771373}
+  ability1IndicatorCanvas: {fileID: 6394533525845233821}
   ability1DisableOverlay: {fileID: 4752836195454445866}
-  DASH_SPEED: 20
-  DASH_TIME: 0.15
-  spiritOfTheAfterlifeParticles: {fileID: 1927335351645662131}
   abilityImage2: {fileID: 5046254901349023902}
   abilityText2: {fileID: 5046254900522413427}
   ability2Key: 119
+  ability2Cooldown: 0
+  ability2IndicatorCanvas: {fileID: 8657886337165324685, guid: cd8e156ffa615b345a211f669c0887b9, type: 3}
   ability2DisableOverlay: {fileID: 3958625545505242908}
-  ABILITY2ACTIVATIONCOST: 0.02
-  ABILITY2TICKINTERVAL: 0.5
-  ABILITY2RANGE: 1.5
-  ability2Active: 0
   abilityImage3: {fileID: 5046254900625307788}
   abilityText3: {fileID: 5046254901975863603}
   ability3Key: 101
   ability3Cooldown: 16
-  ability3Duration: 9
+  ability3IndicatorCanvas: {fileID: 8657886337165324685, guid: cd8e156ffa615b345a211f669c0887b9, type: 3}
   ability3DisableOverlay: {fileID: 5204014458652715484}
-  ABILITY3ACTIVATIONCOST: 0.3
-  ABILITY3ATTACKINCREASE: 0.063
-  ability4Particles: {fileID: 1376527397315792452, guid: 85540090705a34347926eb11d41aa646, type: 3}
   abilityImage4: {fileID: 5046254902302109337}
   abilityText4: {fileID: 5046254901998265943}
   ability4Key: 114
   ability4Cooldown: 30
-  ability4Canvas: {fileID: 5211220400334060041}
-  ability4Indicator: {fileID: 2523246413871171215}
+  ability4IndicatorCanvas: {fileID: 5211220400334060041}
   ability4DisableOverlay: {fileID: 772781630982917937}
+  DASH_SPEED: 20
+  DASH_TIME: 0.15
+  spiritOfTheAfterlifeParticles: {fileID: 1927335351645662131}
+  ABILITY2ACTIVATIONCOST: 0.02
+  ABILITY2TICKINTERVAL: 0.5
+  ABILITY2RANGE: 1.5
+  ability3Duration: 9
+  ABILITY3ACTIVATIONCOST: 0.3
+  ABILITY3ATTACKINCREASE: 0.063
+  ability4Particles: {fileID: 1376527397315792452, guid: 85540090705a34347926eb11d41aa646, type: 3}
   ABILITY4RANGE: 4
   ABILITY4DAMAGE: 4.5
   ABILITY4LOWHPDAMAGE: 5.5

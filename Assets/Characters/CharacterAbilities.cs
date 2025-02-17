@@ -1,7 +1,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
@@ -14,6 +13,9 @@ public abstract class CharacterAbilities : NetworkBehaviour
     protected PlayerMovement playerMovement;
     protected Animator anim;
     protected PlayerPrefab stats;
+
+    protected bool toggleActive = false;
+    protected float nextTickTime = 0f;
 
     [Header("Ability 1")]
     public Image abilityImage1;
@@ -112,7 +114,6 @@ public abstract class CharacterAbilities : NetworkBehaviour
 
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        // TODO: Cast ability functionality
         Ability1Input();
         Ability2Input();
         Ability3Input();
@@ -167,15 +168,59 @@ public abstract class CharacterAbilities : NetworkBehaviour
         }
     }
 
-    protected abstract void Ability1Canvas();
-    protected abstract void Ability2Canvas();
-    protected abstract void Ability3Canvas();
-    protected abstract void Ability4Canvas();
+    protected virtual void Ability1Canvas() { }
+    protected virtual void Ability2Canvas() { }
+    protected virtual void Ability3Canvas() { }
+    protected virtual void Ability4Canvas() { }
 
+    protected GameObject GetNearestPlayerInRange(float range)
+    {
+        foreach (GameObject player in GameManager.Instance.playerPrefabs)
+        {
+            if (player == gameObject) { continue; }
+            if (Vector3.Distance(transform.position, player.transform.position) <= range)
+            {
+                return player;
+            }
+        }
+        return gameObject;
+    }
+    // QUESTION: do i need abilitycooldown to even be passed
+    // ANSWER: yes bc that determines which ability's abilitycooldown to use
+    // QUESTION: does abilitycooldown need to be ref bc its just in the parent class
+    // ANSWER: yes bc of abilityCooldown setting cooldown timers
     protected void InputHelper(KeyCode abilityKey, ref bool isAbilityCooldown, Canvas abilityCanvas, 
-        ref float abilityCooldown, ref float currentAbilityCooldown, Action callback)
+        float abilityCooldown, ref float currentAbilityCooldown, string animTrigger, Action callback)
     {
 
+        if (Input.GetKeyDown(abilityKey) && !isAbilityCooldown)
+        {
+            // QUESTION: do i even need to disable everything cant i just disable go in unity and enable only the one i need
+            // QUESTION: will .enabled work if canvas is not set/ doesnt exist
+            // ANSWER: no
+            ability1IndicatorCanvas.enabled = false;
+            ability2IndicatorCanvas.enabled = false;
+            ability3IndicatorCanvas.enabled = false;
+            ability4IndicatorCanvas.enabled = false;
+
+            abilityCanvas.enabled = true;
+        }
+
+        if (abilityCanvas.enabled && Input.GetKeyUp(abilityKey))
+        {
+
+            isAbilityCooldown = true;
+            currentAbilityCooldown = abilityCooldown;
+            callback?.Invoke();
+            anim.SetTrigger(animTrigger);
+
+            abilityCanvas.enabled = false;
+        }
+    }
+
+    protected void InputHelper(KeyCode abilityKey, ref bool isAbilityCooldown, float abilityCooldown, 
+        ref float currentAbilityCooldown, string animTrigger, Action callback)
+    {
         if (Input.GetKeyDown(abilityKey) && !isAbilityCooldown)
         {
             ability1IndicatorCanvas.enabled = false;
@@ -183,46 +228,55 @@ public abstract class CharacterAbilities : NetworkBehaviour
             ability3IndicatorCanvas.enabled = false;
             ability4IndicatorCanvas.enabled = false;
 
-            Cursor.visible = false;
-
-            abilityCanvas.enabled = true;
-        }
-
-        if (abilityCanvas.enabled && Input.GetKeyUp(abilityKey))
-        {
-            callback?.Invoke();
-
             isAbilityCooldown = true;
             currentAbilityCooldown = abilityCooldown;
-
-            abilityCanvas.enabled = false;
-
-            Cursor.visible = true;
+            callback?.Invoke();
+            anim.SetTrigger(animTrigger);
         }
     }
 
+    private IEnumerator ToggleInterval(float tickInterval, Action callback)
+    {
+        nextTickTime = Time.time + tickInterval;
+        callback?.Invoke();
+        
+        yield return new WaitForSeconds(tickInterval);
+    }
+
+    // callback is code to execute while toggle is on
+    protected void ToggleInputHelper(KeyCode abilityKey, float tickInterval, Action intervalCallback, Action callback)
+    {
+        if (toggleActive && Time.time > nextTickTime)
+        {
+            StartCoroutine(ToggleInterval(tickInterval, intervalCallback));
+        }
+
+        if (Input.GetKeyDown(abilityKey))
+        {
+            abilityImage2.fillAmount = toggleActive ? 0 : 1;
+            toggleActive = !toggleActive;
+            callback?.Invoke();
+        }
+    }    
+
     protected virtual void Ability1Input() {
-        InputHelper(ability1Key, ref isAbility1Cooldown, ability1IndicatorCanvas, ref ability1Cooldown,
-                   ref currentAbility1Cooldown, () => {});
+        InputHelper(ability1Key, ref isAbility1Cooldown, ability1Cooldown, ref currentAbility1Cooldown, "", () => { });
     }
 
     protected virtual void Ability2Input()
     {
-        InputHelper(ability2Key, ref isAbility2Cooldown, ability2IndicatorCanvas, ref ability2Cooldown,
-                   ref currentAbility2Cooldown, () => { });
+        InputHelper(ability2Key, ref isAbility2Cooldown, ability2Cooldown, ref currentAbility2Cooldown, "", () => { });
     }
 
 
     protected virtual void Ability3Input()
     {
-        InputHelper(ability3Key, ref isAbility3Cooldown, ability3IndicatorCanvas, ref ability3Cooldown,
-                   ref currentAbility3Cooldown, () => { });
+        InputHelper(ability3Key, ref isAbility3Cooldown, ability3Cooldown, ref currentAbility3Cooldown, "", () => { });
     }
 
     protected virtual void Ability4Input()
     {
-        InputHelper(ability3Key, ref isAbility3Cooldown, ability3IndicatorCanvas, ref ability3Cooldown,
-                  ref currentAbility3Cooldown, () => { });
+        InputHelper(ability4Key, ref isAbility4Cooldown, ability4Cooldown, ref currentAbility4Cooldown, "", () => { });
     }
 
     private void AbilityCooldown(ref float currentCooldown, float maxCooldown, ref bool isCooldown, Image skillImage, TMP_Text skillText)
