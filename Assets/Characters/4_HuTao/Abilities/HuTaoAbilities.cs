@@ -70,7 +70,10 @@ public class HuTaoAbilities : CharacterAbilities
         ToggleInputHelper(ability2Key, ABILITY2TICKINTERVAL, () =>
         {
             GameManager.Instance.DealDamage(gameObject, gameObject, ABILITY2ACTIVATIONCOST * stats.MaxHealth);
-            GameManager.Instance.DealDamage(gameObject, GetNearestPlayerInRange(ABILITY2RANGE), stats.Damage);
+            foreach (GameObject player in GetAllPlayersInRange(ABILITY2RANGE))
+            {
+                GameManager.Instance.DealDamage(gameObject, player, stats.Damage);
+            }
         }, () => {
             ToggleSpiritOfAfterlifeParticlesServerRpc();
         });
