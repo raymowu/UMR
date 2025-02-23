@@ -223,11 +223,18 @@ public class GameManager : NetworkBehaviour
 
     public void DealDamage(GameObject sender, GameObject target, float damage)
     {
-        DealDamageServerRpc(sender.GetComponent<NetworkObject>().OwnerClientId, target.GetComponent<NetworkObject>().OwnerClientId, damage);
+        if (target.CompareTag("Player"))
+        {
+            DealDamageToPlayerServerRpc(sender.GetComponent<NetworkObject>().OwnerClientId, target.GetComponent<NetworkObject>().OwnerClientId, damage);
+        }
+        else if (target.CompareTag("Mob"))
+        {
+            DealDamageToMobServerRpc(sender.GetComponent<NetworkObject>().OwnerClientId, target.GetComponent<NetworkObject>().NetworkObjectId, damage);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DealDamageServerRpc(ulong senderId, ulong clientId, float damage)
+    private void DealDamageToPlayerServerRpc(ulong senderId, ulong clientId, float damage)
     {
         int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
         for (int i = 0; i < players.Count; i++)
@@ -278,6 +285,32 @@ public class GameManager : NetworkBehaviour
                         );
                 }
             }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DealDamageToMobServerRpc(ulong senderId, ulong mobId, float damage)
+    {
+        int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
+        for (int i = 0; i < mobs.Count; i++)
+        {
+            if (mobs[i].Id != mobId) { continue; }
+            // safety check
+            if (mobPrefabs[i].layer == LayerIgnoreRaycast) { return; }
+            bool isDead = players[i].Health - damage > 0 ? false : true;
+            mobs[i] = new MobStats(
+                mobs[i].Id,
+                mobs[i].MobId,
+                mobs[i].MaxHealth,
+                mobs[i].Health - damage,
+                mobs[i].AttackSpeed,
+                mobs[i].MovementSpeed,
+                mobs[i].CurrentMovementSpeed,
+                mobs[i].Damage,
+                mobs[i].IsSilenced,
+                mobs[i].IsDisarmed,
+                isDead
+                );
         }
     }
 

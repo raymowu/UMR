@@ -12,19 +12,15 @@ public class MobSpawner1 : NetworkBehaviour
     {
         if (!IsServer) { return; }
 
-        // outer mobs
-        for (int i = 1; i < 9; i++)
+        var mob = mobDatabase.GetMobById(1);
+        if (mob != null)
         {
-            int j = 0;
-            var mob = mobDatabase.GetMobById(i);
-            if (mob != null)
-            {
-                var spawnPos = GameManager.Instance.mobSpawnPoints[j++];
-
-                var mobInstance = Instantiate(mob.GameplayPrefab, spawnPos, Quaternion.identity);
-                mobInstance.GetComponent<EnvMeleeMobAI>().spawnPoint = spawnPos;
-                mobInstance.GetComponent<NetworkObject>().Spawn();
-            }
+            //var spawnPos = GameManager.Instance.mobSpawnPoints[0];
+            var spawnPos = new Vector3(0f, 0f, 0f);
+            var mobInstance = Instantiate(mob.GameplayPrefab, spawnPos, Quaternion.identity);
+            mobInstance.GetComponent<EnvMeleeMobAI>().spawnPoint = spawnPos;
+            mobInstance.GetComponent<NetworkObject>().Spawn();
         }
+
     }
 }

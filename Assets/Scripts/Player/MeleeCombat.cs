@@ -37,7 +37,7 @@ public class MeleeCombat : NetworkBehaviour
 
         // Perform the Melee auto attack if in range
         if (targetEnemy != null && targetEnemy != NetworkManager.Singleton.LocalClient.PlayerObject.gameObject && 
-            performMeleeAttack && Time.time > nextAttackTime && !targetEnemy.GetComponent<PlayerPrefab>().IsDead)
+            performMeleeAttack && Time.time > nextAttackTime) // && !targetEnemy.GetComponent<PlayerPrefab>().IsDead
         {
             if (Vector3.Distance(transform.position, targetEnemy.transform.position) <= moveScript.stoppingDistance)
             {

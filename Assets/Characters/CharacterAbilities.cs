@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
 using TMPro;
+using System.Collections.Generic;
 
 public abstract class CharacterAbilities : NetworkBehaviour
 {
@@ -184,6 +185,19 @@ public abstract class CharacterAbilities : NetworkBehaviour
             }
         }
         return gameObject;
+    }    
+    protected List<GameObject> GetAllPlayersInRange(float range)
+    {
+        List<GameObject> res = new List<GameObject> { };
+        foreach (GameObject player in GameManager.Instance.playerPrefabs)
+        {
+            if (player == gameObject) { continue; }
+            if (Vector3.Distance(transform.position, player.transform.position) <= range)
+            {
+                res.Add(player);
+            }
+        }
+        return res;
     }
     // QUESTION: do i need abilitycooldown to even be passed
     // ANSWER: yes bc that determines which ability's abilitycooldown to use

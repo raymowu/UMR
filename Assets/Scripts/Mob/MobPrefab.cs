@@ -8,6 +8,7 @@ using Unity.Netcode;
 public class MobPrefab : NetworkBehaviour
 {
     [SerializeField] private MobHealthUI healthUI;
+    public ulong Id;
     [Header("Mob Id")]
     public int MobId;
     [Header("Base Stats")]

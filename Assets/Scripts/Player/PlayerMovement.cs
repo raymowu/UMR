@@ -67,7 +67,7 @@ public class PlayerMovement : NetworkBehaviour
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity))
             {
                 // TODO: OR compare tag "Enemy" for monsters
-                if (hit.collider.CompareTag("Player")) { //&& hit.collider.gameObject != gameObject
+                if (hit.collider.CompareTag("Player") || hit.collider.CompareTag("Mob")) { //&& hit.collider.gameObject != gameObject
                     MoveTowardsEnemy(hit.collider.gameObject);
                 }
                 else
