@@ -4,6 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NPCAbilities))]
 public class MeleeMobAI : NetworkBehaviour
 {
     public NavMeshAgent agent;
@@ -31,24 +32,6 @@ public class MeleeMobAI : NetworkBehaviour
         Move();
     }
 
-    private GameObject nearestPlayer()
-    {
-        GameObject tMin = null;
-        float minDist = Mathf.Infinity;
-        Vector3 currentPos = transform.position;
-        foreach (GameObject t in GameManager.Instance.playerPrefabs)
-        {
-            if (t == parent) { continue; }
-            float dist = Vector3.Distance(t.transform.position, currentPos);
-            if (dist < minDist)
-            {
-                tMin = t;
-                minDist = dist;
-            }
-        }
-        return tMin;
-    }
-
     public void Animation()
     {
         float speed = agent.velocity.magnitude / agent.speed;
@@ -57,16 +40,10 @@ public class MeleeMobAI : NetworkBehaviour
 
     public void Move()
     {
-        GameObject targetEnemy = nearestPlayer();
-        if (targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.transform.position) <= detectionRange)
-        {
-            // TODO: OR compare tag "Enemy" for monsters
-            MoveTowardsEnemy(targetEnemy);
-        }
-        else
-        {
-            MoveTowardsEnemy(parent);
-        }
+        GameObject targetEnemy = parent.GetComponent<NPCAbilities>().GetNearestPlayerInRange(detectionRange, parent);
+        // TODO: OR compare tag "Enemy" for monsters
+        MoveTowardsEnemy(targetEnemy != parent ? targetEnemy : parent);
+
     }
 
     public void MoveToPosition(Vector3 position)

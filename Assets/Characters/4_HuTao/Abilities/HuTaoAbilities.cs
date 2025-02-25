@@ -26,7 +26,7 @@ public class HuTaoAbilities : CharacterAbilities
 
     [Header("Spirit Soother")]
     [SerializeField] private GameObject ability4Particles;
-    public float ABILITY4RANGE = 4f;
+    public float SPIRIT_SOOTHER_RANGE = 4f;
     public float ABILITY4DAMAGE = 4.50f;
     public float ABILITY4LOWHPDAMAGE = 5.50f;
     public float ABILITY4HPREGEN = 0.1f;
@@ -135,21 +135,17 @@ public class HuTaoAbilities : CharacterAbilities
         {
             playerMovement.StopMovement();
             CastAbility4ServerRpc();
-            int numEnemiesHit = 0;
-            foreach (GameObject player in GameManager.Instance.playerPrefabs)
+            List<GameObject> playersInRange = GetAllPlayersInRange(SPIRIT_SOOTHER_RANGE);
+            int numEnemiesHit = playersInRange.Count;
+            foreach (GameObject player in playersInRange)
             {
-                if (Vector3.Distance(transform.position, player.transform.position) <= ABILITY4RANGE)
+                if (stats.Health / stats.MaxHealth <= 0.5f)
                 {
-                    if (player == gameObject) { continue; }
-                    numEnemiesHit++;
-                    if (stats.Health / stats.MaxHealth <= 0.5f)
-                    {
-                        GameManager.Instance.DealDamage(gameObject, player, stats.Damage * ABILITY4LOWHPDAMAGE);
-                    }
-                    else
-                    {
-                        GameManager.Instance.DealDamage(gameObject, player, stats.Damage * ABILITY4DAMAGE);
-                    }
+                    GameManager.Instance.DealDamage(gameObject, player, stats.Damage * ABILITY4LOWHPDAMAGE);
+                }
+                else
+                {
+                    GameManager.Instance.DealDamage(gameObject, player, stats.Damage * ABILITY4DAMAGE);
                 }
             }
             if (stats.Health / stats.MaxHealth <= 0.5)

@@ -15,8 +15,10 @@ public class GameManager : NetworkBehaviour
     //[SerializeField] private TMP_Text characterNameText;
     [Header("References")]
     // sync prefabs TODO: find a way to couple the prefab with stats
-    [SerializeField] public GameObject[] playerPrefabs;
-    [SerializeField] public GameObject[] mobPrefabs;
+    [SerializeField] public GameObject[] playerPrefabsArr;
+    [SerializeField] public GameObject[] mobPrefabsArr;
+    public Dictionary<ulong, GameObject> playerPrefabs;
+    public Dictionary<ulong, GameObject> mobPrefabs;
     [SerializeField] private CharacterDatabase characterDatabase;
     [SerializeField] private MobDatabase mobDatabase;
     [SerializeField] private ParticleDatabase particleDatabase;
@@ -50,13 +52,34 @@ public class GameManager : NetworkBehaviour
         movementSpeedTracker = new NetworkList<MovementSpeedBuffDebuff>();
         Instance = this;
     }
+    static Dictionary<ulong, GameObject> ConvertArrayToMap(GameObject[] array, bool playersArray)
+    {
+        Dictionary<ulong, GameObject> resultMap = new Dictionary<ulong, GameObject>();
+
+        foreach (GameObject element in array)
+        {
+            // Using the element itself as the value for this example
+            if (playersArray)
+            {
+                resultMap[element.GetComponent<NetworkObject>().OwnerClientId] = element;
+            }
+            else
+            {
+                resultMap[element.GetComponent<NetworkObject>().NetworkObjectId] = element;
+            }
+        }
+
+        return resultMap;
+    }
 
     //TODO: handle client disconnect and remove from players and playerPrefabs list
     public override void OnNetworkSpawn()
     {
         // Players and mobs are already spawned by their spawner gameobjects?
-        playerPrefabs = GameObject.FindGameObjectsWithTag("Player");
-        mobPrefabs = GameObject.FindGameObjectsWithTag("Mob");
+        playerPrefabsArr = GameObject.FindGameObjectsWithTag("Player");
+        mobPrefabsArr = GameObject.FindGameObjectsWithTag("Mob");
+        playerPrefabs = ConvertArrayToMap(playerPrefabsArr, true);
+        mobPrefabs = ConvertArrayToMap(mobPrefabsArr, false);
 
         if (IsServer)
         {
@@ -311,6 +334,10 @@ public class GameManager : NetworkBehaviour
                 mobs[i].IsDisarmed,
                 isDead
                 );
+            if (mobs[i].Health <= 0)
+            {
+                HandleBeforeDeath(mobPrefabs[mobId], 9999f);
+            }
         }
     }
 

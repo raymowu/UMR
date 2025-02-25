@@ -93,7 +93,7 @@ public class RangedCombat : NetworkBehaviour
     private void SummonAutoProjectileServerRpc(ulong parentId, ulong targetId)
     {
         NetworkList<PlayerStats> players = GameManager.Instance.players;
-        GameObject[] playerPrefabs = GameManager.Instance.playerPrefabs;
+        GameObject[] playerPrefabs = GameManager.Instance.playerPrefabsArr;
         GameObject parent = playerPrefabs[0];
         GameObject target = playerPrefabs[0];
 

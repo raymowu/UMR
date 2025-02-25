@@ -147,7 +147,7 @@ public abstract class CharacterAbilities : NetworkBehaviour
         }
     }
 
-    protected void SummonProjectileCanvas(Canvas abilityCanvas, float range)
+    protected void SummonThingCanvas(Canvas abilityCanvas, float range)
     {
         int layerMask = ~LayerMask.GetMask("Player");
         if (abilityCanvas.enabled)
@@ -169,28 +169,68 @@ public abstract class CharacterAbilities : NetworkBehaviour
         }
     }
 
+    protected void PointAndClickCanvas(Canvas abilityCanvas)
+    {
+        if (abilityCanvas.enabled)
+        {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            }
+            Quaternion ab2Canvas = Quaternion.LookRotation(position - transform.position);
+            ab2Canvas.eulerAngles = new Vector3(0, ab2Canvas.eulerAngles.y, ab2Canvas.eulerAngles.z);
+
+            abilityCanvas.transform.rotation = Quaternion.Lerp(ab2Canvas, abilityCanvas.transform.rotation, 0);
+        }
+    }
+
     protected virtual void Ability1Canvas() { }
     protected virtual void Ability2Canvas() { }
     protected virtual void Ability3Canvas() { }
     protected virtual void Ability4Canvas() { }
 
-    protected GameObject GetNearestPlayerInRange(float range)
+    public GameObject GetNearestPlayerInRange(float range)
     {
-        foreach (GameObject player in GameManager.Instance.playerPrefabs)
+        GameObject tMin = gameObject;
+        float minDist = Mathf.Infinity;
+        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
         {
+            GameObject player = p.Value;
             if (player == gameObject) { continue; }
-            if (Vector3.Distance(transform.position, player.transform.position) <= range)
+            float dist = Vector3.Distance(player.transform.position, transform.position);
+            if (dist <= range && dist < minDist)
             {
-                return player;
+                tMin = player;
+                minDist = dist;
             }
         }
-        return gameObject;
+        return tMin;
+    }       
+    
+    public GameObject GetNearestPlayerInRange(float range, GameObject parent)
+    {
+        GameObject tMin = parent;
+        float minDist = Mathf.Infinity;
+        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
+        {
+            GameObject player = p.Value;
+            if (player == parent) { continue; }
+            float dist = Vector3.Distance(player.transform.position, transform.position);
+            if (dist <= range && dist < minDist)
+            {
+                tMin = player;
+                minDist = dist;
+            }
+        }
+        return tMin;
     }    
-    protected List<GameObject> GetAllPlayersInRange(float range)
+    
+    public List<GameObject> GetAllPlayersInRange(float range)
     {
         List<GameObject> res = new List<GameObject> { };
-        foreach (GameObject player in GameManager.Instance.playerPrefabs)
+        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
         {
+            GameObject player = p.Value;
             if (player == gameObject) { continue; }
             if (Vector3.Distance(transform.position, player.transform.position) <= range)
             {
@@ -198,11 +238,24 @@ public abstract class CharacterAbilities : NetworkBehaviour
             }
         }
         return res;
+    }    
+    
+    public List<GameObject> GetAllPlayers()
+    {
+        List<GameObject> res = new List<GameObject> { };
+        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
+        {
+            GameObject player = p.Value;
+            res.Add(player);
+        }
+        return res;
     }
     // QUESTION: do i need abilitycooldown to even be passed
     // ANSWER: yes bc that determines which ability's abilitycooldown to use
     // QUESTION: does abilitycooldown need to be ref bc its just in the parent class
     // ANSWER: yes bc of abilityCooldown setting cooldown timers
+
+    // Hold to aim then lift button abilities
     protected void InputHelper(KeyCode abilityKey, ref bool isAbilityCooldown, Canvas abilityCanvas, 
         float abilityCooldown, ref float currentAbilityCooldown, string animTrigger, Action callback)
     {
@@ -232,6 +285,7 @@ public abstract class CharacterAbilities : NetworkBehaviour
         }
     }
 
+    // Just press button no aim abilities
     protected void InputHelper(KeyCode abilityKey, ref bool isAbilityCooldown, float abilityCooldown, 
         ref float currentAbilityCooldown, string animTrigger, Action callback)
     {
@@ -246,6 +300,33 @@ public abstract class CharacterAbilities : NetworkBehaviour
             currentAbilityCooldown = abilityCooldown;
             callback?.Invoke();
             anim.SetTrigger(animTrigger);
+        }
+    }
+
+    protected void InputHelper(KeyCode abilityKey, ref bool isAbilityCooldown, Canvas abilityCanvas, 
+        float abilityCooldown, ref float currentAbilityCooldown, string animTrigger, float range, Action callback)
+    {
+        if (Input.GetKeyDown(ability2Key) && !isAbility2Cooldown)
+        {
+            ability1IndicatorCanvas.enabled = false;
+            ability2IndicatorCanvas.enabled = false;
+            ability3IndicatorCanvas.enabled = false;
+            ability4IndicatorCanvas.enabled = false;
+            abilityCanvas.enabled = true;
+        }
+        GameObject targetEnemy = playerMovement.targetEnemy;
+        if (!isAbilityCooldown && abilityCanvas.enabled && targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.transform.position) <= range)
+        {
+            isAbilityCooldown = true;
+            currentAbilityCooldown = abilityCooldown;
+
+            abilityCanvas.enabled = false;
+
+            callback?.Invoke();
+        }
+        if (Input.GetKeyUp(ability2Key))
+        {
+            abilityCanvas.enabled = false;
         }
     }
 

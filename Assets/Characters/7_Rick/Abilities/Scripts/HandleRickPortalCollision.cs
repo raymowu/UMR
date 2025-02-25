@@ -19,12 +19,9 @@ public class HandleRickPortalCollision : NetworkBehaviour
     {
         if (parent.exitPortalExists)
         {
-            foreach (GameObject player in GameManager.Instance.playerPrefabs)
+            foreach (GameObject player in parent.GetAllPlayersInRange(PORTAL_DETECTION_RANGE))
             {
-                if (Vector3.Distance(transform.position, player.transform.position) <= PORTAL_DETECTION_RANGE)
-                {
-                    GameManager.Instance.TeleportPlayer(player, parent.exitPortal.transform.position);
-                }
+                GameManager.Instance.TeleportPlayer(player, parent.exitPortal.transform.position);
             }
         }
     }

@@ -24,14 +24,10 @@ public class HandleFishTrapCollision : NetworkBehaviour
     {
         nextTickTime = Time.time + FISH_TRAP_TICK_INTERVAL;
 
-        foreach (GameObject player in GameManager.Instance.playerPrefabs)
+        foreach (GameObject player in parent.GetAllPlayersInRange(FISH_TRAP_DETECTION_RANGE))
         {
-            if (player == parent.gameObject) { continue; }
-            if (Vector3.Distance(transform.position, player.transform.position) <= FISH_TRAP_DETECTION_RANGE)
-            {
-                GameManager.Instance.Stun(player, FISH_TRAP_TICK_INTERVAL);
-                GameManager.Instance.DealDamage(parent.gameObject, player, parent.FISH_TRAP_DAMAGE);
-            }
+            GameManager.Instance.Stun(player, FISH_TRAP_TICK_INTERVAL);
+            GameManager.Instance.DealDamage(parent.gameObject, player, parent.FISH_TRAP_DAMAGE);
         }
         yield return new WaitForSeconds(FISH_TRAP_TICK_INTERVAL);
     }

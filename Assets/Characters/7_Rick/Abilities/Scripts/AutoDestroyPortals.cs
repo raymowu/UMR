@@ -34,7 +34,7 @@ public class AutoDestroyPortals : NetworkBehaviour
     [ClientRpc]
     private void DestroyPortalsClientRpc()
     {
-        foreach (GameObject player in GameManager.Instance.playerPrefabs)
+        foreach (GameObject player in parent.GetAllPlayers())
         {
             if (player.GetComponent("RickAbilities") as RickAbilities != null)
             {

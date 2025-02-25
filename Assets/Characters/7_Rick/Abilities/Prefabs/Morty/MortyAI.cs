@@ -31,24 +31,6 @@ public class MortyAI : NetworkBehaviour
         Move();
     }
 
-    private GameObject nearestPlayer()
-    {
-        GameObject tMin = null;
-        float minDist = Mathf.Infinity;
-        Vector3 currentPos = transform.position;
-        foreach (GameObject t in GameManager.Instance.playerPrefabs)
-        {
-            if (t == parent) { continue; }
-            float dist = Vector3.Distance(t.transform.position, currentPos);
-            if (dist < minDist)
-            {
-                tMin = t;
-                minDist = dist;
-            }
-        }
-        return tMin;
-    }
-
     public void Animation()
     {
         float speed = agent.velocity.magnitude / agent.speed;

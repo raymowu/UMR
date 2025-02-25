@@ -1215,6 +1215,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5761532262226059279}
+  - component: {fileID: 3364420757263315303}
   - component: {fileID: -3591983999079091381}
   - component: {fileID: -3312141281539094602}
   - component: {fileID: -8275490832617344014}
@@ -1223,9 +1224,8 @@ GameObject:
   - component: {fileID: 9037412094052284389}
   - component: {fileID: 7628736990543017215}
   - component: {fileID: 8181686212008389521}
-  - component: {fileID: 3364420757263315303}
   - component: {fileID: 7291856881798506650}
-  - component: {fileID: 3134713511097125515}
+  - component: {fileID: -7752239029768676231}
   m_Layer: 8
   m_Name: Morty
   m_TagString: Untagged
@@ -1252,6 +1252,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3364420757263315303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4953611859109329589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 4109401417
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &-3591983999079091381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1264,6 +1285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
@@ -1276,8 +1298,12 @@ MonoBehaviour:
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
   InLocalSpace: 0
   Interpolate: 1
+  SlerpPosition: 0
 --- !u!195 &-3312141281539094602
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -28086,22 +28112,6 @@ MonoBehaviour:
   selectableLayer:
     serializedVersion: 2
     m_Bits: 0
---- !u!114 &3364420757263315303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4953611859109329589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!114 &7291856881798506650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28126,7 +28136,7 @@ MonoBehaviour:
   Kills: 0
   Deaths: 0
   IsDead: 0
---- !u!114 &3134713511097125515
+--- !u!114 &-7752239029768676231
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -28135,7 +28145,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4953611859109329589}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5dceca57a68cf34e8aec12b9dc74010, type: 3}
+  m_Script: {fileID: 11500000, guid: 67b98118830f99d43b3983c294390b6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: -3312141281539094602}
@@ -28143,7 +28153,7 @@ MonoBehaviour:
   parent: {fileID: 0}
   anim: {fileID: -7589325389835791163}
   targetEnemy: {fileID: 0}
-  stoppingDistance: 1
+  stoppingDistance: 1.5
   detectionRange: 6
 --- !u!1 &5281350721298254344
 GameObject:

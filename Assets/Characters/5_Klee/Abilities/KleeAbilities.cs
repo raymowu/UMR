@@ -4,7 +4,6 @@ using Unity.Netcode;
 
 public class KleeAbilities: CharacterAbilities
 {
-
     [Header("Jumpy Dumpty")]
     public GameObject ability1Projectile;
     public float JUMPY_DUMPTY_DAMAGE = 10f;
@@ -30,7 +29,7 @@ public class KleeAbilities: CharacterAbilities
 
     protected override void Ability2Canvas()
     {
-        SummonProjectileCanvas(ability2IndicatorCanvas, FISH_TRAP_RANGE);
+        SummonThingCanvas(ability2IndicatorCanvas, FISH_TRAP_RANGE);
     }
 
     protected override void Ability3Canvas()
@@ -73,7 +72,7 @@ public class KleeAbilities: CharacterAbilities
     private void SummonAutoProjectileServerRpc(ulong parentId, ulong targetId)
     {
         NetworkList<PlayerStats> players = GameManager.Instance.players;
-        GameObject[] playerPrefabs = GameManager.Instance.playerPrefabs;
+        GameObject[] playerPrefabs = GameManager.Instance.playerPrefabsArr;
         GameObject parent = playerPrefabs[0];
         GameObject target = playerPrefabs[0];
 

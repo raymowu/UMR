@@ -22,14 +22,11 @@ public class HandleMentalDrainCollision : NetworkBehaviour
     {
         nextTickTime = Time.time + parent.MENTAL_DRAIN_TICK_INTERVAL;
 
-        foreach (GameObject player in GameManager.Instance.playerPrefabs)
+        foreach (GameObject player in parent.GetAllPlayersInRange(parent.MENTAL_DRAIN_RADIUS))
         {
-            if (player == parent.gameObject) { continue; }
-            if (Vector3.Distance(transform.position, player.transform.position) <= parent.MENTAL_DRAIN_RADIUS)
-            {
-                GameManager.Instance.Slow(player, parent.MENTAL_DRAIN_SLOW_AMOUNT, parent.MENTAL_DRAIN_SLOW_DURATION);
-                GameManager.Instance.DealDamage(parent.gameObject, player, parent.MENTAL_DRAIN_DAMAGE);
-            }
+            GameManager.Instance.Slow(player, parent.MENTAL_DRAIN_SLOW_AMOUNT, parent.MENTAL_DRAIN_SLOW_DURATION);
+            GameManager.Instance.DealDamage(parent.gameObject, player, parent.MENTAL_DRAIN_DAMAGE);
+
         }
         yield return new WaitForSeconds(parent.MENTAL_DRAIN_TICK_INTERVAL);
     }

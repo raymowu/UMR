@@ -36,12 +36,13 @@ public class EnvMeleeMobAI : NetworkBehaviour
         GameObject tMin = null;
         float minDist = Mathf.Infinity;
         Vector3 currentPos = transform.position;
-        foreach (GameObject t in GameManager.Instance.playerPrefabs)
+        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
         {
-            float dist = Vector3.Distance(t.transform.position, currentPos);
+            GameObject player = p.Value;
+            float dist = Vector3.Distance(player.transform.position, currentPos);
             if (dist < minDist)
             {
-                tMin = t;
+                tMin = player;
                 minDist = dist;
             }
         }
