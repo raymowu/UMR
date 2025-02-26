@@ -17,9 +17,9 @@ public class RickAbilities : CharacterAbilities
     public GameObject entrancePortal;
     public GameObject exitPortal;
 
-    //[Header("Ability 1")]
+    //[Header("Schwifty Beam")]
 
-    [Header("Shoot Portal")]
+    [Header("Interdimensional Leap")]
     [SerializeField] private GameObject entrancePortalPrefab;
     [SerializeField] public GameObject exitPortalPrefab;
 
@@ -65,7 +65,7 @@ public class RickAbilities : CharacterAbilities
     protected override void Ability1Input()
     {
         InputHelper(ability1Key, ref isAbility1Cooldown, ability1IndicatorCanvas, ability1Cooldown,
-                    ref currentAbility1Cooldown, "CastShootLaserBeam", () =>
+                    ref currentAbility1Cooldown, "CastSchwiftyBeam", () =>
                     {
                         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                         {
@@ -80,7 +80,7 @@ public class RickAbilities : CharacterAbilities
     protected override void Ability2Input()
     {
         InputHelper(ability2Key, ref isAbility2Cooldown, ability2IndicatorCanvas, ability2Cooldown,
-            ref currentAbility2Cooldown, "CastFishTrap", () =>
+            ref currentAbility2Cooldown, "CastInterdimensionalLeap", () =>
             {
                 // cast entrance portal
                 if (!entrancePortalExists)

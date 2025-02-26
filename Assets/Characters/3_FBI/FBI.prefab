@@ -293,6 +293,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -394,6 +395,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -790,8 +792,8 @@ GameObject:
   - component: {fileID: 1744406820992425811}
   - component: {fileID: 9095113388284077379}
   - component: {fileID: 4078193602490274087}
-  - component: {fileID: 578953273259767276}
   - component: {fileID: 8161662527354708108}
+  - component: {fileID: 578953273259767276}
   - component: {fileID: 7547590122214286116}
   - component: {fileID: 9178539466513848081}
   - component: {fileID: 8299675949328480637}
@@ -870,6 +872,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8161662527354708108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404754122287465961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1680972688
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &578953273259767276
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -887,22 +910,6 @@ MonoBehaviour:
   anim: {fileID: 4078193602490274087}
   targetEnemy: {fileID: 0}
   stoppingDistance: 6
---- !u!114 &8161662527354708108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1404754122287465961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!114 &7547590122214286116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -916,7 +923,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TransitionStateInfoList:
-  - Layer: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
     OriginatingState: -453240694
     DestinationState: -1092128709
     TransitionDuration: 0.25
@@ -935,6 +943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821dafb12d57b764e979493c755c1ebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
@@ -947,8 +956,12 @@ MonoBehaviour:
   PositionThreshold: 0.01
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
   InLocalSpace: 0
   Interpolate: 1
+  SlerpPosition: 0
 --- !u!195 &8299675949328480637
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -983,41 +996,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02c40ea30118d8548823aaa817e81624, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootTransform: {fileID: 7501622985517703470}
   abilitiesCanvas: {fileID: 5834069929781479040}
-  ability1Projectile: {fileID: 1061535250583800351, guid: 7331ac285d8061341aef93d187fc2bbb, type: 3}
-  MAGNUM_SHOT_DAMAGE: 30
+  shootTransform: {fileID: 7501622985517703470}
   abilityImage1: {fileID: 5834069929042680930}
   abilityText1: {fileID: 5834069928965613762}
   ability1Key: 113
   ability1Cooldown: 6
-  ability1Canvas: {fileID: 8396206455375472517}
-  ability1Indicator: {fileID: 6007346069279952591}
+  ability1IndicatorCanvas: {fileID: 8396206455375472517}
   ability1DisableOverlay: {fileID: 6270232233410077105}
-  ability2Projectile: {fileID: 1605762512504892731, guid: 03963e845343fed40aded91c34bc193f, type: 3}
-  FBI_OPEN_UP_DAMAGE: 10
-  FBI_OPEN_UP_SLOW_AMOUNT: 0.6
-  FBI_OPEN_UP_SLOW_DURATION: 2
   abilityImage2: {fileID: 5834069929972287493}
   abilityText2: {fileID: 5834069929615468008}
   ability2Key: 119
   ability2Cooldown: 3
-  ability2Canvas: {fileID: 2312263778082516397}
-  ability2Indicator: {fileID: 8120931524004260315}
+  ability2IndicatorCanvas: {fileID: 2312263778082516397}
   ability2DisableOverlay: {fileID: 2314565838357837703}
   abilityImage3: {fileID: 5834069929789927447}
   abilityText3: {fileID: 5834069928389024168}
   ability3Key: 101
   ability3Cooldown: 3
-  ability3Canvas: {fileID: 8316917574987624925}
-  ability3Indicator: {fileID: 9056851550622928627}
+  ability3IndicatorCanvas: {fileID: 8316917574987624925}
   ability3DisableOverlay: {fileID: 6830129104701825351}
-  policeCar: {fileID: 7924984611600443967}
   abilityImage4: {fileID: 5834069928784209410}
   abilityText4: {fileID: 5834069928409099980}
   ability4Key: 114
   ability4Cooldown: 60
+  ability4IndicatorCanvas: {fileID: 2332618482565337560}
   ability4DisableOverlay: {fileID: 2037977121067747242}
+  ability1Projectile: {fileID: 1061535250583800351, guid: 7331ac285d8061341aef93d187fc2bbb, type: 3}
+  MAGNUM_SHOT_DAMAGE: 30
+  ability2Projectile: {fileID: 1605762512504892731, guid: 03963e845343fed40aded91c34bc193f, type: 3}
+  FBI_OPEN_UP_DAMAGE: 10
+  FBI_OPEN_UP_SLOW_AMOUNT: 0.6
+  FBI_OPEN_UP_SLOW_DURATION: 2
+  TAZE_RANGE: 5
+  TAZE_DURATION: 1.5
+  policeCar: {fileID: 7924984611600443967}
+  HIGH_SPEED_CHASE_RANGE: 2
+  HIGH_SPEED_CHASE_ANGLE: 130
   HIGH_SPEED_CHASE_DURATION: 10
   HIGH_SPEED_CHASE_SPEED: 8
   HIGH_SPEED_CHASE_COLLISION_DAMAGE: 60
@@ -3301,6 +3316,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -4024,6 +4040,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0

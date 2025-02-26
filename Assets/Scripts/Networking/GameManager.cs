@@ -98,8 +98,10 @@ public class GameManager : NetworkBehaviour
             }
 
             // Initialize mobs network list for phase 1
-            foreach (GameObject mob in mobPrefabs)
+            foreach (KeyValuePair<ulong, GameObject> m in mobPrefabs)
             {
+                GameObject mob = m.Value;
+
                 Debug.Log("mob" + mob);
                 Debug.Log("mob network id: " + mob.GetComponent<NetworkObject>().NetworkObjectId);
                 Debug.Log(mob.GetComponent<MobPrefab>().MobId);
@@ -125,14 +127,14 @@ public class GameManager : NetworkBehaviour
             // Initializes Display on client first load (until first update change is detected)
             for (int i = 0; i < players.Count; i++)
             {
-                playerPrefabs[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
-                playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
+                playerPrefabsArr[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
+                playerPrefabsArr[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
             }
 
             for (int i = 0; i < mobs.Count; i++)
             {
-                mobPrefabs[i].GetComponent<MobPrefab>().UpdateMobStats(mobs[i]);
-                mobPrefabs[i].GetComponent<NavMeshAgent>().speed = mobs[i].CurrentMovementSpeed;
+                mobPrefabsArr[i].GetComponent<MobPrefab>().UpdateMobStats(mobs[i]);
+                mobPrefabsArr[i].GetComponent<NavMeshAgent>().speed = mobs[i].CurrentMovementSpeed;
             }
 
             for (int i = 0; i < playerScoreboardCards.Length; i++)
@@ -201,7 +203,8 @@ public class GameManager : NetworkBehaviour
             {
                 if (players[i].ClientId != clientId) { continue; }
                 players.RemoveAt(i);
-                playerPrefabs = RemoveIndices(playerPrefabs, i);
+                playerPrefabsArr = RemoveIndices(playerPrefabsArr, i);
+                playerPrefabs.Remove(players[i].ClientId);
                 break;
 
             }
@@ -212,8 +215,8 @@ public class GameManager : NetworkBehaviour
         // Updates players Display
         for (int i = 0; i < players.Count; i++)
         {
-            playerPrefabs[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
-            playerPrefabs[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
+            playerPrefabsArr[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
+            playerPrefabsArr[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
         }
 
         // Updates scoreboard Display
@@ -235,8 +238,8 @@ public class GameManager : NetworkBehaviour
     {
         for (int i = 0; i < mobs.Count; i++)
         {
-            mobPrefabs[i].GetComponent<MobPrefab>().UpdateMobStats(mobs[i]);
-            mobPrefabs[i].GetComponent<NavMeshAgent>().speed = mobs[i].CurrentMovementSpeed;
+            mobPrefabsArr[i].GetComponent<MobPrefab>().UpdateMobStats(mobs[i]);
+            mobPrefabsArr[i].GetComponent<NavMeshAgent>().speed = mobs[i].CurrentMovementSpeed;
         }
     }
 
@@ -246,6 +249,7 @@ public class GameManager : NetworkBehaviour
 
     public void DealDamage(GameObject sender, GameObject target, float damage)
     {
+        if (target == null) return;
         if (target.CompareTag("Player"))
         {
             DealDamageToPlayerServerRpc(sender.GetComponent<NetworkObject>().OwnerClientId, target.GetComponent<NetworkObject>().OwnerClientId, damage);
@@ -264,7 +268,7 @@ public class GameManager : NetworkBehaviour
         {
             if (players[i].ClientId != clientId) { continue; }
             // safety check
-            if (playerPrefabs[i].layer == LayerIgnoreRaycast) { return; }
+            if (playerPrefabsArr[i].layer == LayerIgnoreRaycast) { return; }
             int deaths = players[i].Health - damage > 0 ? players[i].Deaths : players[i].Deaths + 1;
             bool isDead = players[i].Health - damage > 0 ? false : true;
             players[i] = new PlayerStats(
@@ -290,7 +294,7 @@ public class GameManager : NetworkBehaviour
                 for (int j = 0; j < players.Count; j++)
                 {
                     if (players[j].ClientId != senderId) { continue; }
-                    playerPrefabs[i].GetComponent<PlayerMovement>().targetEnemy = null;
+                    playerPrefabsArr[i].GetComponent<PlayerMovement>().targetEnemy = null;
                     players[j] = new PlayerStats(
                         players[j].ClientId,
                         players[j].CharacterId,
@@ -319,8 +323,8 @@ public class GameManager : NetworkBehaviour
         {
             if (mobs[i].Id != mobId) { continue; }
             // safety check
-            if (mobPrefabs[i].layer == LayerIgnoreRaycast) { return; }
-            bool isDead = players[i].Health - damage > 0 ? false : true;
+            if (mobPrefabs[mobId].layer == LayerIgnoreRaycast) { return; }
+            bool isDead = mobs[i].Health - damage > 0 ? false : true;
             mobs[i] = new MobStats(
                 mobs[i].Id,
                 mobs[i].MobId,
@@ -370,12 +374,12 @@ public class GameManager : NetworkBehaviour
                 isDead
                 );
 
-            playerPrefabs[i].GetComponent<CharacterController>().enabled = false;
+            playerPrefabs[clientId].GetComponent<CharacterController>().enabled = false;
             RespawnPlayerClientRpc(clientId);
-            playerPrefabs[i].GetComponent<CharacterController>().enabled = true;
-            playerPrefabs[i].GetComponent<PlayerMovement>().StopMovement();
+            playerPrefabs[clientId].GetComponent<CharacterController>().enabled = true;
+            playerPrefabs[clientId].GetComponent<PlayerMovement>().StopMovement();
             //safety check
-            playerPrefabs[i].GetComponent<PlayerMovement>().targetEnemy = null;
+            playerPrefabs[clientId].GetComponent<PlayerMovement>().targetEnemy = null;
         }
     }
 
@@ -385,7 +389,7 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-            playerPrefabs[i].transform.position = spawnPoints[i];
+            playerPrefabs[clientId].transform.position = spawnPoints[i];
         }
     }
 
@@ -406,7 +410,7 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-            playerPrefabs[i].transform.position = pos;
+            playerPrefabs[clientId].transform.position = pos;
         }
     }
 
@@ -1050,7 +1054,7 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-            playerPrefabs[i].layer = LayerIgnoreRaycast;
+            playerPrefabs[clientId].layer = LayerIgnoreRaycast;
         }
     }
 
@@ -1068,7 +1072,7 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-            playerPrefabs[i].layer = playerLayer;
+            playerPrefabs[clientId].layer = playerLayer;
         }
     }
 
@@ -1107,7 +1111,7 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-            StartCoroutine(UpForce(playerPrefabs[i], knockupDuration));
+            StartCoroutine(UpForce(playerPrefabs[clientId], knockupDuration));
             break;
         }
     }
@@ -1173,9 +1177,9 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-            GameObject glowParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.GLOW_PARTICLES), playerPrefabs[i].transform, false);
+            GameObject glowParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.GLOW_PARTICLES), playerPrefabs[clientId].transform, false);
             glowParticles.GetComponent<NetworkObject>().Spawn();
-            glowParticles.gameObject.transform.parent = playerPrefabs[i].transform;
+            glowParticles.gameObject.transform.parent = playerPrefabs[clientId].transform;
             StartCoroutine(DestroyParticle(glowParticles, duration));
         }
     }
@@ -1196,7 +1200,7 @@ public class GameManager : NetworkBehaviour
         {
             if (players[i].ClientId != clientId) { continue; }
             // Strength buff particles (destroy is handled automatically by particlesystem)
-            GameObject strengthParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.STRENGTH_PARTICLES), playerPrefabs[i].transform, false);
+            GameObject strengthParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.STRENGTH_PARTICLES), playerPrefabs[clientId].transform, false);
             strengthParticles.GetComponent<NetworkObject>().Spawn();
         }
     }
@@ -1215,9 +1219,9 @@ public class GameManager : NetworkBehaviour
         for (int i = 0; i < players.Count; i++)
         {
             if (players[i].ClientId != clientId) { continue; }
-            GameObject stunParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.STUN_PARTICLES), playerPrefabs[i].transform, false);
+            GameObject stunParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.STUN_PARTICLES), playerPrefabs[clientId].transform, false);
             stunParticles.GetComponent<NetworkObject>().Spawn();
-            stunParticles.gameObject.transform.parent = playerPrefabs[i].transform;
+            stunParticles.gameObject.transform.parent = playerPrefabs[clientId].transform;
             StartCoroutine(DestroyParticle(stunParticles, duration));
         }
     }

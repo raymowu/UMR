@@ -252,8 +252,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
+  GlobalObjectIdHash: 179465421
+  InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
 --- !u!114 &5430292430400331802
@@ -268,6 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821dafb12d57b764e979493c755c1ebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
@@ -280,8 +286,12 @@ MonoBehaviour:
   PositionThreshold: 0.01
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
   InLocalSpace: 0
   Interpolate: 1
+  SlerpPosition: 0
 --- !u!114 &6103385845385010664
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,19 +322,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TransitionStateInfoList:
-  - Layer: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
     OriginatingState: -1724663407
     DestinationState: -82630979
     TransitionDuration: 0.1
     TriggerNameHash: -489498588
     TransitionIndex: 1
-  - Layer: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
     OriginatingState: -1724663407
     DestinationState: 1645901575
     TransitionDuration: 0.25
     TriggerNameHash: -317704921
     TransitionIndex: 2
-  - Layer: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
     OriginatingState: -1724663407
     DestinationState: -1954950606
     TransitionDuration: 0.25
@@ -343,40 +356,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d30b5180bbd5de64db9a4796271a0412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootTransform: {fileID: 523256378716002170}
   abilitiesCanvas: {fileID: 9188325070734120881}
-  ability1Projectile: {fileID: 9181678076344273277, guid: 4e73af4e091746b45afb0280160a1137, type: 3}
-  ability1Image: {fileID: 9188325070398098771}
-  ability1Text: {fileID: 9188325069901609459}
+  shootTransform: {fileID: 523256378716002170}
+  abilityImage1: {fileID: 9188325070398098771}
+  abilityText1: {fileID: 9188325069901609459}
   ability1Key: 113
   ability1Cooldown: 3
-  ability1Canvas: {fileID: 208892598009147444}
-  ability1Indicator: {fileID: 3594055329706134259}
+  ability1IndicatorCanvas: {fileID: 208892598009147444}
   ability1DisableOverlay: {fileID: 8678979324152983680}
-  CYBERBALL_DAMAGE: 10
-  ability2Projectile: {fileID: 1542166905197993964, guid: b627c99516a36e643bbaead1519c89d5, type: 3}
-  ability2Image: {fileID: 9188325071042435380}
-  ability2Text: {fileID: 9188325070886483161}
+  abilityImage2: {fileID: 9188325071042435380}
+  abilityText2: {fileID: 9188325070886483161}
   ability2Key: 119
   ability2Cooldown: 5
-  ability2Canvas: {fileID: 4849130565617042045}
-  ability2Indicator: {fileID: 7794124358514598298}
+  ability2IndicatorCanvas: {fileID: 4849130565617042045}
   ability2DisableOverlay: {fileID: 1111058790730901174}
-  AT_CAPACITY_ROOT_DURATION: 2
-  ability3Image: {fileID: 9188325070725914918}
-  ability3Text: {fileID: 9188325069408897177}
+  abilityImage3: {fileID: 9188325070725914918}
+  abilityText3: {fileID: 9188325069408897177}
   ability3Key: 101
   ability3Cooldown: 7
+  ability3IndicatorCanvas: {fileID: 0}
   ability3DisableOverlay: {fileID: 8195642520177913974}
-  NATURAL_LANGUAGE_PROCESSING_SPEED_DURATION: 2
-  ability4Projectile: {fileID: 1539730877320686712, guid: d1afc66266d3f2148be8cedfa68b14b3, type: 3}
-  ability4Image: {fileID: 9188325070122858291}
-  ability4Text: {fileID: 9188325069411680253}
+  abilityImage4: {fileID: 9188325070122858291}
+  abilityText4: {fileID: 9188325069411680253}
   ability4Key: 114
   ability4Cooldown: 4
-  ability4Canvas: {fileID: 4840799964697296485}
-  ability4Indicator: {fileID: 7934036956675626032}
+  ability4IndicatorCanvas: {fileID: 4840799964697296485}
   ability4DisableOverlay: {fileID: 3692355949581325979}
+  ability1Projectile: {fileID: 9181678076344273277, guid: 4e73af4e091746b45afb0280160a1137, type: 3}
+  CYBERBALL_DAMAGE: 10
+  ability2Projectile: {fileID: 1542166905197993964, guid: b627c99516a36e643bbaead1519c89d5, type: 3}
+  CODE_SNARE_DURATION: 2
+  CODE_SNARE_ANGLE: 130
+  CODE_SNARE_RANGE: 4.5
+  OVERCLOCK_DURATION: 2
+  ability4Projectile: {fileID: 1539730877320686712, guid: d1afc66266d3f2148be8cedfa68b14b3, type: 3}
 --- !u!114 &3708689401363335848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -660,6 +673,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1320,6 +1334,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -2675,6 +2690,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0

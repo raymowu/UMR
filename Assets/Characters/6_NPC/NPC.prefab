@@ -2004,30 +2004,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a0b45675ac7f37488ee7b79711a1a62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootTransform: {fileID: 1908979257585968406}
-  multiplyShootTransform: {fileID: 6480564020533271987}
-  wallShootTransform: {fileID: 8971273224524948877}
-  mentalDrainShootTransform: {fileID: 3732962736430626592}
   abilitiesCanvas: {fileID: 1783206034428187823}
-  NPCClone: {fileID: 2516928063459609623, guid: 6813d0302da7fa14e8d244a76530315d, type: 3}
-  MULTIPLY_RANGE: 5
+  shootTransform: {fileID: 1908979257585968406}
   abilityImage1: {fileID: 1783206034092166733}
   abilityText1: {fileID: 1783206034149325549}
   ability1Key: 113
   ability1Cooldown: 12
-  ability1Canvas: {fileID: 1006931227649742108}
-  ability1Indicator: {fileID: 6225767689775645553}
-  ability1RangeIndicatorCanvas: {fileID: 82324241941194184}
-  ability1RangeIndicator: {fileID: 6225767689775645553}
+  ability1IndicatorCanvas: {fileID: 1006931227649742108}
   ability1DisableOverlay: {fileID: 2255645075886945182}
-  NPCWall: {fileID: 4931054494341476982, guid: fbbcac1f856d2b9458ab24ba27a6acbe, type: 3}
   abilityImage2: {fileID: 1783206035290085930}
   abilityText2: {fileID: 1783206034530219975}
   ability2Key: 119
   ability2Cooldown: 10
-  ability2Canvas: {fileID: 8008938038029716503}
-  ability2Indicator: {fileID: 3543497018524446175}
+  ability2IndicatorCanvas: {fileID: 8008938038029716503}
   ability2DisableOverlay: {fileID: 7518480980287923624}
+  abilityImage3: {fileID: 1783206034436760120}
+  abilityText3: {fileID: 1783206033572727687}
+  ability3Key: 101
+  ability3Cooldown: 5
+  ability3IndicatorCanvas: {fileID: 2015991033362845299}
+  ability3DisableOverlay: {fileID: 1621438783906526056}
+  abilityImage4: {fileID: 1783206034370573357}
+  abilityText4: {fileID: 1783206033592286435}
+  ability4Key: 114
+  ability4Cooldown: 60
+  ability4IndicatorCanvas: {fileID: 1568284208525756425}
+  ability4DisableOverlay: {fileID: 6053302600782632325}
+  multiplyShootTransform: {fileID: 6480564020533271987}
+  wallShootTransform: {fileID: 8971273224524948877}
+  mentalDrainShootTransform: {fileID: 3732962736430626592}
+  NPCClone: {fileID: 2516928063459609623, guid: 6813d0302da7fa14e8d244a76530315d, type: 3}
+  MULTIPLY_RANGE: 5
+  NPCWall: {fileID: 4931054494341476982, guid: fbbcac1f856d2b9458ab24ba27a6acbe, type: 3}
   MentalDrainParticles: {fileID: 7626686683638022484, guid: 0e74af58bea2d78488b8cd3c38017c31, type: 3}
   MENTAL_DRAIN_RANGE: 5
   MENTAL_DRAIN_DURATION: 5
@@ -2036,20 +2044,6 @@ MonoBehaviour:
   MENTAL_DRAIN_SLOW_DURATION: 0.5
   MENTAL_DRAIN_DAMAGE: 10
   MENTAL_DRAIN_TICK_INTERVAL: 0.5
-  abilityImage3: {fileID: 1783206034436760120}
-  abilityText3: {fileID: 1783206033572727687}
-  ability3Key: 101
-  ability3Cooldown: 5
-  ability3Canvas: {fileID: 2015991033362845299}
-  ability3Indicator: {fileID: 3298236565801536097}
-  ability3RangeIndicatorCanvas: {fileID: 5238571409016582127}
-  ability3RangeIndicator: {fileID: 3174389635072855846}
-  ability3DisableOverlay: {fileID: 1621438783906526056}
-  abilityImage4: {fileID: 1783206034370573357}
-  abilityText4: {fileID: 1783206033592286435}
-  ability4Key: 114
-  ability4Cooldown: 60
-  ability4DisableOverlay: {fileID: 6053302600782632325}
 --- !u!114 &4384169694838345888
 MonoBehaviour:
   m_ObjectHideFlags: 0

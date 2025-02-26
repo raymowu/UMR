@@ -38,7 +38,7 @@ public class RangedCombat : NetworkBehaviour
 
         // Perform the ranged auto attack if in range
         if (targetEnemy != null && targetEnemy != NetworkManager.Singleton.LocalClient.PlayerObject.gameObject &&
-            performRangedAttack && Time.time > nextAttackTime && !targetEnemy.GetComponent<PlayerPrefab>().IsDead)
+            performRangedAttack && Time.time > nextAttackTime)  //&& !targetEnemy.GetComponent<PlayerPrefab>().IsDead
         {
             if (Vector3.Distance(transform.position, targetEnemy.transform.position) <= moveScript.stoppingDistance)
             {
@@ -85,30 +85,47 @@ public class RangedCombat : NetworkBehaviour
 
     public void SummonAutoProjectile(GameObject parent, GameObject target)
     {
-        SummonAutoProjectileServerRpc(parent.GetComponent<NetworkObject>().OwnerClientId,
+        if (target == null) return;
+        if (target.CompareTag("Player"))
+        {
+            SummonAutoProjectileServerRpc(parent.GetComponent<NetworkObject>().OwnerClientId,
             target.GetComponent<NetworkObject>().OwnerClientId);
+        }
+        else if (target.CompareTag("Mob"))
+        {
+            SummonAutoProjectileMobServerRpc(parent.GetComponent<NetworkObject>().OwnerClientId,
+            target.GetComponent<NetworkObject>().NetworkObjectId);
+        }
     }
 
     [ServerRpc]
     private void SummonAutoProjectileServerRpc(ulong parentId, ulong targetId)
     {
-        NetworkList<PlayerStats> players = GameManager.Instance.players;
-        GameObject[] playerPrefabs = GameManager.Instance.playerPrefabsArr;
-        GameObject parent = playerPrefabs[0];
-        GameObject target = playerPrefabs[0];
+        Dictionary<ulong, GameObject> playerPrefabs = GameManager.Instance.playerPrefabs;
+        GameObject parent;
+        GameObject target;
 
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != parentId) { continue; }
-            parent = playerPrefabs[i];
-            break;
-        }
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != targetId) { continue; }
-            target = playerPrefabs[i];
-            break;
-        }
+        parent = playerPrefabs[parentId];
+        target = playerPrefabs[targetId];
+
+
+        GameObject go = Instantiate(projectilePrefab, shootTransform.position, Quaternion.identity);
+        Physics.IgnoreCollision(go.GetComponent<Collider>(), parent.GetComponent<Collider>());
+        go.GetComponent<MoveRangedAuto>().parent = parent;
+        go.GetComponent<MoveRangedAuto>().target = target;
+        go.GetComponent<NetworkObject>().Spawn();
+    }    
+    [ServerRpc]
+    private void SummonAutoProjectileMobServerRpc(ulong parentId, ulong targetId)
+    {
+        Dictionary<ulong, GameObject> playerPrefabs = GameManager.Instance.playerPrefabs;
+        Dictionary<ulong, GameObject> mobPrefabs = GameManager.Instance.mobPrefabs;
+        GameObject parent;
+        GameObject target;
+
+        parent = playerPrefabs[parentId];
+        target = mobPrefabs[targetId];
+
 
         GameObject go = Instantiate(projectilePrefab, shootTransform.position, Quaternion.identity);
         Physics.IgnoreCollision(go.GetComponent<Collider>(), parent.GetComponent<Collider>());

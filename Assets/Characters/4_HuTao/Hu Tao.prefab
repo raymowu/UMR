@@ -524,6 +524,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -2871,6 +2872,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -3572,8 +3574,8 @@ GameObject:
   - component: {fileID: 8102130444471404699}
   - component: {fileID: 8458591330740486568}
   - component: {fileID: 4840004828728140588}
-  - component: {fileID: 200059220573393516}
   - component: {fileID: 5490042078571241520}
+  - component: {fileID: 200059220573393516}
   - component: {fileID: 3094640115261085166}
   - component: {fileID: 3591201670598433145}
   - component: {fileID: 149941066357330668}
@@ -3676,6 +3678,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5490042078571241520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5927861743439057879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1227559337
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &200059220573393516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3700,22 +3723,6 @@ MonoBehaviour:
   Kills: 0
   Deaths: 0
   IsDead: 0
---- !u!114 &5490042078571241520
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5927861743439057879}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!114 &3094640115261085166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3746,7 +3753,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TransitionStateInfoList:
-  - Layer: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
     OriginatingState: -453240694
     DestinationState: -1304917071
     TransitionDuration: 0.1
@@ -3765,6 +3773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821dafb12d57b764e979493c755c1ebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
@@ -3777,8 +3786,12 @@ MonoBehaviour:
   PositionThreshold: 0.01
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
   InLocalSpace: 0
   Interpolate: 1
+  SlerpPosition: 0
 --- !u!114 &4026242963564211586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3827,7 +3840,7 @@ MonoBehaviour:
   ABILITY3ACTIVATIONCOST: 0.3
   ABILITY3ATTACKINCREASE: 0.063
   ability4Particles: {fileID: 1376527397315792452, guid: 85540090705a34347926eb11d41aa646, type: 3}
-  ABILITY4RANGE: 4
+  SPIRIT_SOOTHER_RANGE: 4
   ABILITY4DAMAGE: 4.5
   ABILITY4LOWHPDAMAGE: 5.5
   ABILITY4HPREGEN: 0.1

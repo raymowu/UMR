@@ -110,11 +110,11 @@ GameObject:
   - component: {fileID: 7547583473264031750}
   - component: {fileID: 5524746203530784793}
   - component: {fileID: 2011479533138714761}
+  - component: {fileID: 8402474403132938113}
   - component: {fileID: 8624775637273038441}
   - component: {fileID: 3861257881246148678}
   - component: {fileID: 3480005876365860750}
   - component: {fileID: 543911787700702412}
-  - component: {fileID: 8402474403132938113}
   - component: {fileID: 8395600342201688695}
   - component: {fileID: -8998133480631184972}
   - component: {fileID: -6616539316656842438}
@@ -188,6 +188,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8402474403132938113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113076548410431791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3223216858
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &8624775637273038441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,6 +221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821dafb12d57b764e979493c755c1ebe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UseUnreliableDeltas: 0
   SyncPositionX: 1
   SyncPositionY: 1
   SyncPositionZ: 1
@@ -212,8 +234,12 @@ MonoBehaviour:
   PositionThreshold: 0.01
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
   InLocalSpace: 0
   Interpolate: 1
+  SlerpPosition: 0
 --- !u!195 &3861257881246148678
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -249,7 +275,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TransitionStateInfoList:
-  - Layer: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
     OriginatingState: -453240694
     DestinationState: -1054417186
     TransitionDuration: 0.25
@@ -273,22 +300,6 @@ MonoBehaviour:
   anim: {fileID: 2011479533138714761}
   targetEnemy: {fileID: 0}
   stoppingDistance: 1.5
---- !u!114 &8402474403132938113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 113076548410431791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
 --- !u!114 &8395600342201688695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,40 +312,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b9ed133ca97cf64aa0e710fe63f735d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootTransform: {fileID: 6958608841004688631}
   abilitiesCanvas: {fileID: 276188490249664642}
+  shootTransform: {fileID: 6958608841004688631}
   abilityImage1: {fileID: 276188488706597472}
   abilityText1: {fileID: 276188488393594560}
   ability1Key: 113
   ability1Cooldown: 3
+  ability1IndicatorCanvas: {fileID: 0}
   ability1DisableOverlay: {fileID: 299391217644642227}
-  SMASH_RANGE: 3
-  SMASH_KNOCKUP_DURATION: 1
   abilityImage2: {fileID: 276188489400284679}
   abilityText2: {fileID: 276188490420231146}
   ability2Key: 119
   ability2Cooldown: 5
-  ability2Canvas: {fileID: 1077326657984316780}
-  ability2Indicator: {fileID: 8686224177279091611}
+  ability2IndicatorCanvas: {fileID: 1077326657984316780}
   ability2DisableOverlay: {fileID: 8303807696610167173}
-  POUNCE_DASH_SPEED: 20
-  POUNCE_DASH_TIME: 0.2
-  POUNCE_DASH_RANGE: 5
-  ability3Projectile: {fileID: 117232, guid: adaf99a597441d0499f53ad466e10256, type: 3}
   abilityImage3: {fileID: 276188490258091541}
   abilityText3: {fileID: 276188488957863850}
   ability3Key: 101
   ability3Cooldown: 5
-  ability3Canvas: {fileID: 1103013272820803601}
-  ability3Indicator: {fileID: 6216926741947899226}
+  ability3IndicatorCanvas: {fileID: 1103013272820803601}
   ability3DisableOverlay: {fileID: 1002770532498087749}
-  ROCK_HURL_STUN_DURATION: 1.5
-  STRENGTH_BUFF_PARTICLES: {fileID: 3874635022589376825, guid: 972e52cfdd26b1345a58a6d2ee8c0217, type: 3}
   abilityImage4: {fileID: 276188488447072256}
   abilityText4: {fileID: 276188488944373966}
   ability4Key: 114
   ability4Cooldown: 60
+  ability4IndicatorCanvas: {fileID: 0}
   ability4DisableOverlay: {fileID: 5722853723363211688}
+  SMASH_RANGE: 3
+  SMASH_KNOCKUP_DURATION: 1
+  POUNCE_DASH_SPEED: 20
+  POUNCE_DASH_TIME: 0.2
+  POUNCE_DASH_RANGE: 5
+  ability3Projectile: {fileID: 117232, guid: adaf99a597441d0499f53ad466e10256, type: 3}
+  ROCK_HURL_STUN_DURATION: 1.5
+  STRENGTH_BUFF_PARTICLES: {fileID: 3874635022589376825, guid: 972e52cfdd26b1345a58a6d2ee8c0217, type: 3}
   BEAST_AWAKENING_BUFF_AMOUNT: 0.2
   BEAST_AWAKENING_BUFF_DURATION: 15
 --- !u!114 &-8998133480631184972
@@ -1564,6 +1575,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -2430,6 +2442,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -2531,6 +2544,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0

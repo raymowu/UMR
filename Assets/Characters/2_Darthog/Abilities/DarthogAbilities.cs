@@ -35,7 +35,7 @@ public class DarthogAbilities : CharacterAbilities
 
     protected override void Ability3Canvas()
     {
-        LinearProjectileCanvas(ability2IndicatorCanvas);
+        LinearProjectileCanvas(ability3IndicatorCanvas);
     }
 
     protected override void Ability1Input()

@@ -4,7 +4,6 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(NPCAbilities))]
 public class MeleeMobAI : NetworkBehaviour
 {
     public NavMeshAgent agent;
@@ -42,7 +41,7 @@ public class MeleeMobAI : NetworkBehaviour
     {
         GameObject targetEnemy = parent.GetComponent<NPCAbilities>().GetNearestPlayerInRange(detectionRange, parent);
         // TODO: OR compare tag "Enemy" for monsters
-        MoveTowardsEnemy(targetEnemy != parent ? targetEnemy : parent);
+        MoveTowardsEnemy(targetEnemy != null ? targetEnemy : parent);
 
     }
 

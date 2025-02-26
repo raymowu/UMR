@@ -857,44 +857,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilitiesCanvas: {fileID: 1489168646930172725}
   shootTransform: {fileID: 8578293564617012737}
+  abilityImage1: {fileID: 8609960366363249810}
+  abilityText1: {fileID: 3912860817465409971}
+  ability1Key: 113
+  ability1Cooldown: 0
+  ability1IndicatorCanvas: {fileID: 2206326930752619853}
+  ability1DisableOverlay: {fileID: 1393872539550837764}
+  abilityImage2: {fileID: 1489168647272039856}
+  abilityText2: {fileID: 1489168647015458909}
+  ability2Key: 119
+  ability2Cooldown: 15
+  ability2IndicatorCanvas: {fileID: 6987171727610597646}
+  ability2DisableOverlay: {fileID: 7224525952562723378}
+  abilityImage3: {fileID: 1489168646922010018}
+  abilityText3: {fileID: 1489168647718917149}
+  ability3Key: 101
+  ability3Cooldown: 0
+  ability3IndicatorCanvas: {fileID: 7130017461410550162}
+  ability3DisableOverlay: {fileID: 1915489399870254322}
+  abilityImage4: {fileID: 1489168648466426807}
+  abilityText4: {fileID: 1489168647688102777}
+  ability4Key: 114
+  ability4Cooldown: 0
+  ability4IndicatorCanvas: {fileID: 5845838904161432767}
+  ability4DisableOverlay: {fileID: 6346706753838123551}
   Morty: {fileID: 4953611859109329589, guid: 90262682e7b94a2468689f6223b7f177, type: 3}
   PORTAL_CAST_RANGE: 5
   entrancePortalExists: 0
   exitPortalExists: 0
   entrancePortal: {fileID: 0}
   exitPortal: {fileID: 0}
-  abilityImage1: {fileID: 8609960366363249810}
-  abilityText1: {fileID: 3912860817465409971}
-  ability1Key: 113
-  ability1Cooldown: 0
-  ability1Canvas: {fileID: 2206326930752619853}
-  ability1Indicator: {fileID: 4591021671913148069}
-  ability1DisableOverlay: {fileID: 1393872539550837764}
   entrancePortalPrefab: {fileID: 6275892642576190947, guid: 8a43d055432137e4abfd96dc36b20a31, type: 3}
   exitPortalPrefab: {fileID: 6275892642576190947, guid: c0ff784af9d0d0344bd3618af3a4474d, type: 3}
-  abilityImage2: {fileID: 1489168647272039856}
-  abilityText2: {fileID: 1489168647015458909}
-  ability2Key: 119
-  ability2Cooldown: 15
-  ability2Canvas: {fileID: 6987171727610597646}
-  ability2Indicator: {fileID: 4083171512695244721}
-  ability2RangeIndicatorCanvas: {fileID: 4586150228150931845}
-  ability2RangeIndicator: {fileID: 682042397608148054}
-  ability2DisableOverlay: {fileID: 7224525952562723378}
-  abilityImage3: {fileID: 1489168646922010018}
-  abilityText3: {fileID: 1489168647718917149}
-  ability3Key: 101
-  ability3Cooldown: 0
-  ability3Canvas: {fileID: 7130017461410550162}
-  ability3Indicator: {fileID: 776426088057618301}
-  ability3DisableOverlay: {fileID: 1915489399870254322}
-  abilityImage4: {fileID: 1489168648466426807}
-  abilityText4: {fileID: 1489168647688102777}
-  ability4Key: 114
-  ability4Cooldown: 0
-  ability4Canvas: {fileID: 5845838904161432767}
-  ability4Indicator: {fileID: 2891547168347107731}
-  ability4DisableOverlay: {fileID: 6346706753838123551}
 --- !u!143 &4264171270047993576
 CharacterController:
   m_ObjectHideFlags: 0

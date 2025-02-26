@@ -191,7 +191,7 @@ public abstract class CharacterAbilities : NetworkBehaviour
 
     public GameObject GetNearestPlayerInRange(float range)
     {
-        GameObject tMin = gameObject;
+        GameObject tMin = null;
         float minDist = Mathf.Infinity;
         foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
         {
@@ -205,11 +205,30 @@ public abstract class CharacterAbilities : NetworkBehaviour
             }
         }
         return tMin;
+    }     
+    public List<GameObject> GetAllPlayersInRangeAndWithinAngle(float range, float ang)
+    {
+        List<GameObject> res = new List<GameObject> { };
+        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
+        {
+            GameObject player = p.Value;
+            if (player == gameObject) { continue; }
+            Vector3 directionToTarget = transform.position - player.transform.position;
+            float angle = Vector3.Angle(transform.forward, directionToTarget);
+            float distance = directionToTarget.magnitude;
+
+            // Target is in front of me
+            if (Mathf.Abs(angle) > ang && distance < range)
+            {
+                res.Add(player);
+            }
+        }
+        return res;
     }       
     
     public GameObject GetNearestPlayerInRange(float range, GameObject parent)
     {
-        GameObject tMin = parent;
+        GameObject tMin = null;
         float minDist = Mathf.Infinity;
         foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
         {
@@ -303,10 +322,12 @@ public abstract class CharacterAbilities : NetworkBehaviour
         }
     }
 
+    // point and click
     protected void InputHelper(KeyCode abilityKey, ref bool isAbilityCooldown, Canvas abilityCanvas, 
-        float abilityCooldown, ref float currentAbilityCooldown, string animTrigger, float range, Action callback)
+        float abilityCooldown, ref float currentAbilityCooldown, string animTrigger, float range, 
+        Action callback)
     {
-        if (Input.GetKeyDown(ability2Key) && !isAbility2Cooldown)
+        if (Input.GetKeyDown(abilityKey) && !isAbility2Cooldown)
         {
             ability1IndicatorCanvas.enabled = false;
             ability2IndicatorCanvas.enabled = false;
@@ -315,7 +336,8 @@ public abstract class CharacterAbilities : NetworkBehaviour
             abilityCanvas.enabled = true;
         }
         GameObject targetEnemy = playerMovement.targetEnemy;
-        if (!isAbilityCooldown && abilityCanvas.enabled && targetEnemy != null && Vector3.Distance(transform.position, targetEnemy.transform.position) <= range)
+        if (!isAbilityCooldown && abilityCanvas.enabled && targetEnemy != null && 
+            Vector3.Distance(transform.position, targetEnemy.transform.position) <= range)
         {
             isAbilityCooldown = true;
             currentAbilityCooldown = abilityCooldown;
@@ -324,7 +346,7 @@ public abstract class CharacterAbilities : NetworkBehaviour
 
             callback?.Invoke();
         }
-        if (Input.GetKeyUp(ability2Key))
+        if (Input.GetKeyUp(abilityKey))
         {
             abilityCanvas.enabled = false;
         }
