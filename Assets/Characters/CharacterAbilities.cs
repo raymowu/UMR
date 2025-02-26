@@ -189,6 +189,7 @@ public abstract class CharacterAbilities : NetworkBehaviour
     protected virtual void Ability3Canvas() { }
     protected virtual void Ability4Canvas() { }
 
+    // using player as reference point
     public GameObject GetNearestPlayerInRange(float range)
     {
         GameObject tMin = null;
@@ -226,6 +227,7 @@ public abstract class CharacterAbilities : NetworkBehaviour
         return res;
     }       
     
+    // using specified parent object as reference point
     public GameObject GetNearestPlayerInRange(float range, GameObject parent)
     {
         GameObject tMin = null;
@@ -244,6 +246,7 @@ public abstract class CharacterAbilities : NetworkBehaviour
         return tMin;
     }    
     
+    // using player as reference point
     public List<GameObject> GetAllPlayersInRange(float range)
     {
         List<GameObject> res = new List<GameObject> { };
@@ -252,6 +255,21 @@ public abstract class CharacterAbilities : NetworkBehaviour
             GameObject player = p.Value;
             if (player == gameObject) { continue; }
             if (Vector3.Distance(transform.position, player.transform.position) <= range)
+            {
+                res.Add(player);
+            }
+        }
+        return res;
+    }       
+
+    // using specified parent object as reference point
+    public List<GameObject> GetAllPlayersInRange(float range, GameObject parent)
+    {
+        List<GameObject> res = new List<GameObject> { };
+        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
+        {
+            GameObject player = p.Value;
+            if (Vector3.Distance(parent.transform.position, player.transform.position) <= range)
             {
                 res.Add(player);
             }

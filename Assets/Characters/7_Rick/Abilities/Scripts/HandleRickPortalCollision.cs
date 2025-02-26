@@ -19,7 +19,7 @@ public class HandleRickPortalCollision : NetworkBehaviour
     {
         if (parent.exitPortalExists)
         {
-            foreach (GameObject player in parent.GetAllPlayersInRange(PORTAL_DETECTION_RANGE))
+            foreach (GameObject player in parent.GetAllPlayersInRange(PORTAL_DETECTION_RANGE, gameObject))
             {
                 GameManager.Instance.TeleportPlayer(player, parent.exitPortal.transform.position);
             }

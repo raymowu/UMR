@@ -38,7 +38,7 @@ public class RickAbilities : CharacterAbilities
     private void SummonMortyServerRpc(Vector3 pos)
     {
         GameObject go = Instantiate(Morty, new Vector3(pos.x, pos.y, pos.z), new Quaternion(0, 0, 0, 1));
-        go.GetComponent<MortyAI>().parent = gameObject;
+        go.GetComponent<MeleeMobAI>().parent = gameObject;
         go.GetComponent<NetworkObject>().Spawn();
     }
 
@@ -85,6 +85,7 @@ public class RickAbilities : CharacterAbilities
                 // cast entrance portal
                 if (!entrancePortalExists)
                 {
+                    isAbility2Cooldown = false;
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                     {
                         playerMovement.StopMovement();
