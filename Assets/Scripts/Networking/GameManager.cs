@@ -88,7 +88,9 @@ public class GameManager : NetworkBehaviour
             {
                 // Initialize players network list
                 // (only stats that the character database needs to know are necessary on initialization so NOT game manager stats etc isDead, silenced, etc)
-                players.Add(new PlayerStats(client.ClientId, HostManager.Instance.ClientData[client.ClientId].characterId,
+                players.Add(new PlayerStats(
+                    client.ClientId, 
+                    HostManager.Instance.ClientData[client.ClientId].characterId,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).MaxHealth,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).Health,
                     characterDatabase.GetCharacterById(HostManager.Instance.ClientData[client.ClientId].characterId).AttackSpeed,
@@ -101,18 +103,8 @@ public class GameManager : NetworkBehaviour
             foreach (KeyValuePair<ulong, GameObject> m in mobPrefabs)
             {
                 GameObject mob = m.Value;
-
-                Debug.Log("mob" + mob);
-                Debug.Log("mob network id: " + mob.GetComponent<NetworkObject>().NetworkObjectId);
-                Debug.Log(mob.GetComponent<MobPrefab>().MobId);
-                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).MaxHealth);
-                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).Health);
-                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).AttackSpeed);
-                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).MovementSpeed);
-                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).CurrentMovementSpeed);
-                Debug.Log(mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).Damage);
-
-                mobs.Add(new MobStats(mob.GetComponent<NetworkObject>().NetworkObjectId,
+                mobs.Add(new MobStats(
+                    mob.GetComponent<NetworkObject>().NetworkObjectId,
                     mob.GetComponent<MobPrefab>().MobId,
                     mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).MaxHealth,
                     mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).Health,

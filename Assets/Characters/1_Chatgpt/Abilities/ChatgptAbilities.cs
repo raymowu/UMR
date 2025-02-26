@@ -62,7 +62,7 @@ public class ChatgptAbilities : CharacterAbilities
 
     protected override void Ability2Input()
     {
-        InputHelper(ability1Key, ref isAbility1Cooldown, ability1IndicatorCanvas, ability1Cooldown, ref currentAbility1Cooldown,
+        InputHelper(ability2Key, ref isAbility2Cooldown, ability2IndicatorCanvas, ability2Cooldown, ref currentAbility2Cooldown,
             "CastCodeSnare", () =>
             {
                 if (Physics.Raycast(ray, out hit, Mathf.Infinity))

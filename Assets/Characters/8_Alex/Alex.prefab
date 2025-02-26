@@ -1981,7 +1981,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3809747572
+  GlobalObjectIdHash: 3729965208
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -2029,13 +2029,13 @@ MonoBehaviour:
   abilityText1: {fileID: 6964475376138389928}
   ability1Key: 113
   ability1Cooldown: 3
-  ability1IndicatorCanvas: {fileID: 0}
+  ability1IndicatorCanvas: {fileID: 8657886337165324685, guid: cd8e156ffa615b345a211f669c0887b9, type: 3}
   ability1DisableOverlay: {fileID: 7445673093923274971}
   abilityImage2: {fileID: 6964475377279232367}
   abilityText2: {fileID: 6964475377903404162}
   ability2Key: 119
   ability2Cooldown: 4
-  ability2IndicatorCanvas: {fileID: 0}
+  ability2IndicatorCanvas: {fileID: 8657886337165324685, guid: cd8e156ffa615b345a211f669c0887b9, type: 3}
   ability2DisableOverlay: {fileID: 1175144394667661037}
   abilityImage3: {fileID: 6964475377998434685}
   abilityText3: {fileID: 6964475376698210498}

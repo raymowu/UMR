@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3223216858
+  GlobalObjectIdHash: 1964363699
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -318,7 +318,7 @@ MonoBehaviour:
   abilityText1: {fileID: 276188488393594560}
   ability1Key: 113
   ability1Cooldown: 3
-  ability1IndicatorCanvas: {fileID: 0}
+  ability1IndicatorCanvas: {fileID: 8657886337165324685, guid: cd8e156ffa615b345a211f669c0887b9, type: 3}
   ability1DisableOverlay: {fileID: 299391217644642227}
   abilityImage2: {fileID: 276188489400284679}
   abilityText2: {fileID: 276188490420231146}
@@ -336,7 +336,7 @@ MonoBehaviour:
   abilityText4: {fileID: 276188488944373966}
   ability4Key: 114
   ability4Cooldown: 60
-  ability4IndicatorCanvas: {fileID: 0}
+  ability4IndicatorCanvas: {fileID: 8657886337165324685, guid: cd8e156ffa615b345a211f669c0887b9, type: 3}
   ability4DisableOverlay: {fileID: 5722853723363211688}
   SMASH_RANGE: 3
   SMASH_KNOCKUP_DURATION: 1
