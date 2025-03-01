@@ -57,13 +57,13 @@ public class GameManager : NetworkBehaviour
     public static NetworkList<PlayerStats> players;
     public static NetworkList<MobStats> mobs;
 
-    private NetworkList<MovementSpeedBuffDebuff> movementSpeedTracker;
+    private List<Effect> effectTracker;
 
     private void Awake()
     {
         players = new NetworkList<PlayerStats>();
         mobs = new NetworkList<MobStats>();
-        movementSpeedTracker = new NetworkList<MovementSpeedBuffDebuff>();
+        effectTracker = new List<Effect>();
         Instance = this;
     }
 
@@ -548,102 +548,6 @@ public class GameManager : NetworkBehaviour
         players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
-    private float calculateMovementSpeed(ulong clientId)
-    {
-        float ans = 0;
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            ans = players[i].MovementSpeed;
-        }
-
-        for (int i = 0; i < movementSpeedTracker.Count; i++)
-        {
-            if (movementSpeedTracker[i].ClientId != clientId) { continue; }
-            ans *= movementSpeedTracker[i].Amount;
-        }
-        return ans;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void addToMovementSpeedTrackerServerRpc(ulong clientId, float speedAmount, float speedDuration)
-    {
-        movementSpeedTracker.Add(new MovementSpeedBuffDebuff(clientId, speedAmount, speedDuration));
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void removeFromMovementSpeedTrackerServerRpc(ulong clientId, float speedAmount, float speedDuration)
-    {
-        foreach (MovementSpeedBuffDebuff m in movementSpeedTracker) {
-            if (m.ClientId != clientId ||
-                m.Amount != speedAmount || m.Duration != speedDuration) { continue; }
-            movementSpeedTracker.Remove(m);
-            break;
-        }
-    }
-
-    /* 
-     * Bug if same buff/debuff affects player again before duration of the first buff/debuff ends. So make sure that all buff/debuffs
-     * cool down is longer than the duration otherwise it will stack and lead to weird behavior :(
-     */
-    [ServerRpc(RequireOwnership = false)]
-    public void RemoveSlowsAndSpeedsServerRpc(ulong clientId)
-    {
-        foreach (MovementSpeedBuffDebuff m in movementSpeedTracker)
-        {
-            if (m.ClientId != clientId) { continue; }
-            movementSpeedTracker.Remove(m);
-            break;
-        }
-    }
-
-    /* 
-    * Take in decimal of speed % i.e. 50% speed = 1.5
-    * Client manages the speed buff/debuff, starts their own coroutine to wait out the duration and unbuffs whoever they speed/slowed
-    */
-    public void Speed(GameObject target, float speedAmount, float speedDuration)
-    {
-        addToMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount, speedDuration);
-        calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-        StartCoroutine(Unspeed(target, speedAmount, speedDuration));
-    }
-
-    IEnumerator Unspeed(GameObject target, float speedAmount, float speedDuration)
-    {
-        yield return new WaitForSeconds(speedDuration);
-        removeFromMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount, speedDuration);
-        calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-    }
-
-    // Take in decimal of slow %, i.e. 50% slow = 0.5
-    public void Slow(GameObject target, float slowAmount, float slowDuration)
-    {
-        addToMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, slowAmount, slowDuration);
-        calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-        StartCoroutine(Unslow(target, slowAmount, slowDuration));
-    }
-
-    IEnumerator Unslow(GameObject target, float slowAmount, float slowDuration)
-    {
-        yield return new WaitForSeconds(slowDuration);
-        removeFromMovementSpeedTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, slowAmount, slowDuration);
-        calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-    }
-
-    public void RemoveSlowsAndSpeeds(GameObject target)
-    {
-        RemoveSlowsAndSpeedsServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-        calcAndSetMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void calcAndSetMovementSpeedServerRpc(ulong clientId)
-    {
-        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
-        target.CurrentMovementSpeed = calculateMovementSpeed(clientId);
-        players[playerPrefabs[clientId].playerStatsInd] = target;
-    }
-
     public void PermSpeed(GameObject target, float speedAmount)
     {
         PermIncreaseMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount);
@@ -653,7 +557,6 @@ public class GameManager : NetworkBehaviour
     {
         PermReduceMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, slowAmount);
     }
-
 
     /*
      *  Permanently reduce movement speed
@@ -714,30 +617,42 @@ public class GameManager : NetworkBehaviour
 
     public void Disarm(GameObject target, float silenceDuration)
     {
-        DisarmServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-        StartCoroutine(Undisarm(target, silenceDuration));
+        if (target.CompareTag("Player"))
+        {
+            DisarmPlayerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, true);
+            StartCoroutine(UndisarmPlayer(target, silenceDuration));
+        }
+        else if (target.CompareTag("Mob"))
+        {
+            DisarmMobServerRpc(target.GetComponent<NetworkObject>().NetworkObjectId, true);
+            StartCoroutine(UndisarmMob(target, silenceDuration));
+        }
     }
 
-    IEnumerator Undisarm(GameObject target, float silenceDuration)
+    IEnumerator UndisarmPlayer(GameObject target, float duration)
     {
-        yield return new WaitForSeconds(silenceDuration);
-        UndisarmServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+        yield return new WaitForSeconds(duration);
+        DisarmPlayerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, false);
+    }
+    IEnumerator UndisarmMob(GameObject target, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        DisarmMobServerRpc(target.GetComponent<NetworkObject>().NetworkObjectId, false);
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DisarmServerRpc(ulong clientId)
+    private void DisarmPlayerServerRpc(ulong clientId, bool disarm)
     {
         PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
-        target.IsDisarmed = true;
+        target.IsDisarmed = disarm;
         players[playerPrefabs[clientId].playerStatsInd] = target;
     }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void UndisarmServerRpc(ulong clientId)
+      [ServerRpc(RequireOwnership = false)]
+    private void DisarmMobServerRpc(ulong mobId, bool disarm)
     {
-        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
-        target.IsDisarmed = false;
-        players[playerPrefabs[clientId].playerStatsInd] = target;
+        MobStats target = mobs[mobPrefabs[mobId].mobStatsInd];
+        target.IsDisarmed = disarm;
+        mobs[mobPrefabs[mobId].mobStatsInd] = target;
     }
 
     public void Untargetable(GameObject target, float duration)
@@ -826,6 +741,84 @@ public class GameManager : NetworkBehaviour
             yield return null;
         }
     }
+
+    /* 
+     * EFFECTS TRACKER MANAGER
+     * Required for effects that have percentage stat calculations ex. speed, damage amp etc
+     */
+
+    [ServerRpc(RequireOwnership = false)]
+    private void calcAndSetEffectsServerRpc(ulong clientId)
+    {
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        float totalSpeed = target.MovementSpeed;
+        for (int i = 0; i < effectTracker.Count; i++)
+        {
+            if (effectTracker[i].clientId != clientId) { continue; }
+            switch (effectTracker[i])
+            {
+                case Speed speed:
+                    totalSpeed *= speed.amount;
+                    break;
+            }
+        }
+        target.CurrentMovementSpeed = totalSpeed;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
+    }
+
+    public void RemoveAllEffectsFromPlayer(GameObject target)
+    {
+        RemoveAllEffectsFromPlayerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+        calcAndSetEffectsServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void RemoveAllEffectsFromPlayerServerRpc(ulong clientId)
+    {
+        foreach (Effect m in effectTracker)
+        {
+            if (m.clientId != clientId) { continue; }
+            effectTracker.Remove(m);
+            break;
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void addSpeedToEffectTrackerServerRpc(ulong clientId, float speedAmount, float speedDuration)
+    {
+        effectTracker.Add(new Speed(clientId, speedAmount, speedDuration));
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void removeSpeedFromEffectTrackerServerRpc(ulong clientId, float amount, float duration)
+    {
+        foreach (Effect m in effectTracker)
+        {
+            if (m.clientId != clientId || !(m is Speed) ||
+                m.amount != amount || m.duration != duration) { continue; }
+            effectTracker.Remove(m);
+            break;
+        }
+    }
+
+    /* 
+    * Take in decimal of speed % i.e. 50% speed = 1.5
+    * Client manages the speed buff/debuff, starts their own coroutine to wait out the duration and unbuffs whoever they speed/slowed
+    */
+    public void Speed(GameObject target, float speedAmount, float speedDuration)
+    {
+        addSpeedToEffectTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount, speedDuration);
+        calcAndSetEffectsServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+        StartCoroutine(UnsetSpeedFromEffectTracker(target, speedAmount, speedDuration));
+    }
+
+    IEnumerator UnsetSpeedFromEffectTracker(GameObject target, float amount, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        removeSpeedFromEffectTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount, duration);
+        calcAndSetEffectsServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+    }
+
 
     /*
      * PARTICLE MANAGER

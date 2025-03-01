@@ -25,7 +25,7 @@ public class MoveDoor : NetworkBehaviour
     {
         if (!IsOwner) { return; }
         GameManager.Instance.DealDamage(parent.gameObject, other.gameObject, parent.GetComponent<PlayerPrefab>().Damage + parent.FBI_OPEN_UP_DAMAGE);
-        GameManager.Instance.Slow(other.gameObject, parent.FBI_OPEN_UP_SLOW_AMOUNT, parent.FBI_OPEN_UP_SLOW_DURATION);
+        GameManager.Instance.Speed(other.gameObject, parent.FBI_OPEN_UP_SLOW_AMOUNT, parent.FBI_OPEN_UP_SLOW_DURATION);
         DestroyDoorServerRpc();
     }
 

@@ -17,6 +17,6 @@ public class HandleBombParticleCollision : NetworkBehaviour
             return;
         }
         GameManager.Instance.DealDamage(parent.gameObject, other, parent.JUMPY_DUMPTY_DAMAGE);
-        GameManager.Instance.Slow(other, parent.JUMPY_DUMPTY_SLOW_AMOUNT, parent.JUMPY_DUMPTY_SLOW_DURATION);
+        GameManager.Instance.Speed(other, parent.JUMPY_DUMPTY_SLOW_AMOUNT, parent.JUMPY_DUMPTY_SLOW_DURATION);
     }
 }

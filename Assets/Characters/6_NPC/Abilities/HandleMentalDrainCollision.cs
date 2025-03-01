@@ -24,7 +24,7 @@ public class HandleMentalDrainCollision : NetworkBehaviour
 
         foreach (GameObject player in parent.GetAllPlayersInRange(parent.MENTAL_DRAIN_RADIUS))
         {
-            GameManager.Instance.Slow(player, parent.MENTAL_DRAIN_SLOW_AMOUNT, parent.MENTAL_DRAIN_SLOW_DURATION);
+            GameManager.Instance.Speed(player, parent.MENTAL_DRAIN_SLOW_AMOUNT, parent.MENTAL_DRAIN_SLOW_DURATION);
             GameManager.Instance.DealDamage(parent.gameObject, player, parent.MENTAL_DRAIN_DAMAGE);
 
         }
