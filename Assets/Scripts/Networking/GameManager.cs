@@ -13,26 +13,40 @@ public class GameManager : NetworkBehaviour
     //[SerializeField] private Image characterIconImage;
     //[SerializeField] private TMP_Text playerNameText;
     //[SerializeField] private TMP_Text characterNameText;
-    [Header("References")]
     // sync prefabs TODO: find a way to couple the prefab with stats
+    public class Player
+    {
+        public int playerStatsInd = -1;
+        public GameObject playerObject;
+        public Vector3 spawnPoint;
+    }
+
+    public class Mob
+    {
+        public int mobStatsInd = -1;
+        public GameObject mobObject;
+        public Vector3 spawnPoint;
+    }
+
+    [Header("References")]
     [SerializeField] public GameObject[] playerPrefabsArr;
     [SerializeField] public GameObject[] mobPrefabsArr;
-    public Dictionary<ulong, GameObject> playerPrefabs;
-    public Dictionary<ulong, GameObject> mobPrefabs;
+    public Dictionary<ulong, Player> playerPrefabs;
+    public Dictionary<ulong, Mob> mobPrefabs;
     [SerializeField] private CharacterDatabase characterDatabase;
     [SerializeField] private MobDatabase mobDatabase;
     [SerializeField] private ParticleDatabase particleDatabase;
     [SerializeField] public PlayerScoreboardCard[] playerScoreboardCards;
 
     public int gamePhase = 1;
-    public Vector3[] spawnPoints = { new Vector3 { x = -42.6f, y = 0f, z = -21.5f },
+    public static Vector3[] spawnPoints = { new Vector3 { x = -42.6f, y = 0f, z = -21.5f },
                         new Vector3 { x = 44.5f, y = 0f, z = 24.5f},
                         new Vector3 { x = -42f, y = 0f, z = 23.8f},
                         new Vector3 { x = 44.5f, y = 0f, z = -21.5f},
                         new Vector3 { x = 0, y = 0f, z = 51},
                         new Vector3 { x = 0, y = 0f, z = -50}};
 
-    public Vector3[] mobSpawnPoints = { new Vector3 { x = 15f, y = 0f, z = -41f },
+    public static Vector3[] mobSpawnPoints = { new Vector3 { x = 15f, y = 0f, z = -41f },
                         new Vector3 { x = 21f, y = 0f, z = -32f},
                         new Vector3 { x = 34, y = 0f, z = -31f},
                         new Vector3 { x = 44.5f, y = 0f, z = -21.5f} };
@@ -40,8 +54,8 @@ public class GameManager : NetworkBehaviour
     public static GameManager Instance { get; private set; }
 
     // sync stats
-    public NetworkList<PlayerStats> players;
-    public NetworkList<MobStats> mobs;
+    public static NetworkList<PlayerStats> players;
+    public static NetworkList<MobStats> mobs;
 
     private NetworkList<MovementSpeedBuffDebuff> movementSpeedTracker;
 
@@ -52,23 +66,48 @@ public class GameManager : NetworkBehaviour
         movementSpeedTracker = new NetworkList<MovementSpeedBuffDebuff>();
         Instance = this;
     }
-    static Dictionary<ulong, GameObject> ConvertArrayToMap(GameObject[] array, bool playersArray)
+
+    public static Dictionary<ulong, Player> ConvertPlayerArrayToMap(GameObject[] array)
     {
-        Dictionary<ulong, GameObject> resultMap = new Dictionary<ulong, GameObject>();
+        Dictionary<ulong, Player> resultMap = new Dictionary<ulong, Player>();
+        int spawnPointInd = 0;
+        foreach (GameObject element in array)
+        {
+            Player player = new Player();
+            ulong clientId = element.GetComponent<NetworkObject>().OwnerClientId;
+            for (int i = 0; i < players.Count; i++)
+            {
+                if (players[i].ClientId == clientId)
+                {
+                    player.playerStatsInd = i;
+                    break;
+                }
+            }
+            player.playerObject = element;
+            player.spawnPoint = spawnPoints[spawnPointInd++];
+            resultMap[clientId] = player;
+        }
+        return resultMap;
+    }    
+    public static Dictionary<ulong, Mob> ConvertMobArrayToMap(GameObject[] array)
+    {
+        Dictionary<ulong, Mob> resultMap = new Dictionary<ulong, Mob>();
 
         foreach (GameObject element in array)
         {
-            // Using the element itself as the value for this example
-            if (playersArray)
+            Mob mob = new Mob();
+            ulong mobId = element.GetComponent<NetworkObject>().NetworkObjectId;
+            for (int i = 0; i < mobs.Count; i++)
             {
-                resultMap[element.GetComponent<NetworkObject>().OwnerClientId] = element;
+                if (mobs[i].Id == mobId)
+                {
+                    mob.mobStatsInd = i;
+                    break;
+                }
             }
-            else
-            {
-                resultMap[element.GetComponent<NetworkObject>().NetworkObjectId] = element;
-            }
+            mob.mobObject = element;
+            resultMap[mobId] = mob;
         }
-
         return resultMap;
     }
 
@@ -78,8 +117,6 @@ public class GameManager : NetworkBehaviour
         // Players and mobs are already spawned by their spawner gameobjects?
         playerPrefabsArr = GameObject.FindGameObjectsWithTag("Player");
         mobPrefabsArr = GameObject.FindGameObjectsWithTag("Mob");
-        playerPrefabs = ConvertArrayToMap(playerPrefabsArr, true);
-        mobPrefabs = ConvertArrayToMap(mobPrefabsArr, false);
 
         if (IsServer)
         {
@@ -100,9 +137,8 @@ public class GameManager : NetworkBehaviour
             }
 
             // Initialize mobs network list for phase 1
-            foreach (KeyValuePair<ulong, GameObject> m in mobPrefabs)
+            foreach (GameObject mob in mobPrefabsArr)
             {
-                GameObject mob = m.Value;
                 mobs.Add(new MobStats(
                     mob.GetComponent<NetworkObject>().NetworkObjectId,
                     mob.GetComponent<MobPrefab>().MobId,
@@ -114,6 +150,10 @@ public class GameManager : NetworkBehaviour
                     mobDatabase.GetMobById(mob.GetComponent<MobPrefab>().MobId).Damage));
             }
         }
+
+        playerPrefabs = ConvertPlayerArrayToMap(playerPrefabsArr);
+        mobPrefabs = ConvertMobArrayToMap(mobPrefabsArr);
+
         if (IsClient)
         {
             // Initializes Display on client first load (until first update change is detected)
@@ -205,10 +245,10 @@ public class GameManager : NetworkBehaviour
     private void HandlePlayersStatsChanged(NetworkListEvent<PlayerStats> changeEvent)
     {
         // Updates players Display
-        for (int i = 0; i < players.Count; i++)
+        foreach (KeyValuePair<ulong, Player> p in playerPrefabs)
         {
-            playerPrefabsArr[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
-            playerPrefabsArr[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
+            p.Value.playerObject.GetComponent<PlayerPrefab>().UpdatePlayerStats(players[p.Value.playerStatsInd]);
+            p.Value.playerObject.GetComponent<NavMeshAgent>().speed = players[p.Value.playerStatsInd].CurrentMovementSpeed;
         }
 
         // Updates scoreboard Display
@@ -236,7 +276,7 @@ public class GameManager : NetworkBehaviour
     }
 
     /*
-     * BUFFS AND DEBUFFS MANAGER
+     * STATS CHANGE MANAGER
      */
 
     public void DealDamage(GameObject sender, GameObject target, float damage)
@@ -253,138 +293,99 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DealDamageToPlayerServerRpc(ulong senderId, ulong clientId, float damage)
+    private void DealDamageToPlayerServerRpc(ulong senderId, ulong targetId, float damage)
     {
-        int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            // safety check
-            if (playerPrefabsArr[i].layer == LayerIgnoreRaycast) { return; }
-            int deaths = players[i].Health - damage > 0 ? players[i].Deaths : players[i].Deaths + 1;
-            bool isDead = players[i].Health - damage > 0 ? false : true;
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health - damage,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                deaths,
-                isDead
-                );
+        PlayerStats target = players[playerPrefabs[targetId].playerStatsInd];
+        float newHealth = target.Health - damage;
+        target.Health = newHealth;
+        target.Deaths = newHealth > 0 ? target.Deaths : target.Deaths + 1;
+        target.IsDead = newHealth > 0 ? false : true;
+        players[playerPrefabs[targetId].playerStatsInd] = target;
 
-            // Handle death
-            if (players[i].Health <= 0)
-            {
-                StartCoroutine(Respawn(clientId, gamePhase == 1 ? 10f : gamePhase == 2 ? 30f : 999f));
-                for (int j = 0; j < players.Count; j++)
-                {
-                    if (players[j].ClientId != senderId) { continue; }
-                    playerPrefabsArr[i].GetComponent<PlayerMovement>().targetEnemy = null;
-                    players[j] = new PlayerStats(
-                        players[j].ClientId,
-                        players[j].CharacterId,
-                        players[j].MaxHealth,
-                        players[j].Health,
-                        players[j].AttackSpeed,
-                        players[j].MovementSpeed,
-                        players[j].CurrentMovementSpeed,
-                        players[j].Damage,
-                        players[j].IsSilenced,
-                        players[j].IsDisarmed,
-                        players[j].Kills + 1,
-                        players[j].Deaths,
-                        players[j].IsDead
-                        );
-                }
-            }
+        // Handle death
+        if (target.Health <= 0)
+        {
+            StartCoroutine(RespawnPlayer(targetId, gamePhase == 1 ? 10f : gamePhase == 2 ? 30f : 999f));
+            PlayerStats sender = players[playerPrefabs[senderId].playerStatsInd];
+            playerPrefabs[senderId].playerObject.GetComponent<PlayerMovement>().targetEnemy = null;
+            sender.Kills = sender.Kills + 1;
+            players[playerPrefabs[senderId].playerStatsInd] = sender;
         }
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void DealDamageToMobServerRpc(ulong senderId, ulong mobId, float damage)
     {
-        int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
-        for (int i = 0; i < mobs.Count; i++)
+
+        MobStats mob = mobs[mobPrefabs[mobId].mobStatsInd];
+        float newHealth = mob.Health - damage;
+        mob.Health = newHealth;
+        mob.IsDead = newHealth > 0 ? false : true;
+        mobs[mobPrefabs[mobId].mobStatsInd] = mob;
+
+        if (mob.Health <= 0)
         {
-            if (mobs[i].Id != mobId) { continue; }
-            // safety check
-            if (mobPrefabs[mobId].layer == LayerIgnoreRaycast) { return; }
-            bool isDead = mobs[i].Health - damage > 0 ? false : true;
-            mobs[i] = new MobStats(
-                mobs[i].Id,
-                mobs[i].MobId,
-                mobs[i].MaxHealth,
-                mobs[i].Health - damage,
-                mobs[i].AttackSpeed,
-                mobs[i].MovementSpeed,
-                mobs[i].CurrentMovementSpeed,
-                mobs[i].Damage,
-                mobs[i].IsSilenced,
-                mobs[i].IsDisarmed,
-                isDead
-                );
-            if (mobs[i].Health <= 0)
-            {
-                HandleBeforeDeath(mobPrefabs[mobId], 9999f);
-            }
+            StartCoroutine(RespawnMob(mobId, gamePhase == 1 ? 60f : gamePhase == 2 ? 120f : 999f));
         }
+
     }
 
-    private IEnumerator Respawn(ulong clientId, float duration)
+    private IEnumerator RespawnPlayer(ulong clientId, float duration)
     {
-        HandleBeforeDeath(playerPrefabs[clientId], duration);
+        HandleBeforeDeath(playerPrefabs[clientId].playerObject, duration);
         yield return new WaitForSeconds(duration);
-        HandleAfterDeathServerRpc(clientId, false);
+        HandleAfterPlayerDeathServerRpc(clientId);
+    }    
+    private IEnumerator RespawnMob(ulong mobId, float duration)
+    {
+        HandleBeforeDeath(mobPrefabs[mobId].mobObject, duration);
+        yield return new WaitForSeconds(duration);
+        HandleAfterMobDeathServerRpc(mobId);
+    }
+
+    public void HandleBeforeDeath(GameObject target, float stunDuration)
+    {
+        Disarm(target, stunDuration);
+        Silence(target, stunDuration);
+        Root(target, stunDuration);
+        // 5 seconds of invincibility after respawn
+        Untargetable(target, stunDuration + 5f);
     }
 
     [ServerRpc]
-    private void HandleAfterDeathServerRpc(ulong clientId, bool isDead)
+    private void HandleAfterPlayerDeathServerRpc(ulong clientId)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].MaxHealth,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                isDead
-                );
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.IsDead = false;
+        target.Health = target.MaxHealth;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
 
-            playerPrefabs[clientId].GetComponent<CharacterController>().enabled = false;
-            RespawnPlayerClientRpc(clientId);
-            playerPrefabs[clientId].GetComponent<CharacterController>().enabled = true;
-            playerPrefabs[clientId].GetComponent<PlayerMovement>().StopMovement();
-            //safety check
-            playerPrefabs[clientId].GetComponent<PlayerMovement>().targetEnemy = null;
-        }
+        playerPrefabs[clientId].playerObject.GetComponent<CharacterController>().enabled = false;
+        RespawnPlayerClientRpc(clientId);
+        playerPrefabs[clientId].playerObject.GetComponent<CharacterController>().enabled = true;
+        playerPrefabs[clientId].playerObject.GetComponent<PlayerMovement>().StopMovement();
+        playerPrefabs[clientId].playerObject.GetComponent<PlayerMovement>().targetEnemy = null;
+    }
+        [ServerRpc]
+    private void HandleAfterMobDeathServerRpc(ulong mobId)
+    {
+        MobStats target = mobs[mobPrefabs[mobId].mobStatsInd];
+        target.IsDead = false;
+        target.Health = target.MaxHealth;
+        mobs[mobPrefabs[mobId].mobStatsInd] = target;
+
+        mobPrefabs[mobId].mobObject.transform.position = mobPrefabs[mobId].spawnPoint;
+        mobPrefabs[mobId].mobObject.GetComponent<EnvMeleeMobAI>().StopMovement();
+        mobPrefabs[mobId].mobObject.GetComponent<EnvMeleeMobAI>().targetEnemy = null;
     }
 
+    // needed because server does not own player
     [ClientRpc]
     private void RespawnPlayerClientRpc(ulong clientId)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            playerPrefabs[clientId].transform.position = spawnPoints[i];
-        }
+        playerPrefabs[clientId].playerObject.transform.position = playerPrefabs[clientId].spawnPoint;
     }
-
+    
     public void TeleportPlayer(GameObject target, Vector3 pos)
     {
         TeleportPlayerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, pos);
@@ -399,11 +400,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void TeleportPlayerClientRpc(ulong clientId, Vector3 pos)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            playerPrefabs[clientId].transform.position = pos;
-        }
+        playerPrefabs[clientId].playerObject.transform.position = pos;
     }
 
     public void Heal(GameObject target, float amount)
@@ -414,46 +411,16 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void HealServerRpc(ulong clientId, float amount)
     {
-        for (int i = 0; i < players.Count; i++)
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        if (target.Health + amount >= target.MaxHealth)
         {
-            if (players[i].ClientId != clientId) { continue; }
-            if (players[i].Health + amount >= players[i].MaxHealth)
-            {
-                players[i] = new PlayerStats(
-                    players[i].ClientId,
-                    players[i].CharacterId,
-                    players[i].MaxHealth,
-                    players[i].MaxHealth,
-                    players[i].AttackSpeed,
-                    players[i].MovementSpeed,
-                    players[i].CurrentMovementSpeed,
-                    players[i].Damage,
-                    players[i].IsSilenced,
-                    players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
-                    );
-            }
-            else
-            {
-                players[i] = new PlayerStats(
-                    players[i].ClientId,
-                    players[i].CharacterId,
-                    players[i].MaxHealth,
-                    players[i].Health + amount,
-                    players[i].AttackSpeed,
-                    players[i].MovementSpeed,
-                    players[i].CurrentMovementSpeed,
-                    players[i].Damage,
-                    players[i].IsSilenced,
-                    players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
-                    );
-            }
+            target.Health = target.MaxHealth;
         }
+        else
+        {
+            target.Health = target.Health + amount;
+        }
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     public void IncreaseMaxHealth(GameObject target, float amount)
@@ -464,25 +431,9 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void IncreaseMaxHealthServerRpc(ulong clientId, float amount)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth + amount,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.MaxHealth = target.MaxHealth + amount;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     public void DecreaseMaxHealth(GameObject target, float amount)
@@ -493,25 +444,16 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void DecreaseMaxHealthServerRpc(ulong clientId, float amount)
     {
-        for (int i = 0; i < players.Count; i++)
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        float newCurrentMaxHealth = target.MaxHealth - amount;
+        target.MaxHealth = newCurrentMaxHealth;
+        target.Health = target.Health > newCurrentMaxHealth ? newCurrentMaxHealth : target.Health;
+        target.IsDead = target.Health > 0 ? false : true;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
+        // Handle Death
+        if (target.Health <= 0)
         {
-            if (players[i].ClientId != clientId) { continue; }
-            float newCurrentHealth = players[i].Health >= amount ? amount : players[i].Health;
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth - amount,
-                newCurrentHealth,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
+            StartCoroutine(RespawnPlayer(clientId, gamePhase == 1 ? 10f : gamePhase == 2 ? 30f : 999f));
         }
     }
 
@@ -523,26 +465,12 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SetMaxHealthServerRpc(ulong clientId, float amount)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            float newCurrentHealth = players[i].Health >= amount ? amount : players[i].MaxHealth;
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                amount,
-                newCurrentHealth,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        float newCurrentMaxHealth = amount;
+        target.MaxHealth = newCurrentMaxHealth;
+        target.Health = target.Health > newCurrentMaxHealth ? newCurrentMaxHealth : target.Health;
+        target.IsDead = target.Health > 0 ? false : true;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     public void IncreaseDamage(GameObject target, float damage)
@@ -553,25 +481,9 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void IncreaseDamageServerRpc(ulong clientId, float damage)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage + damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.Damage += damage;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
     public void DecreaseDamage(GameObject target, float damage)
     {
@@ -581,25 +493,9 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void DecreaseDamageServerRpc(ulong clientId, float damage)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage - damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.Damage -= damage;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     public void SetDamage(GameObject target, float damage)
@@ -610,25 +506,9 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SetDamageServerRpc(ulong clientId, float damage)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.Damage = damage;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     public void IncreaseAttackSpeed(GameObject target, float amount)
@@ -639,25 +519,9 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void IncreaseAttackSpeedServerRpc(ulong clientId, float amount)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed - amount,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.AttackSpeed += amount;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
     public void DecreaseAttackSpeed(GameObject target, float amount)
     {
@@ -667,25 +531,9 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void DecreaseAttackSpeedServerRpc(ulong clientId, float amount)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed + amount,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.AttackSpeed -= amount;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
     public void SetAttackSpeed(GameObject target, float attackSpeed)
     {
@@ -695,25 +543,9 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SetAttackSpeedServerRpc(ulong clientId, float attackSpeed)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                attackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.AttackSpeed = attackSpeed;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     private float calculateMovementSpeed(ulong clientId)
@@ -807,25 +639,9 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void calcAndSetMovementSpeedServerRpc(ulong clientId)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                calculateMovementSpeed(clientId),
-                players[i].Damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.CurrentMovementSpeed = calculateMovementSpeed(clientId);
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     public void PermSpeed(GameObject target, float speedAmount)
@@ -844,27 +660,11 @@ public class GameManager : NetworkBehaviour
      *  Takes in an input float of direct value to subtract from player's current movement speed
      */
     [ServerRpc(RequireOwnership = false)]
-    private void PermReduceMovementSpeedServerRpc(ulong clientId, float slowAmount)
+    private void PermReduceMovementSpeedServerRpc(ulong clientId, float amount)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed - slowAmount,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.MovementSpeed -= amount;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     /*
@@ -872,27 +672,11 @@ public class GameManager : NetworkBehaviour
      *  Takes in an input float of direct value to add to player's current movement speed
      */
     [ServerRpc(RequireOwnership = false)]
-    private void PermIncreaseMovementSpeedServerRpc(ulong clientId, float slowAmount)
+    private void PermIncreaseMovementSpeedServerRpc(ulong clientId, float amount)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed + slowAmount,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.MovementSpeed += amount;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     public void Root(GameObject target, float rootDuration)
@@ -915,49 +699,17 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SilenceServerRpc(ulong clientId)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                true,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.IsSilenced = true;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void UnsilenceServerRpc(ulong clientId)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                false,
-                players[i].IsDisarmed,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.IsSilenced = false;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     public void Disarm(GameObject target, float silenceDuration)
@@ -975,49 +727,17 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void DisarmServerRpc(ulong clientId)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                true,
-                players[i].Kills,
-                players[i].Deaths,
-                players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.IsDisarmed = true;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void UndisarmServerRpc(ulong clientId)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            players[i] = new PlayerStats(
-                players[i].ClientId,
-                players[i].CharacterId,
-                players[i].MaxHealth,
-                players[i].Health,
-                players[i].AttackSpeed,
-                players[i].MovementSpeed,
-                players[i].CurrentMovementSpeed,
-                players[i].Damage,
-                players[i].IsSilenced,
-                false,
-                    players[i].Kills,
-                    players[i].Deaths,
-                    players[i].IsDead
-                );
-        }
+        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
+        target.IsDisarmed = false;
+        players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
     public void Untargetable(GameObject target, float duration)
@@ -1043,11 +763,7 @@ public class GameManager : NetworkBehaviour
     {
         int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
 
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            playerPrefabs[clientId].layer = LayerIgnoreRaycast;
-        }
+        playerPrefabs[clientId].playerObject.layer = LayerIgnoreRaycast;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -1060,12 +776,7 @@ public class GameManager : NetworkBehaviour
     private void RetargetableClientRpc(ulong clientId)
     {
         int playerLayer = LayerMask.NameToLayer("Player");
-
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            playerPrefabs[clientId].layer = playerLayer;
-        }
+        playerPrefabs[clientId].playerObject.layer = playerLayer;
     }
 
     public void Stun(GameObject target, float stunDuration)
@@ -1074,15 +785,6 @@ public class GameManager : NetworkBehaviour
         Silence(target, stunDuration);
         Root(target, stunDuration);
         SummonStunParticles(target, stunDuration);
-    }
-
-    public void HandleBeforeDeath(GameObject target, float stunDuration)
-    {
-        Disarm(target, stunDuration);
-        Silence(target, stunDuration);
-        Root(target, stunDuration);
-        // 5 seconds of invincibility after respawn
-        Untargetable(target, stunDuration + 5f);
     }
 
     public void Knockup(GameObject target, float knockupDuration)
@@ -1100,12 +802,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void KnockupClientRpc(ulong clientId, float knockupDuration)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            StartCoroutine(UpForce(playerPrefabs[clientId], knockupDuration));
-            break;
-        }
+        StartCoroutine(UpForce(playerPrefabs[clientId].playerObject, knockupDuration));
     }
 
     IEnumerator UpForce(GameObject player, float knockupDuration)
@@ -1166,14 +863,10 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SummonGlowingParticlesServerRpc(ulong clientId, float duration)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            GameObject glowParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.GLOW_PARTICLES), playerPrefabs[clientId].transform, false);
-            glowParticles.GetComponent<NetworkObject>().Spawn();
-            glowParticles.gameObject.transform.parent = playerPrefabs[clientId].transform;
-            StartCoroutine(DestroyParticle(glowParticles, duration));
-        }
+        GameObject glowParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.GLOW_PARTICLES), playerPrefabs[clientId].playerObject.transform, false);
+        glowParticles.GetComponent<NetworkObject>().Spawn();
+        glowParticles.gameObject.transform.parent = playerPrefabs[clientId].playerObject.transform;
+        StartCoroutine(DestroyParticle(glowParticles, duration));
     }
 
 
@@ -1192,7 +885,7 @@ public class GameManager : NetworkBehaviour
         {
             if (players[i].ClientId != clientId) { continue; }
             // Strength buff particles (destroy is handled automatically by particlesystem)
-            GameObject strengthParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.STRENGTH_PARTICLES), playerPrefabs[clientId].transform, false);
+            GameObject strengthParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.STRENGTH_PARTICLES), playerPrefabs[clientId].playerObject.transform, false);
             strengthParticles.GetComponent<NetworkObject>().Spawn();
         }
     }
@@ -1208,13 +901,9 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SummonStunParticlesServerRpc(ulong clientId, float duration)
     {
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != clientId) { continue; }
-            GameObject stunParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.STUN_PARTICLES), playerPrefabs[clientId].transform, false);
-            stunParticles.GetComponent<NetworkObject>().Spawn();
-            stunParticles.gameObject.transform.parent = playerPrefabs[clientId].transform;
-            StartCoroutine(DestroyParticle(stunParticles, duration));
-        }
+        GameObject stunParticles = Instantiate(particleDatabase.GetParticleById(ParticleDatabase.STUN_PARTICLES), playerPrefabs[clientId].playerObject.transform, false);
+        stunParticles.GetComponent<NetworkObject>().Spawn();
+        stunParticles.gameObject.transform.parent = playerPrefabs[clientId].playerObject.transform;
+        StartCoroutine(DestroyParticle(stunParticles, duration));
     }
 }

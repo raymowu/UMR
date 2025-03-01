@@ -4,7 +4,7 @@ using UnityEngine;
 using Unity.Netcode;
 
 [RequireComponent(typeof(MeleeMobAI)), RequireComponent(typeof(PlayerPrefab))]
-public class AIMeleeCombat : NetworkBehaviour
+public class MeleeMobCombat : NetworkBehaviour
 {
     private MeleeMobAI moveScript;
     private PlayerPrefab stats;
@@ -38,7 +38,7 @@ public class AIMeleeCombat : NetworkBehaviour
         targetEnemy = moveScript.targetEnemy;
 
         // Perform the Melee auto attack if in range
-        if (targetEnemy != null && performMeleeAttack && Time.time > nextAttackTime)
+        if (targetEnemy != null && performMeleeAttack && Time.time > nextAttackTime && targetEnemy.layer != LayerMask.NameToLayer("Ignore Raycast"))
         {
             if (Vector3.Distance(transform.position, targetEnemy.transform.position) <= moveScript.stoppingDistance)
             {

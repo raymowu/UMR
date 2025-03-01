@@ -38,7 +38,7 @@ public class RangedCombat : NetworkBehaviour
 
         // Perform the ranged auto attack if in range
         if (targetEnemy != null && targetEnemy != NetworkManager.Singleton.LocalClient.PlayerObject.gameObject &&
-            performRangedAttack && Time.time > nextAttackTime)  //&& !targetEnemy.GetComponent<PlayerPrefab>().IsDead
+            performRangedAttack && Time.time > nextAttackTime && targetEnemy.layer != LayerMask.NameToLayer("Ignore Raycast"))
         {
             if (Vector3.Distance(transform.position, targetEnemy.transform.position) <= moveScript.stoppingDistance)
             {
@@ -101,14 +101,8 @@ public class RangedCombat : NetworkBehaviour
     [ServerRpc]
     private void SummonAutoProjectileServerRpc(ulong parentId, ulong targetId)
     {
-        Dictionary<ulong, GameObject> playerPrefabs = GameManager.Instance.playerPrefabs;
-        GameObject parent;
-        GameObject target;
-
-        parent = playerPrefabs[parentId];
-        target = playerPrefabs[targetId];
-
-
+        GameObject parent = GameManager.Instance.playerPrefabs[parentId].playerObject;
+        GameObject target = GameManager.Instance.playerPrefabs[targetId].playerObject;
         GameObject go = Instantiate(projectilePrefab, shootTransform.position, Quaternion.identity);
         Physics.IgnoreCollision(go.GetComponent<Collider>(), parent.GetComponent<Collider>());
         go.GetComponent<MoveRangedAuto>().parent = parent;
@@ -118,15 +112,8 @@ public class RangedCombat : NetworkBehaviour
     [ServerRpc]
     private void SummonAutoProjectileMobServerRpc(ulong parentId, ulong targetId)
     {
-        Dictionary<ulong, GameObject> playerPrefabs = GameManager.Instance.playerPrefabs;
-        Dictionary<ulong, GameObject> mobPrefabs = GameManager.Instance.mobPrefabs;
-        GameObject parent;
-        GameObject target;
-
-        parent = playerPrefabs[parentId];
-        target = mobPrefabs[targetId];
-
-
+        GameObject parent = GameManager.Instance.playerPrefabs[parentId].playerObject;
+        GameObject target = GameManager.Instance.mobPrefabs[targetId].mobObject;
         GameObject go = Instantiate(projectilePrefab, shootTransform.position, Quaternion.identity);
         Physics.IgnoreCollision(go.GetComponent<Collider>(), parent.GetComponent<Collider>());
         go.GetComponent<MoveRangedAuto>().parent = parent;

@@ -62,41 +62,7 @@ public class KleeAbilities: CharacterAbilities
         go.GetComponent<NetworkObject>().Spawn();
     }
 
-    public void SummonAutoProjectile(GameObject parent, GameObject target)
-    {
-        SummonAutoProjectileServerRpc(parent.GetComponent<NetworkObject>().OwnerClientId,
-            target.GetComponent<NetworkObject>().OwnerClientId);
-    }
-
-    [ServerRpc]
-    private void SummonAutoProjectileServerRpc(ulong parentId, ulong targetId)
-    {
-        NetworkList<PlayerStats> players = GameManager.Instance.players;
-        GameObject[] playerPrefabs = GameManager.Instance.playerPrefabsArr;
-        GameObject parent = playerPrefabs[0];
-        GameObject target = playerPrefabs[0];
-
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != parentId) { continue; }
-            parent = playerPrefabs[i];
-            break;
-        }
-        for (int i = 0; i < players.Count; i++)
-        {
-            if (players[i].ClientId != targetId) { continue; }
-            target = playerPrefabs[i];
-            break;
-        }
-
-        GameObject go = Instantiate(sparkPrefab, shootTransform.position, Quaternion.identity);
-        Physics.IgnoreCollision(go.GetComponent<Collider>(), parent.GetComponent<Collider>());
-        go.GetComponent<MoveRangedAuto>().parent = parent;
-        go.GetComponent<MoveRangedAuto>().target = target;
-        go.GetComponent<NetworkObject>().Spawn();
-    }
-
-    [ServerRpc]
+    [ServerRpc] 
     private void CastAbility4ServerRpc(Quaternion rot)
     {
         GameObject go = Instantiate(kingDodoco, shootTransform.position, rot);

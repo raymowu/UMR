@@ -36,7 +36,8 @@ public class EnvAIMeleeCombat : NetworkBehaviour
         targetEnemy = moveScript.targetEnemy;
 
         // Perform the Melee auto attack if in range
-        if (targetEnemy != null && performMeleeAttack && Time.time > nextAttackTime) // && !targetEnemy.GetComponent<PlayerPrefab>().IsDead
+        if (targetEnemy != null && performMeleeAttack && Time.time > nextAttackTime && 
+            targetEnemy.layer != LayerMask.NameToLayer("Ignore Raycast"))
         {
             if (Vector3.Distance(transform.position, targetEnemy.transform.position) <= moveScript.stoppingDistance)
             {

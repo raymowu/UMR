@@ -194,9 +194,9 @@ public abstract class CharacterAbilities : NetworkBehaviour
     {
         GameObject tMin = null;
         float minDist = Mathf.Infinity;
-        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
+        foreach (KeyValuePair<ulong, GameManager.Player> p in GameManager.Instance.playerPrefabs)
         {
-            GameObject player = p.Value;
+            GameObject player = p.Value.playerObject;
             if (player == gameObject) { continue; }
             float dist = Vector3.Distance(player.transform.position, transform.position);
             if (dist <= range && dist < minDist)
@@ -210,9 +210,9 @@ public abstract class CharacterAbilities : NetworkBehaviour
     public List<GameObject> GetAllPlayersInRangeAndWithinAngle(float range, float ang)
     {
         List<GameObject> res = new List<GameObject> { };
-        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
+        foreach (KeyValuePair<ulong, GameManager.Player> p in GameManager.Instance.playerPrefabs)
         {
-            GameObject player = p.Value;
+            GameObject player = p.Value.playerObject;
             if (player == gameObject) { continue; }
             Vector3 directionToTarget = transform.position - player.transform.position;
             float angle = Vector3.Angle(transform.forward, directionToTarget);
@@ -232,9 +232,9 @@ public abstract class CharacterAbilities : NetworkBehaviour
     {
         GameObject tMin = null;
         float minDist = Mathf.Infinity;
-        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
+        foreach (KeyValuePair<ulong, GameManager.Player> p in GameManager.Instance.playerPrefabs)
         {
-            GameObject player = p.Value;
+            GameObject player = p.Value.playerObject;
             if (player == parent) { continue; }
             float dist = Vector3.Distance(player.transform.position, transform.position);
             if (dist <= range && dist < minDist)
@@ -250,9 +250,9 @@ public abstract class CharacterAbilities : NetworkBehaviour
     public List<GameObject> GetAllPlayersInRange(float range)
     {
         List<GameObject> res = new List<GameObject> { };
-        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
+        foreach (KeyValuePair<ulong, GameManager.Player> p in GameManager.Instance.playerPrefabs)
         {
-            GameObject player = p.Value;
+            GameObject player = p.Value.playerObject;
             if (player == gameObject) { continue; }
             if (Vector3.Distance(transform.position, player.transform.position) <= range)
             {
@@ -266,9 +266,9 @@ public abstract class CharacterAbilities : NetworkBehaviour
     public List<GameObject> GetAllPlayersInRange(float range, GameObject parent)
     {
         List<GameObject> res = new List<GameObject> { };
-        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
+        foreach (KeyValuePair<ulong, GameManager.Player> p in GameManager.Instance.playerPrefabs)
         {
-            GameObject player = p.Value;
+            GameObject player = p.Value.playerObject;
             if (Vector3.Distance(parent.transform.position, player.transform.position) <= range)
             {
                 res.Add(player);
@@ -280,9 +280,9 @@ public abstract class CharacterAbilities : NetworkBehaviour
     public List<GameObject> GetAllPlayers()
     {
         List<GameObject> res = new List<GameObject> { };
-        foreach (KeyValuePair<ulong, GameObject> p in GameManager.Instance.playerPrefabs)
+        foreach (KeyValuePair<ulong, GameManager.Player> p in GameManager.Instance.playerPrefabs)
         {
-            GameObject player = p.Value;
+            GameObject player = p.Value.playerObject;
             res.Add(player);
         }
         return res;
