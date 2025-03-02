@@ -113,11 +113,11 @@ public class FBIAbilities : CharacterAbilities
     {
         if (highSpeedChaseActive)
         {
-            foreach (GameObject player in GetAllPlayersInRangeAndWithinAngle(HIGH_SPEED_CHASE_RANGE, HIGH_SPEED_CHASE_ANGLE))
+            foreach (GameObject player in GetAllEnemiesInRangeAndWithinAngle(HIGH_SPEED_CHASE_RANGE, HIGH_SPEED_CHASE_ANGLE))
             {
                 highSpeedChaseActive = false;
                 GameManager.Instance.DealDamage(gameObject, player.gameObject, GetComponent<PlayerPrefab>().Damage + HIGH_SPEED_CHASE_COLLISION_DAMAGE);
-                GameManager.Instance.RemoveAllEffectsFromPlayer(gameObject);
+                GameManager.Instance.RemoveAllEffectsFromPlayer(gameObject, GameManager.TargetType.Player);
                 TogglePoliceCarServerRpc(false);
             }
         }
@@ -147,7 +147,7 @@ public class FBIAbilities : CharacterAbilities
     IEnumerator DestroyPoliceCar()
     {
         yield return new WaitForSeconds(HIGH_SPEED_CHASE_DURATION);
-        GameManager.Instance.RemoveAllEffectsFromPlayer(gameObject);
+        GameManager.Instance.RemoveAllEffectsFromPlayer(gameObject, GameManager.TargetType.Player);
         TogglePoliceCarServerRpc(false);
     }
 }

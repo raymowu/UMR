@@ -43,7 +43,7 @@ public class DarthogAbilities : CharacterAbilities
         InputHelper(ability1Key, ref isAbility1Cooldown, ability1Cooldown, ref currentAbility1Cooldown,
             "CastSmash", () =>
             {
-                foreach (GameObject player in GetAllPlayersInRange(SMASH_RANGE))
+                foreach (GameObject player in GetAllEnemiesInRange(SMASH_RANGE))
                 {
                     GameManager.Instance.Knockup(player, SMASH_KNOCKUP_DURATION);
                 }

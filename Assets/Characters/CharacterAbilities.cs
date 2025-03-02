@@ -100,6 +100,10 @@ public abstract class CharacterAbilities : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) { return; }
+        if (GetComponent<PlayerPrefab>().IsDead)
+        {
+            return;
+        }
         if (stats.IsSilenced)
         {
             ability1DisableOverlay.SetActive(true);
@@ -190,7 +194,7 @@ public abstract class CharacterAbilities : NetworkBehaviour
     protected virtual void Ability4Canvas() { }
 
     // using player as reference point
-    public GameObject GetNearestPlayerInRange(float range)
+    public GameObject GetNearestEnemyInRange(float range)
     {
         GameObject tMin = null;
         float minDist = Mathf.Infinity;
@@ -204,10 +208,21 @@ public abstract class CharacterAbilities : NetworkBehaviour
                 tMin = player;
                 minDist = dist;
             }
+        }        
+        foreach (KeyValuePair<ulong, GameManager.Mob> m in GameManager.Instance.mobPrefabs)
+        {
+            GameObject mob = m.Value.mobObject;
+            if (mob == gameObject) { continue; }
+            float dist = Vector3.Distance(mob.transform.position, transform.position);
+            if (dist <= range && dist < minDist)
+            {
+                tMin = mob;
+                minDist = dist;
+            }
         }
         return tMin;
     }     
-    public List<GameObject> GetAllPlayersInRangeAndWithinAngle(float range, float ang)
+    public List<GameObject> GetAllEnemiesInRangeAndWithinAngle(float range, float ang)
     {
         List<GameObject> res = new List<GameObject> { };
         foreach (KeyValuePair<ulong, GameManager.Player> p in GameManager.Instance.playerPrefabs)
@@ -223,12 +238,26 @@ public abstract class CharacterAbilities : NetworkBehaviour
             {
                 res.Add(player);
             }
+        }        
+        foreach (KeyValuePair<ulong, GameManager.Mob> m in GameManager.Instance.mobPrefabs)
+        {
+            GameObject mob = m.Value.mobObject;
+            if (mob == gameObject) { continue; }
+            Vector3 directionToTarget = transform.position - mob.transform.position;
+            float angle = Vector3.Angle(transform.forward, directionToTarget);
+            float distance = directionToTarget.magnitude;
+
+            // Target is in front of me
+            if (Mathf.Abs(angle) > ang && distance < range)
+            {
+                res.Add(mob);
+            }
         }
         return res;
     }       
     
     // using specified parent object as reference point
-    public GameObject GetNearestPlayerInRange(float range, GameObject parent)
+    public GameObject GetNearestEnemyInRange(float range, GameObject parent)
     {
         GameObject tMin = null;
         float minDist = Mathf.Infinity;
@@ -242,12 +271,23 @@ public abstract class CharacterAbilities : NetworkBehaviour
                 tMin = player;
                 minDist = dist;
             }
+        } 
+        foreach (KeyValuePair<ulong, GameManager.Player> m in GameManager.Instance.playerPrefabs)
+        {
+            GameObject mob = m.Value.playerObject;
+            if (mob == parent) { continue; }
+            float dist = Vector3.Distance(mob.transform.position, transform.position);
+            if (dist <= range && dist < minDist)
+            {
+                tMin = mob;
+                minDist = dist;
+            }
         }
         return tMin;
     }    
     
     // using player as reference point
-    public List<GameObject> GetAllPlayersInRange(float range)
+    public List<GameObject> GetAllEnemiesInRange(float range)
     {
         List<GameObject> res = new List<GameObject> { };
         foreach (KeyValuePair<ulong, GameManager.Player> p in GameManager.Instance.playerPrefabs)
@@ -257,6 +297,15 @@ public abstract class CharacterAbilities : NetworkBehaviour
             if (Vector3.Distance(transform.position, player.transform.position) <= range)
             {
                 res.Add(player);
+            }
+        }
+        foreach (KeyValuePair<ulong, GameManager.Mob> m in GameManager.Instance.mobPrefabs)
+        {
+            GameObject mob = m.Value.mobObject;
+            if (mob == gameObject) { continue; }
+            if (Vector3.Distance(transform.position, mob.transform.position) <= range)
+            {
+                res.Add(mob);
             }
         }
         return res;

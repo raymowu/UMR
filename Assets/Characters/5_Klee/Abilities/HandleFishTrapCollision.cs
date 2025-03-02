@@ -24,7 +24,7 @@ public class HandleFishTrapCollision : NetworkBehaviour
     {
         nextTickTime = Time.time + FISH_TRAP_TICK_INTERVAL;
 
-        foreach (GameObject player in parent.GetAllPlayersInRange(FISH_TRAP_DETECTION_RANGE))
+        foreach (GameObject player in parent.GetAllEnemiesInRange(FISH_TRAP_DETECTION_RANGE))
         {
             GameManager.Instance.Stun(player, FISH_TRAP_TICK_INTERVAL);
             GameManager.Instance.DealDamage(parent.gameObject, player, parent.FISH_TRAP_DAMAGE);

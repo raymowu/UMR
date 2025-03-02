@@ -27,6 +27,11 @@ public class GameManager : NetworkBehaviour
         public GameObject mobObject;
         public Vector3 spawnPoint;
     }
+    public enum TargetType
+    {
+        Player,
+        Mob
+    };
 
     [Header("References")]
     [SerializeField] public GameObject[] playerPrefabsArr;
@@ -268,10 +273,10 @@ public class GameManager : NetworkBehaviour
 
     private void HandleMobsStatsChanged(NetworkListEvent<MobStats> changeEvent)
     {
-        for (int i = 0; i < mobs.Count; i++)
+        foreach (KeyValuePair<ulong, Mob> m in mobPrefabs)
         {
-            mobPrefabsArr[i].GetComponent<MobPrefab>().UpdateMobStats(mobs[i]);
-            mobPrefabsArr[i].GetComponent<NavMeshAgent>().speed = mobs[i].CurrentMovementSpeed;
+            m.Value.mobObject.GetComponent<MobPrefab>().UpdateMobStats(mobs[m.Value.mobStatsInd]);
+            m.Value.mobObject.GetComponent<NavMeshAgent>().speed = mobs[m.Value.mobStatsInd].CurrentMovementSpeed;
         }
     }
 
@@ -325,7 +330,7 @@ public class GameManager : NetworkBehaviour
 
         if (mob.Health <= 0)
         {
-            StartCoroutine(RespawnMob(mobId, gamePhase == 1 ? 60f : gamePhase == 2 ? 120f : 999f));
+            StartCoroutine(RespawnMob(mobId, gamePhase == 1 ? 10f : gamePhase == 2 ? 120f : 999f));
         }
 
     }
@@ -345,9 +350,6 @@ public class GameManager : NetworkBehaviour
 
     public void HandleBeforeDeath(GameObject target, float stunDuration)
     {
-        Disarm(target, stunDuration);
-        Silence(target, stunDuration);
-        Root(target, stunDuration);
         // 5 seconds of invincibility after respawn
         Untargetable(target, stunDuration + 5f);
     }
@@ -388,7 +390,10 @@ public class GameManager : NetworkBehaviour
     
     public void TeleportPlayer(GameObject target, Vector3 pos)
     {
-        TeleportPlayerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, pos);
+        if (target.CompareTag("Player"))
+        {
+            TeleportPlayerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, pos);
+        }
     }
 
     [ServerRpc]
@@ -405,7 +410,10 @@ public class GameManager : NetworkBehaviour
 
     public void Heal(GameObject target, float amount)
     {
-        HealServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+        if (target.CompareTag("Player"))
+        {
+            HealServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -425,7 +433,10 @@ public class GameManager : NetworkBehaviour
 
     public void IncreaseMaxHealth(GameObject target, float amount)
     {
-        IncreaseMaxHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+        if (target.CompareTag("Player"))
+        {
+            IncreaseMaxHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -436,30 +447,12 @@ public class GameManager : NetworkBehaviour
         players[playerPrefabs[clientId].playerStatsInd] = target;
     }
 
-    public void DecreaseMaxHealth(GameObject target, float amount)
-    {
-        DecreaseMaxHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void DecreaseMaxHealthServerRpc(ulong clientId, float amount)
-    {
-        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
-        float newCurrentMaxHealth = target.MaxHealth - amount;
-        target.MaxHealth = newCurrentMaxHealth;
-        target.Health = target.Health > newCurrentMaxHealth ? newCurrentMaxHealth : target.Health;
-        target.IsDead = target.Health > 0 ? false : true;
-        players[playerPrefabs[clientId].playerStatsInd] = target;
-        // Handle Death
-        if (target.Health <= 0)
-        {
-            StartCoroutine(RespawnPlayer(clientId, gamePhase == 1 ? 10f : gamePhase == 2 ? 30f : 999f));
-        }
-    }
-
     public void SetMaxHealth(GameObject target, float amount)
     {
-        SetMaxHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+        if (target.CompareTag("Player"))
+        {
+            SetMaxHealthServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -475,7 +468,10 @@ public class GameManager : NetworkBehaviour
 
     public void IncreaseDamage(GameObject target, float damage)
     {
-        IncreaseDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
+        if (target.CompareTag("Player"))
+        {
+            IncreaseDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -485,22 +481,13 @@ public class GameManager : NetworkBehaviour
         target.Damage += damage;
         players[playerPrefabs[clientId].playerStatsInd] = target;
     }
-    public void DecreaseDamage(GameObject target, float damage)
-    {
-        DecreaseDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void DecreaseDamageServerRpc(ulong clientId, float damage)
-    {
-        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
-        target.Damage -= damage;
-        players[playerPrefabs[clientId].playerStatsInd] = target;
-    }
 
     public void SetDamage(GameObject target, float damage)
     {
-        SetDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
+        if (target.CompareTag("Player"))
+        {
+            SetDamageServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, damage);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -513,7 +500,10 @@ public class GameManager : NetworkBehaviour
 
     public void IncreaseAttackSpeed(GameObject target, float amount)
     {
-        IncreaseAttackSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+        if (target.CompareTag("Player"))
+        {
+            IncreaseAttackSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -523,21 +513,13 @@ public class GameManager : NetworkBehaviour
         target.AttackSpeed += amount;
         players[playerPrefabs[clientId].playerStatsInd] = target;
     }
-    public void DecreaseAttackSpeed(GameObject target, float amount)
-    {
-        DecreaseAttackSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
-    }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void DecreaseAttackSpeedServerRpc(ulong clientId, float amount)
-    {
-        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
-        target.AttackSpeed -= amount;
-        players[playerPrefabs[clientId].playerStatsInd] = target;
-    }
     public void SetAttackSpeed(GameObject target, float attackSpeed)
     {
-        SetAttackSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, attackSpeed);
+        if (target.CompareTag("Player"))
+        {
+            SetAttackSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, attackSpeed);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -550,12 +532,10 @@ public class GameManager : NetworkBehaviour
 
     public void PermSpeed(GameObject target, float speedAmount)
     {
-        PermIncreaseMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount);
-    }
-
-    public void PermSlow(GameObject target, float slowAmount)
-    {
-        PermReduceMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, slowAmount);
+        if (target.CompareTag("Player"))
+        {
+            PermIncreaseMovementSpeedServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount);
+        }
     }
 
     /*
@@ -589,8 +569,11 @@ public class GameManager : NetworkBehaviour
 
     public void Silence(GameObject target, float silenceDuration)
     {
-        SilenceServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-        StartCoroutine(Unsilence(target, silenceDuration));
+        if (target.CompareTag("Player"))
+        {
+            SilenceServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+            StartCoroutine(Unsilence(target, silenceDuration));
+        }
     }
 
     IEnumerator Unsilence(GameObject target, float silenceDuration)
@@ -657,36 +640,55 @@ public class GameManager : NetworkBehaviour
 
     public void Untargetable(GameObject target, float duration)
     {
-        UntargetableServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-        StartCoroutine(Retargetable(target, duration));
+        if (target.CompareTag("Player"))
+        {
+            UntargetablePlayerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+            StartCoroutine(RetargetablePlayer(target, duration));
+        }
+        else if (target.CompareTag("Mob"))
+        {
+            UntargetableMobServerRpc(target.GetComponent<NetworkObject>().NetworkObjectId);
+            StartCoroutine(RetargetableMob(target, duration));
+        }
     }
-
-    IEnumerator Retargetable(GameObject target, float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        RetargetableServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-    }
-
     [ServerRpc(RequireOwnership = false)]
-    private void UntargetableServerRpc(ulong clientId)
+    private void UntargetablePlayerServerRpc(ulong clientId)
     {
         UntargetableClientRpc(clientId);
     }
-
+    [ServerRpc(RequireOwnership = false)]
+    private void UntargetableMobServerRpc(ulong mobId)
+    {
+        int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
+        mobPrefabs[mobId].mobObject.layer = LayerIgnoreRaycast;
+    }
     [ClientRpc]
     private void UntargetableClientRpc(ulong clientId)
     {
         int LayerIgnoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
-
         playerPrefabs[clientId].playerObject.layer = LayerIgnoreRaycast;
     }
-
+    IEnumerator RetargetablePlayer(GameObject target, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        RetargetablePlayerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+    }    
+    IEnumerator RetargetableMob(GameObject target, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        RetargetableMobServerRpc(target.GetComponent<NetworkObject>().NetworkObjectId);
+    }
     [ServerRpc(RequireOwnership = false)]
-    private void RetargetableServerRpc(ulong clientId)
+    private void RetargetablePlayerServerRpc(ulong clientId)
     {
         RetargetableClientRpc(clientId);
+    }    
+    [ServerRpc]
+    private void RetargetableMobServerRpc(ulong mobId)
+    {
+        int playerLayer = LayerMask.NameToLayer("Player");
+        mobPrefabs[mobId].mobObject.layer = playerLayer;
     }
-
     [ClientRpc]
     private void RetargetableClientRpc(ulong clientId)
     {
@@ -704,8 +706,11 @@ public class GameManager : NetworkBehaviour
 
     public void Knockup(GameObject target, float knockupDuration)
     {
-        Stun(target, knockupDuration);
-        KnockupServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, knockupDuration);
+        if (target.CompareTag("Player"))
+        {
+            Stun(target, knockupDuration);
+            KnockupServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, knockupDuration);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -748,13 +753,12 @@ public class GameManager : NetworkBehaviour
      */
 
     [ServerRpc(RequireOwnership = false)]
-    private void calcAndSetEffectsServerRpc(ulong clientId)
+    private void calcAndSetEffectsServerRpc(ulong targetId, TargetType targetType)
     {
-        PlayerStats target = players[playerPrefabs[clientId].playerStatsInd];
-        float totalSpeed = target.MovementSpeed;
+        float totalSpeed = 1;
         for (int i = 0; i < effectTracker.Count; i++)
         {
-            if (effectTracker[i].clientId != clientId) { continue; }
+            if (effectTracker[i].clientId != targetId || effectTracker[i].targetType != targetType) { continue; }
             switch (effectTracker[i])
             {
                 case Speed speed:
@@ -762,14 +766,24 @@ public class GameManager : NetworkBehaviour
                     break;
             }
         }
-        target.CurrentMovementSpeed = totalSpeed;
-        players[playerPrefabs[clientId].playerStatsInd] = target;
+        if (targetType == TargetType.Player)
+        {
+            PlayerStats target = players[playerPrefabs[targetId].playerStatsInd];
+            target.CurrentMovementSpeed = totalSpeed == 1 ? target.MovementSpeed : target.CurrentMovementSpeed * totalSpeed;
+            players[playerPrefabs[targetId].playerStatsInd] = target;
+        }
+        else if (targetType == TargetType.Mob)
+        {
+            MobStats target = mobs[mobPrefabs[targetId].mobStatsInd];
+            target.CurrentMovementSpeed = totalSpeed == 1 ? target.MovementSpeed : target.CurrentMovementSpeed * totalSpeed;
+            mobs[mobPrefabs[targetId].mobStatsInd] = target;
+        }
     }
 
-    public void RemoveAllEffectsFromPlayer(GameObject target)
+    public void RemoveAllEffectsFromPlayer(GameObject target, TargetType targetType)
     {
         RemoveAllEffectsFromPlayerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-        calcAndSetEffectsServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+        calcAndSetEffectsServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, targetType);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -784,17 +798,17 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void addSpeedToEffectTrackerServerRpc(ulong clientId, float speedAmount, float speedDuration)
+    private void addSpeedToEffectTrackerServerRpc(ulong targetId, float speedAmount, float speedDuration, TargetType targetType)
     {
-        effectTracker.Add(new Speed(clientId, speedAmount, speedDuration));
+        effectTracker.Add(new Speed(targetId, speedAmount, speedDuration, targetType));
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void removeSpeedFromEffectTrackerServerRpc(ulong clientId, float amount, float duration)
+    private void removeSpeedFromEffectTrackerServerRpc(ulong clientId, float amount, float duration, TargetType targetType)
     {
         foreach (Effect m in effectTracker)
         {
-            if (m.clientId != clientId || !(m is Speed) ||
+            if (m.clientId != clientId || !(m is Speed) || m.targetType != targetType ||
                 m.amount != amount || m.duration != duration) { continue; }
             effectTracker.Remove(m);
             break;
@@ -807,16 +821,33 @@ public class GameManager : NetworkBehaviour
     */
     public void Speed(GameObject target, float speedAmount, float speedDuration)
     {
-        addSpeedToEffectTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount, speedDuration);
-        calcAndSetEffectsServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
-        StartCoroutine(UnsetSpeedFromEffectTracker(target, speedAmount, speedDuration));
+        if (target.CompareTag("Player"))
+        {
+            addSpeedToEffectTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, speedAmount, speedDuration, TargetType.Player);
+            calcAndSetEffectsServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, TargetType.Player);
+            StartCoroutine(UnsetSpeedFromEffectTracker(target, speedAmount, speedDuration, TargetType.Player));
+        }
+        else if (target.CompareTag("Mob"))
+        {
+            addSpeedToEffectTrackerServerRpc(target.GetComponent<NetworkObject>().NetworkObjectId, speedAmount, speedDuration, TargetType.Mob);
+            calcAndSetEffectsServerRpc(target.GetComponent<NetworkObject>().NetworkObjectId, TargetType.Mob);
+            StartCoroutine(UnsetSpeedFromEffectTracker(target, speedAmount, speedDuration, TargetType.Mob));
+        }   
     }
 
-    IEnumerator UnsetSpeedFromEffectTracker(GameObject target, float amount, float duration)
+    IEnumerator UnsetSpeedFromEffectTracker(GameObject target, float amount, float duration, TargetType targetType)
     {
         yield return new WaitForSeconds(duration);
-        removeSpeedFromEffectTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount, duration);
-        calcAndSetEffectsServerRpc(target.GetComponent<NetworkObject>().OwnerClientId);
+        if (targetType == TargetType.Player)
+        {
+            removeSpeedFromEffectTrackerServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount, duration, targetType);
+            calcAndSetEffectsServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, targetType);
+        }
+        else if (targetType == TargetType.Mob)
+        {
+            removeSpeedFromEffectTrackerServerRpc(target.GetComponent<NetworkObject>().NetworkObjectId, amount, duration, targetType);
+            calcAndSetEffectsServerRpc(target.GetComponent<NetworkObject>().NetworkObjectId, targetType);
+        }
     }
 
 

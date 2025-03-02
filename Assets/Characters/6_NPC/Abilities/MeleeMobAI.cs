@@ -39,7 +39,7 @@ public class MeleeMobAI : NetworkBehaviour
 
     public void Move()
     {
-        GameObject targetEnemy = parent.GetComponent<CharacterAbilities>().GetNearestPlayerInRange(detectionRange, parent);
+        GameObject targetEnemy = parent.GetComponent<CharacterAbilities>().GetNearestEnemyInRange(detectionRange, parent);
         // TODO: OR compare tag "Enemy" for monsters
         MoveTowardsEnemy(targetEnemy != null ? targetEnemy : parent);
 

@@ -70,7 +70,7 @@ public class HuTaoAbilities : CharacterAbilities
         ToggleInputHelper(ability2Key, ABILITY2TICKINTERVAL, () =>
         {
             GameManager.Instance.DealDamage(gameObject, gameObject, ABILITY2ACTIVATIONCOST * stats.MaxHealth);
-            foreach (GameObject player in GetAllPlayersInRange(ABILITY2RANGE))
+            foreach (GameObject player in GetAllEnemiesInRange(ABILITY2RANGE))
             {
                 GameManager.Instance.DealDamage(gameObject, player, stats.Damage);
             }
@@ -126,7 +126,7 @@ public class HuTaoAbilities : CharacterAbilities
     [ServerRpc(RequireOwnership = false)]
     public void DestroyGuideToAfterlifeServerRpc()
     {
-        GameManager.Instance.DecreaseDamage(gameObject, stats.MaxHealth * ABILITY3ATTACKINCREASE);
+        GameManager.Instance.IncreaseDamage(gameObject, -stats.MaxHealth * ABILITY3ATTACKINCREASE);
     }
 
     protected override void Ability4Input()
@@ -135,7 +135,7 @@ public class HuTaoAbilities : CharacterAbilities
         {
             playerMovement.StopMovement();
             CastAbility4ServerRpc();
-            List<GameObject> playersInRange = GetAllPlayersInRange(SPIRIT_SOOTHER_RANGE);
+            List<GameObject> playersInRange = GetAllEnemiesInRange(SPIRIT_SOOTHER_RANGE);
             int numEnemiesHit = playersInRange.Count;
             foreach (GameObject player in playersInRange)
             {

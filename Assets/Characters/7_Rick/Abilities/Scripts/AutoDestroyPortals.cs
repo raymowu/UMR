@@ -30,7 +30,7 @@ public class AutoDestroyPortals : NetworkBehaviour
         Destroy(gameObject);
     }
 
-    // not all clients have access to parent so need to do this way :(
+    // server does not have access to this so need to do this way :(
     [ClientRpc]
     private void DestroyPortalsClientRpc()
     {

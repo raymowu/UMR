@@ -27,6 +27,12 @@ public class EnvMeleeMobAI : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) { return; }
+        if (GetComponent<MobPrefab>().IsDead) { return; }
+        if (GetComponent<MobPrefab>().CurrentMovementSpeed <= 0.1f)
+        {
+            anim.SetFloat("Speed", 0);
+            return;
+        }
         Animation();
         Move();
     }

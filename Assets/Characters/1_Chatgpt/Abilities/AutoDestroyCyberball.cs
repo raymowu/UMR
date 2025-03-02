@@ -21,7 +21,7 @@ public class AutoDestroyCyberball : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void DestroyCyberballMissServerRpc()
     {
-        GameManager.Instance.DecreaseDamage(GetComponent<MoveChatgptCyberball>().parent.gameObject, 1);
+        GameManager.Instance.IncreaseDamage(GetComponent<MoveChatgptCyberball>().parent.gameObject, -1);
         GetComponent<NetworkObject>().Despawn();
         Destroy(gameObject);
     }

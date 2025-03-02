@@ -70,7 +70,7 @@ public class ChatgptAbilities : CharacterAbilities
                     playerMovement.StopMovement();
                     playerMovement.Rotate(hit.point);
                     CastAbility2ServerRpc(Quaternion.LookRotation(new Vector3(hit.point.x, 0, hit.point.z) - transform.position));
-                    foreach (GameObject player in GetAllPlayersInRangeAndWithinAngle(CODE_SNARE_RANGE, CODE_SNARE_ANGLE))
+                    foreach (GameObject player in GetAllEnemiesInRangeAndWithinAngle(CODE_SNARE_RANGE, CODE_SNARE_ANGLE))
                     {
                         GameManager.Instance.Root(player, CODE_SNARE_DURATION);
                     }

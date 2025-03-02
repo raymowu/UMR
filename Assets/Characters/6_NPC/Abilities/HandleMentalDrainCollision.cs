@@ -22,7 +22,7 @@ public class HandleMentalDrainCollision : NetworkBehaviour
     {
         nextTickTime = Time.time + parent.MENTAL_DRAIN_TICK_INTERVAL;
 
-        foreach (GameObject player in parent.GetAllPlayersInRange(parent.MENTAL_DRAIN_RADIUS))
+        foreach (GameObject player in parent.GetAllEnemiesInRange(parent.MENTAL_DRAIN_RADIUS))
         {
             GameManager.Instance.Speed(player, parent.MENTAL_DRAIN_SLOW_AMOUNT, parent.MENTAL_DRAIN_SLOW_DURATION);
             GameManager.Instance.DealDamage(parent.gameObject, player, parent.MENTAL_DRAIN_DAMAGE);

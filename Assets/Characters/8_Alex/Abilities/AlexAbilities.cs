@@ -52,7 +52,7 @@ public class AlexAbilities : CharacterAbilities
 
     private IEnumerator Ability1Interval()
     {
-        foreach (GameObject player in GetAllPlayersInRangeAndWithinAngle(FLAIL_RANGE, FLAIL_ANGLE))
+        foreach (GameObject player in GetAllEnemiesInRangeAndWithinAngle(FLAIL_RANGE, FLAIL_ANGLE))
         {
             GameManager.Instance.DealDamage(gameObject, player, FLAIL_DAMAGE);
         }
