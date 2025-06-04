@@ -14,6 +14,7 @@ public class MobSpawner1 : NetworkBehaviour
         int mobSpawnInd = 0;
         var goomba = mobDatabase.GetMobById(1);
         var pumpkin = mobDatabase.GetMobById(2);
+        var slime = mobDatabase.GetMobById(3);
         if (goomba != null)
         {
             for (int i = 0; i < 3; i++)
@@ -30,6 +31,16 @@ public class MobSpawner1 : NetworkBehaviour
             {
                 var spawnPos = GameManager.mobSpawnPoints[mobSpawnInd++];
                 var mobInstance = Instantiate(pumpkin.GameplayPrefab, spawnPos, Quaternion.identity);
+                mobInstance.GetComponent<EnvMeleeMobAI>().spawnPoint = spawnPos;
+                mobInstance.GetComponent<NetworkObject>().Spawn();
+            }
+        }
+        if (slime != null)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                var spawnPos = GameManager.mobSpawnPoints[mobSpawnInd++];
+                var mobInstance = Instantiate(slime.GameplayPrefab, spawnPos, Quaternion.identity);
                 mobInstance.GetComponent<EnvMeleeMobAI>().spawnPoint = spawnPos;
                 mobInstance.GetComponent<NetworkObject>().Spawn();
             }

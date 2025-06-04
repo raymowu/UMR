@@ -51,12 +51,16 @@ public class GameManager : NetworkBehaviour
                         new Vector3 { x = 0, y = 0f, z = 51},
                         new Vector3 { x = 0, y = 0f, z = -50}
     };
-    public static Vector3[] mobSpawnPoints = { new Vector3 { x = 15f, y = 0f, z = -41f },
+    public static Vector3[] mobSpawnPoints = { 
+                        new Vector3 { x = 15f, y = 0f, z = -41f },
                         new Vector3 { x = 21f, y = 0f, z = -32f},
                         new Vector3 { x = 34, y = 0f, z = -31f},
                         new Vector3 { x = -42f, y = 0f, z = 10f},
                         new Vector3 { x = -37, y = 0f, z = 3}, 
-                        new Vector3 { x = -42f, y = 0f, z = -5f}
+                        new Vector3 { x = -42f, y = 0f, z = -5f},
+                        new Vector3 { x = -22f, y = 0f, z = -28f},
+                        new Vector3 { x = -33.5f, y = 0f, z = -27.5f},
+                        new Vector3 { x = -17f, y = 0f, z = -35f}
     };
 
     public static GameManager Instance { get; private set; }

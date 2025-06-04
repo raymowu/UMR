@@ -15,3 +15,4 @@ MonoBehaviour:
   mobsDatabase:
   - {fileID: 11400000, guid: f96ef07f1f83e754a9c3b31aa90d97cb, type: 2}
   - {fileID: 11400000, guid: 101a5718dcb6dbd43a8706e13618dcbc, type: 2}
+  - {fileID: 11400000, guid: f2a9ec9d22d323f49b77970ccb279767, type: 2}
