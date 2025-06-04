@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7829e20bf0ff5e94eb1165cec07d0f1d, type: 3}
-  m_Name: 3_Slime
+  m_Name: 4_Ghost
   m_EditorClassIdentifier: 
-  id: 3
-  displayName: Slime
-  gameplayPrefab: {fileID: -4633654232980553932, guid: c0fce596ad691624db2c700de3f78ed9, type: 3}
+  id: 4
+  displayName: Ghost
+  gameplayPrefab: {fileID: -626350109112734302, guid: 93dbb824f4d035645af753dd04dfb63d, type: 3}
   maxHealth: 400
   health: 400
   attackSpeed: 3.5

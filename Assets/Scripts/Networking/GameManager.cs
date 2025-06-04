@@ -60,7 +60,13 @@ public class GameManager : NetworkBehaviour
                         new Vector3 { x = -42f, y = 0f, z = -5f},
                         new Vector3 { x = -22f, y = 0f, z = -28f},
                         new Vector3 { x = -33.5f, y = 0f, z = -27.5f},
-                        new Vector3 { x = -17f, y = 0f, z = -35f}
+                        new Vector3 { x = -17f, y = 0f, z = -35f},
+                        new Vector3 { x = 16f, y = 0f, z = 35f},
+                        new Vector3 { x = 26.5f, y = 0f, z = 32f},
+                        new Vector3 { x = 17f, y = 0f, z = 41.5f},
+                        new Vector3 { x = -29f, y = 0f, z = 29f},
+                        new Vector3 { x = -25.5f, y = 0f, z = 35f},
+                        new Vector3 { x = -18f, y = 0f, z = 36f}
     };
 
     public static GameManager Instance { get; private set; }

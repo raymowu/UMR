@@ -15,7 +15,7 @@ public class EnvMeleeMobAI : NetworkBehaviour
 
     [Header("Enemy Targeting")]
     public GameObject targetEnemy;
-    public float stoppingDistance;
+    public float stoppingDistance = 1.5f;
     public Vector3 spawnPoint;
     public float detectionRange = 5f;
 
