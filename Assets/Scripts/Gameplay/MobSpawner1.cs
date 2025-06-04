@@ -13,12 +13,23 @@ public class MobSpawner1 : NetworkBehaviour
         if (!IsServer) { return; }
         int mobSpawnInd = 0;
         var goomba = mobDatabase.GetMobById(1);
+        var pumpkin = mobDatabase.GetMobById(2);
         if (goomba != null)
         {
             for (int i = 0; i < 3; i++)
             {
                 var spawnPos = GameManager.mobSpawnPoints[mobSpawnInd++];
                 var mobInstance = Instantiate(goomba.GameplayPrefab, spawnPos, Quaternion.identity);
+                mobInstance.GetComponent<EnvMeleeMobAI>().spawnPoint = spawnPos;
+                mobInstance.GetComponent<NetworkObject>().Spawn();
+            }
+        }
+        if (pumpkin != null)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                var spawnPos = GameManager.mobSpawnPoints[mobSpawnInd++];
+                var mobInstance = Instantiate(pumpkin.GameplayPrefab, spawnPos, Quaternion.identity);
                 mobInstance.GetComponent<EnvMeleeMobAI>().spawnPoint = spawnPos;
                 mobInstance.GetComponent<NetworkObject>().Spawn();
             }

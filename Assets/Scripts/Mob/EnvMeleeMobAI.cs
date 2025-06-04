@@ -9,7 +9,7 @@ public class EnvMeleeMobAI : NetworkBehaviour
     public NavMeshAgent agent;
     public float rotateSpeedMovement = 0.05f;
     private float rotateVelocity;
-
+    private MobPrefab stats;
     public Animator anim;
     float motionSmoothTime = 0.1f;
 
@@ -17,18 +17,19 @@ public class EnvMeleeMobAI : NetworkBehaviour
     public GameObject targetEnemy;
     public float stoppingDistance;
     public Vector3 spawnPoint;
-    public float detectionRange = 6f;
+    public float detectionRange = 5f;
 
     void Start()
     {
+        stats = GetComponent<MobPrefab>();
         agent = gameObject.GetComponent<NavMeshAgent>();
     }
 
     void Update()
     {
         if (!IsOwner) { return; }
-        if (GetComponent<MobPrefab>().IsDead) { return; }
-        if (GetComponent<MobPrefab>().CurrentMovementSpeed <= 0.1f)
+        if (stats.IsDead) { return; }
+        if (stats.CurrentMovementSpeed <= 0.1f)
         {
             anim.SetFloat("Speed", 0);
             return;

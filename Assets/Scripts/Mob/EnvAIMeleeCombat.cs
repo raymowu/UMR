@@ -29,6 +29,7 @@ public class EnvAIMeleeCombat : NetworkBehaviour
     {
         if (!IsOwner) { return; }
         if (stats.IsDisarmed) { return; }
+        if (stats.IsDead) { return; }
 
         // Calculates atk speed and interval between auto attacks
         attackInterval = stats.AttackSpeed / ((500 + stats.AttackSpeed) * 0.01f);
