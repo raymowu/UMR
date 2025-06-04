@@ -97,7 +97,6 @@ public class GameManager : NetworkBehaviour
     public static Dictionary<ulong, Mob> ConvertMobArrayToMap(GameObject[] array)
     {
         Dictionary<ulong, Mob> resultMap = new Dictionary<ulong, Mob>();
-
         foreach (GameObject element in array)
         {
             Mob mob = new Mob();
@@ -111,6 +110,7 @@ public class GameManager : NetworkBehaviour
                 }
             }
             mob.mobObject = element;
+            mob.spawnPoint = mob.mobObject.GetComponent<EnvMeleeMobAI>().spawnPoint;
             resultMap[mobId] = mob;
         }
         return resultMap;
@@ -306,15 +306,22 @@ public class GameManager : NetworkBehaviour
         target.Deaths = newHealth > 0 ? target.Deaths : target.Deaths + 1;
         target.IsDead = newHealth > 0 ? false : true;
         players[playerPrefabs[targetId].playerStatsInd] = target;
-
+        bool isSenderMob = mobPrefabs.ContainsKey(senderId);
         // Handle death
         if (target.Health <= 0)
         {
             StartCoroutine(RespawnPlayer(targetId, gamePhase == 1 ? 10f : gamePhase == 2 ? 30f : 999f));
-            PlayerStats sender = players[playerPrefabs[senderId].playerStatsInd];
-            playerPrefabs[senderId].playerObject.GetComponent<PlayerMovement>().targetEnemy = null;
-            sender.Kills = sender.Kills + 1;
-            players[playerPrefabs[senderId].playerStatsInd] = sender;
+            if (isSenderMob)
+            {
+                mobPrefabs[senderId].mobObject.GetComponent<EnvMeleeMobAI>().targetEnemy = null;
+            }
+            else
+            {
+                PlayerStats sender = players[playerPrefabs[senderId].playerStatsInd];
+                playerPrefabs[senderId].playerObject.GetComponent<PlayerMovement>().targetEnemy = null;
+                sender.Kills = sender.Kills + 1;
+                //players[playerPrefabs[senderId].playerStatsInd] = sender;
+            }
         }
     }
 

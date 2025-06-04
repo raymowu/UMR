@@ -11,16 +11,17 @@ public class MobSpawner1 : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if (!IsServer) { return; }
-
-        var mob = mobDatabase.GetMobById(1);
-        if (mob != null)
+        int mobSpawnInd = 0;
+        var goomba = mobDatabase.GetMobById(1);
+        if (goomba != null)
         {
-            //var spawnPos = GameManager.Instance.mobSpawnPoints[0];
-            var spawnPos = new Vector3(0f, 0f, 0f);
-            var mobInstance = Instantiate(mob.GameplayPrefab, spawnPos, Quaternion.identity);
-            mobInstance.GetComponent<EnvMeleeMobAI>().spawnPoint = spawnPos;
-            mobInstance.GetComponent<NetworkObject>().Spawn();
+            for (int i = 0; i < 3; i++)
+            {
+                var spawnPos = GameManager.mobSpawnPoints[mobSpawnInd++];
+                var mobInstance = Instantiate(goomba.GameplayPrefab, spawnPos, Quaternion.identity);
+                mobInstance.GetComponent<EnvMeleeMobAI>().spawnPoint = spawnPos;
+                mobInstance.GetComponent<NetworkObject>().Spawn();
+            }
         }
-
     }
 }
