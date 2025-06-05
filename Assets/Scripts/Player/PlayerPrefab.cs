@@ -4,10 +4,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
+using TMPro;
 
 public class PlayerPrefab : NetworkBehaviour
 {
     [SerializeField] private HealthUI healthUI;
+    [SerializeField] private GoldUI goldUI;
     [Header("Base Stats")]
     public float MaxHealth;
     public float Health;
@@ -20,19 +22,21 @@ public class PlayerPrefab : NetworkBehaviour
     public int Kills;
     public int Deaths;
     public bool IsDead;
+    public int Gold;
 
     void Start()
     {
         healthUI = GetComponent<HealthUI>();
+        goldUI = GetComponent<GoldUI>();
     }
 
     private void Update()
     {
         if (!IsOwner) { return; }
-        if (Input.GetKeyDown(KeyCode.V))
+        /*if (Input.GetKeyDown(KeyCode.V))
         {
             GameManager.Instance.DealDamage(gameObject, gameObject, 9999);
-        }
+        }*/
     }
 
     public void UpdatePlayerStats(PlayerStats player)
@@ -50,9 +54,11 @@ public class PlayerPrefab : NetworkBehaviour
             Kills = player.Kills;
             Deaths = player.Deaths;
             IsDead = player.IsDead;
+            Gold = player.Gold;
 
             healthUI.Update2DSlider(player.MaxHealth, Health);
             healthUI.Update3DSlider(player.MaxHealth, Health);
+            goldUI.UpdateGold(player.Gold);
         }
     }
 }

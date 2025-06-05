@@ -300,6 +300,23 @@ public class GameManager : NetworkBehaviour
      * STATS CHANGE MANAGER
      */
 
+    public void AddGoldCount(GameObject target, int amount)
+    {
+        if (!target.CompareTag("Player"))
+        {
+            return;
+        }
+        AddGoldCountServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
+    }
+
+    [ServerRpc(RequireOwnership = true)]
+    private void AddGoldCountServerRpc(ulong targetId, int amount)
+    {
+        PlayerStats target = players[playerPrefabs[targetId].playerStatsInd];
+        target.Gold += amount;
+        players[playerPrefabs[targetId].playerStatsInd] = target;
+    }
+
     public void DealDamage(GameObject sender, GameObject target, float damage)
     {
         if (target == null) return;
@@ -336,7 +353,7 @@ public class GameManager : NetworkBehaviour
                 PlayerStats sender = players[playerPrefabs[senderId].playerStatsInd];
                 playerPrefabs[senderId].playerObject.GetComponent<PlayerMovement>().targetEnemy = null;
                 sender.Kills = sender.Kills + 1;
-                //players[playerPrefabs[senderId].playerStatsInd] = sender;
+                players[playerPrefabs[senderId].playerStatsInd] = sender;
             }
         }
     }

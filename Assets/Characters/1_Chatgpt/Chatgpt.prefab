@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 3634626663687302648}
   - component: {fileID: 6485815021271510716}
   - component: {fileID: 8215572481948044943}
+  - component: {fileID: 205873103563538821}
   m_Layer: 6
   m_Name: Chatgpt
   m_TagString: Player
@@ -252,7 +253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3735897259
+  GlobalObjectIdHash: 179465421
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -462,6 +463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthUI: {fileID: 6485815021271510716}
+  goldUI: {fileID: 205873103563538821}
   MaxHealth: 0
   Health: 0
   AttackSpeed: 0
@@ -473,6 +475,7 @@ MonoBehaviour:
   Kills: 0
   Deaths: 0
   IsDead: 0
+  Gold: 0
 --- !u!114 &6485815021271510716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -508,6 +511,19 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &205873103563538821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466922402700619703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25f6632b6b532b841ac7247dc2b423b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goldText: {fileID: 8469704907521506554}
 --- !u!1 &502753839874286371
 GameObject:
   m_ObjectHideFlags: 0
@@ -3589,7 +3605,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 841242297292772364, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
 --- !u!1 &1111058790730901174 stripped
 GameObject:
@@ -3628,6 +3645,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8557587589906357101, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
   m_PrefabInstance: {fileID: 539989820880087835}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8469704907521506554 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8283248211533092833, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+  m_PrefabInstance: {fileID: 539989820880087835}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8678979324152983680 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9155677681889270683, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
