@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 613081523070485616}
   - component: {fileID: 1585696373134319838}
   - component: {fileID: 4273541289901249312}
+  - component: {fileID: 4140425224502356125}
   m_Layer: 6
   m_Name: Darthog
   m_TagString: Player
@@ -200,7 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1964363699
+  GlobalObjectIdHash: 3223216858
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -420,6 +421,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthUI: {fileID: 1585696373134319838}
+  goldUI: {fileID: 4140425224502356125}
   MaxHealth: 0
   Health: 0
   AttackSpeed: 0
@@ -431,6 +433,7 @@ MonoBehaviour:
   Kills: 0
   Deaths: 0
   IsDead: 0
+  Gold: 0
 --- !u!114 &1585696373134319838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -466,6 +469,19 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &4140425224502356125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 113076548410431791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25f6632b6b532b841ac7247dc2b423b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goldText: {fileID: 710483190434632649}
 --- !u!1 &199322515159606025
 GameObject:
   m_ObjectHideFlags: 0
@@ -3456,6 +3472,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 9155677681889270683, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
   m_PrefabInstance: {fileID: 8874385870089602088}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &710483190434632649 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8283248211533092833, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+  m_PrefabInstance: {fileID: 8874385870089602088}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1002770532498087749 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8557587589906357101, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}

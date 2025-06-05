@@ -1827,6 +1827,7 @@ GameObject:
   - component: {fileID: -8661930681160313929}
   - component: {fileID: -3848343968602698668}
   - component: {fileID: 727321115079406375}
+  - component: {fileID: 2421270102995720853}
   m_Layer: 6
   m_Name: NPC
   m_TagString: Player
@@ -2102,6 +2103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthUI: {fileID: -3848343968602698668}
+  goldUI: {fileID: 2421270102995720853}
   MaxHealth: 0
   Health: 0
   AttackSpeed: 0
@@ -2113,6 +2115,7 @@ MonoBehaviour:
   Kills: 0
   Deaths: 0
   IsDead: 0
+  Gold: 0
 --- !u!114 &-8661930681160313929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2175,6 +2178,19 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &2421270102995720853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4214332624141440399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25f6632b6b532b841ac7247dc2b423b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goldText: {fileID: 1348312648293498852}
 --- !u!1 &4399760301956523524
 GameObject:
   m_ObjectHideFlags: 0
@@ -4476,6 +4492,17 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: f733a16e2ca3eea4581d04a7ff5cfc8c, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+--- !u!114 &1348312648293498852 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8283248211533092833, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+  m_PrefabInstance: {fileID: 6936151907545311237}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1621438783906526056 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8557587589906357101, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}

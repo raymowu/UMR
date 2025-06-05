@@ -183,7 +183,6 @@ public class GameManager : NetworkBehaviour
                 playerPrefabsArr[i].GetComponent<PlayerPrefab>().UpdatePlayerStats(players[i]);
                 playerPrefabsArr[i].GetComponent<NavMeshAgent>().speed = players[i].CurrentMovementSpeed;
             }
-
             for (int i = 0; i < mobs.Count; i++)
             {
                 mobPrefabsArr[i].GetComponent<MobPrefab>().UpdateMobStats(mobs[i]);
@@ -309,7 +308,7 @@ public class GameManager : NetworkBehaviour
         AddGoldCountServerRpc(target.GetComponent<NetworkObject>().OwnerClientId, amount);
     }
 
-    [ServerRpc(RequireOwnership = true)]
+    [ServerRpc(RequireOwnership = false)]
     private void AddGoldCountServerRpc(ulong targetId, int amount)
     {
         PlayerStats target = players[playerPrefabs[targetId].playerStatsInd];

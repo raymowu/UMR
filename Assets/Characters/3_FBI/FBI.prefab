@@ -805,6 +805,7 @@ GameObject:
   - component: {fileID: 8078906729750711139}
   - component: {fileID: -9033902588832410495}
   - component: {fileID: -7823398564952651411}
+  - component: {fileID: 1956970535496022043}
   m_Layer: 6
   m_Name: FBI
   m_TagString: Player
@@ -2524,6 +2525,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthUI: {fileID: 8078906729750711139}
+  goldUI: {fileID: 1956970535496022043}
   MaxHealth: 0
   Health: 0
   AttackSpeed: 0
@@ -2535,6 +2537,7 @@ MonoBehaviour:
   Kills: 0
   Deaths: 0
   IsDead: 0
+  Gold: 0
 --- !u!114 &8078906729750711139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2586,6 +2589,19 @@ MonoBehaviour:
   performRangedAttack: 1
   projectilePrefab: {fileID: 2793077548260592395, guid: a85a8a1666d5e6d4a9434852aa76d3e1, type: 3}
   shootTransform: {fileID: 7501622985517703470}
+--- !u!114 &1956970535496022043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1404754122287465961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25f6632b6b532b841ac7247dc2b423b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goldText: {fileID: 6557193733953433035}
 --- !u!1 &1873748255208329368
 GameObject:
   m_ObjectHideFlags: 0
@@ -5439,6 +5455,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 9155677681889270683, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
   m_PrefabInstance: {fileID: 2885636007622343210}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6557193733953433035 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8283248211533092833, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+  m_PrefabInstance: {fileID: 2885636007622343210}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6830129104701825351 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8557587589906357101, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}

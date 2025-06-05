@@ -3587,6 +3587,7 @@ GameObject:
   - component: {fileID: 6951467589486935616}
   - component: {fileID: 4118265981880704295}
   - component: {fileID: 943935516805752785}
+  - component: {fileID: 4640920329919600657}
   m_Layer: 6
   m_Name: Hu Tao
   m_TagString: Player
@@ -3690,7 +3691,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1227559337
+  GlobalObjectIdHash: 2279149724
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -3712,6 +3713,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthUI: {fileID: 4118265981880704295}
+  goldUI: {fileID: 4640920329919600657}
   MaxHealth: 0
   Health: 0
   AttackSpeed: 0
@@ -3723,6 +3725,7 @@ MonoBehaviour:
   Kills: 0
   Deaths: 0
   IsDead: 0
+  Gold: 0
 --- !u!114 &3094640115261085166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3955,6 +3958,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4640920329919600657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5927861743439057879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25f6632b6b532b841ac7247dc2b423b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goldText: {fileID: 5480587580389254480}
 --- !u!1 &5950011605750894066
 GameObject:
   m_ObjectHideFlags: 0
@@ -6578,6 +6594,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8557587589906357101, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
   m_PrefabInstance: {fileID: 4538211159594316465}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5480587580389254480 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8283248211533092833, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}
+  m_PrefabInstance: {fileID: 4538211159594316465}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8344501710776801438 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5564011629947431471, guid: 32f8d1991c9936d4c8a84b98d5f6cf36, type: 3}

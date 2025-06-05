@@ -4196,6 +4196,7 @@ GameObject:
   - component: {fileID: 3141767284951849549}
   - component: {fileID: 7449413929615840935}
   - component: {fileID: -3974250595297791101}
+  - component: {fileID: 8636251318862433979}
   m_Layer: 6
   m_Name: Klee
   m_TagString: Player
@@ -4319,6 +4320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthUI: {fileID: 7449413929615840935}
+  goldUI: {fileID: 8636251318862433979}
   MaxHealth: 0
   Health: 0
   AttackSpeed: 0
@@ -4330,6 +4332,7 @@ MonoBehaviour:
   Kills: 0
   Deaths: 0
   IsDead: 0
+  Gold: 0
 --- !u!114 &3171894612908557886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4536,6 +4539,19 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &8636251318862433979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4679016535666749224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25f6632b6b532b841ac7247dc2b423b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goldText: {fileID: 0}
 --- !u!1 &4743723456776980951
 GameObject:
   m_ObjectHideFlags: 0
