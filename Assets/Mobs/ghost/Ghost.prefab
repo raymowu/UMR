@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1939072790
+  GlobalObjectIdHash: 1280731371
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -305,7 +305,7 @@ MonoBehaviour:
   rotateSpeedMovement: 0.05
   anim: {fileID: 5740508734379191098}
   targetEnemy: {fileID: 0}
-  stoppingDistance: 0
+  stoppingDistance: 1.5
   spawnPoint: {x: 0, y: 0, z: 0}
   detectionRange: 5
 --- !u!114 &8965334858285830998
