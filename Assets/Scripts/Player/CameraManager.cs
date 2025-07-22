@@ -16,7 +16,7 @@ public class CameraManager : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Y))
         {
             usingVirtualCam = !usingVirtualCam;
 

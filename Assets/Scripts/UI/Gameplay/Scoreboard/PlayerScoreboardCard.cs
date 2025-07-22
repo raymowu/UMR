@@ -9,7 +9,8 @@ public class PlayerScoreboardCard : MonoBehaviour
     [SerializeField] private CharacterDatabase characterDatabase;
     [SerializeField] private GameObject visuals;
     [SerializeField] private Image characterIconImage;
-    [SerializeField] private TMP_Text statsText;
+    [SerializeField] private TMP_Text kdText;
+    [SerializeField] private TMP_Text csText;
    //TODO: items
 
     public void UpdateDisplay(PlayerStats player)
@@ -26,7 +27,8 @@ public class PlayerScoreboardCard : MonoBehaviour
             characterIconImage.enabled = false;
         }
 
-        statsText.text = player.Kills + "/" + player.Deaths;
+        kdText.text = player.Kills + "/" + player.Deaths;
+        csText.text = player.MobScore + "";
 
         visuals.SetActive(true);
     }

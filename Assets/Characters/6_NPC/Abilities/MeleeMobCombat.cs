@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
+// THIS IS PLAYER CREATED SUMMON
 [RequireComponent(typeof(MeleeMobAI)), RequireComponent(typeof(PlayerPrefab))]
 public class MeleeMobCombat : NetworkBehaviour
 {

@@ -32,6 +32,13 @@ public class MainMenuDisplay : MonoBehaviour
         connectingPanel.SetActive(false);
         menuPanel.SetActive(true);
     }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            StartClient();
+        }
+    }
 
     public void StartHost()
     {

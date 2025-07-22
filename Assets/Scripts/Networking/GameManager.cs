@@ -318,10 +318,11 @@ public class GameManager : NetworkBehaviour
 
     public void DealDamage(GameObject sender, GameObject target, float damage)
     {
+        bool isSenderMob = target.CompareTag("Mob");
         if (target == null) return;
         if (target.CompareTag("Player"))
         {
-            DealDamageToPlayerServerRpc(sender.GetComponent<NetworkObject>().OwnerClientId, target.GetComponent<NetworkObject>().OwnerClientId, damage);
+            DealDamageToPlayerServerRpc(sender.GetComponent<NetworkObject>().OwnerClientId, target.GetComponent<NetworkObject>().OwnerClientId, damage, isSenderMob);
         }
         else if (target.CompareTag("Mob"))
         {
@@ -330,7 +331,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void DealDamageToPlayerServerRpc(ulong senderId, ulong targetId, float damage)
+    private void DealDamageToPlayerServerRpc(ulong senderId, ulong targetId, float damage, bool isSenderMob)
     {
         PlayerStats target = players[playerPrefabs[targetId].playerStatsInd];
         float newHealth = target.Health - damage;
@@ -338,7 +339,7 @@ public class GameManager : NetworkBehaviour
         target.Deaths = newHealth > 0 ? target.Deaths : target.Deaths + 1;
         target.IsDead = newHealth > 0 ? false : true;
         players[playerPrefabs[targetId].playerStatsInd] = target;
-        bool isSenderMob = mobPrefabs.ContainsKey(senderId);
+
         // Handle death
         if (target.Health <= 0)
         {
@@ -369,6 +370,10 @@ public class GameManager : NetworkBehaviour
 
         if (mob.Health <= 0)
         {
+            PlayerStats sender = players[playerPrefabs[senderId].playerStatsInd];
+            playerPrefabs[senderId].playerObject.GetComponent<PlayerMovement>().targetEnemy = null;
+            sender.MobScore = sender.MobScore + 1;
+            players[playerPrefabs[senderId].playerStatsInd] = sender;
             StartCoroutine(RespawnMob(mobId, gamePhase == 1 ? 10f : gamePhase == 2 ? 120f : 999f));
         }
 

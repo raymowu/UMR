@@ -19,13 +19,14 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
     public int Kills;
     public int Deaths;
     public bool IsDead;
+    public int MobScore;
     public int Gold;
 
 
     // Constructor
     public PlayerStats(ulong clientId, int characterId = -1, float maxHealth = 0, float health = 0, float attackSpeed = 0,
         float movementSpeed = 0, float currentMovementSpeed = 0, float damage = 0, bool isSilenced = false, bool isDisarmed = false, 
-        int kills = 0, int deaths = 0, bool isDead = false, int gold = 0)
+        int kills = 0, int deaths = 0, bool isDead = false, int mobScore = 0, int gold = 0)
     {
         ClientId = clientId;
         CharacterId = characterId;
@@ -40,6 +41,7 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
         Kills = kills;
         Deaths = deaths;
         IsDead = isDead;
+        MobScore = mobScore;
         Gold = gold;
     }
 
@@ -59,6 +61,7 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
         serializer.SerializeValue(ref Kills);
         serializer.SerializeValue(ref Deaths);
         serializer.SerializeValue(ref IsDead);
+        serializer.SerializeValue(ref MobScore);
         serializer.SerializeValue(ref Gold);
     }
 
@@ -78,6 +81,7 @@ public struct PlayerStats : INetworkSerializable, IEquatable<PlayerStats>
             Kills == other.Kills &&
             Deaths == other.Deaths &&
             IsDead == other.IsDead &&
+            MobScore == other.MobScore &&
             Gold == other.Gold;
     }
 }

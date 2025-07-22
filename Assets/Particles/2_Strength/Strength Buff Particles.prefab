@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1426245440731515418}
   - component: {fileID: 4705501379079182426}
   - component: {fileID: -899835800038332788}
+  - component: {fileID: 5871122648817651982}
   m_Layer: 0
   m_Name: Strength Buff Particles
   m_TagString: Untagged
@@ -4826,10 +4827,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
+  GlobalObjectIdHash: 3451394801
+  InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &5871122648817651982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3874635022589376825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aefcd354295a04b4894bb2fa74b4bd3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  delayBeforeDestroy: 2.5
 --- !u!1 &7556270111816052728
 GameObject:
   m_ObjectHideFlags: 0

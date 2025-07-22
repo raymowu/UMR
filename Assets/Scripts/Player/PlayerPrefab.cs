@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
-using TMPro;
 
 public class PlayerPrefab : NetworkBehaviour
 {
@@ -22,6 +21,7 @@ public class PlayerPrefab : NetworkBehaviour
     public int Kills;
     public int Deaths;
     public bool IsDead;
+    public int MobScore;
     public int Gold;
 
     void Start()
@@ -54,6 +54,7 @@ public class PlayerPrefab : NetworkBehaviour
             Kills = player.Kills;
             Deaths = player.Deaths;
             IsDead = player.IsDead;
+            MobScore = player.MobScore;
             Gold = player.Gold;
 
             healthUI.Update2DSlider(player.MaxHealth, Health);
