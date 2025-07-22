@@ -4190,9 +4190,6 @@ GameObject:
   - component: {fileID: 6642676009240022367}
   - component: {fileID: 7705895708921185712}
   - component: {fileID: 2313521425618620195}
-  - component: {fileID: -5525166541350269327}
-  - component: {fileID: 6594128218842223090}
-  - component: {fileID: 8285667518670919410}
   - component: {fileID: 3141767284951849549}
   - component: {fileID: 7449413929615840935}
   - component: {fileID: -3974250595297791101}
@@ -4298,7 +4295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3236842663
+  GlobalObjectIdHash: 3901867004
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -4332,6 +4329,7 @@ MonoBehaviour:
   Kills: 0
   Deaths: 0
   IsDead: 0
+  MobScore: 0
   Gold: 0
 --- !u!114 &3171894612908557886
 MonoBehaviour:
@@ -4443,51 +4441,6 @@ MonoBehaviour:
   FISH_TRAP_DAMAGE: 40
   sparkPrefab: {fileID: 0}
   kingDodoco: {fileID: 3416572366628645178, guid: ff16afa8cde354746a6a7f2c3b78836b, type: 3}
---- !u!114 &-5525166541350269327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4679016535666749224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 1
-  outlineColor: {r: 1, g: 0, b: 0, a: 1}
-  outlineWidth: 3.5
-  precomputeOutline: 1
-  bakeKeys: []
-  bakeValues: []
---- !u!114 &6594128218842223090
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4679016535666749224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95d7ce19bbf6d884eb876e66f0a388a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8285667518670919410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4679016535666749224}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f49cea880225aa1478677b8b9511bbfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectableLayer:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!114 &3141767284951849549
 MonoBehaviour:
   m_ObjectHideFlags: 0

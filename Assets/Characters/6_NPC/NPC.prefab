@@ -1820,9 +1820,6 @@ GameObject:
   - component: {fileID: 4220900687713525715}
   - component: {fileID: 5829817824735223972}
   - component: {fileID: 1603882825375587796}
-  - component: {fileID: 4384169694838345888}
-  - component: {fileID: 3285747887697302295}
-  - component: {fileID: -3852121637740572954}
   - component: {fileID: 7774041944891680614}
   - component: {fileID: -8661930681160313929}
   - component: {fileID: -3848343968602698668}
@@ -1953,7 +1950,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 756720792
+  GlobalObjectIdHash: 4176037916
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -2045,51 +2042,6 @@ MonoBehaviour:
   MENTAL_DRAIN_SLOW_DURATION: 0.5
   MENTAL_DRAIN_DAMAGE: 10
   MENTAL_DRAIN_TICK_INTERVAL: 0.5
---- !u!114 &4384169694838345888
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4214332624141440399}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 1
-  outlineColor: {r: 1, g: 0, b: 0, a: 1}
-  outlineWidth: 3.5
-  precomputeOutline: 1
-  bakeKeys: []
-  bakeValues: []
---- !u!114 &3285747887697302295
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4214332624141440399}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95d7ce19bbf6d884eb876e66f0a388a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &-3852121637740572954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4214332624141440399}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f49cea880225aa1478677b8b9511bbfb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectableLayer:
-    serializedVersion: 2
-    m_Bits: 320
 --- !u!114 &7774041944891680614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2115,6 +2067,7 @@ MonoBehaviour:
   Kills: 0
   Deaths: 0
   IsDead: 0
+  MobScore: 0
   Gold: 0
 --- !u!114 &-8661930681160313929
 MonoBehaviour:
