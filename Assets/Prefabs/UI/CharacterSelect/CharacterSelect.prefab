@@ -139,6 +139,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1523,8 +1524,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7791510566941845852}
-  - component: {fileID: 7791510566941845851}
   - component: {fileID: 4552207486880302071}
+  - component: {fileID: 7791510566941845851}
   m_Layer: 0
   m_Name: CharacterSelect
   m_TagString: Untagged
@@ -1548,6 +1549,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4552207486880302071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7791510566941845854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1528209849
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &7791510566941845851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1566,22 +1588,9 @@ MonoBehaviour:
   playerCards: []
   characterInfoPanel: {fileID: 0}
   characterNameText: {fileID: 0}
---- !u!114 &4552207486880302071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7791510566941845854}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 951099334
-  AlwaysReplicateAsRoot: 0
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
+  introSpawnPoint: {fileID: 0}
+  joinCodeText: {fileID: 0}
+  lockInButton: {fileID: 0}
 --- !u!1 &7791510567022128226
 GameObject:
   m_ObjectHideFlags: 0
